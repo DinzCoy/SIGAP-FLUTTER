@@ -27,7 +27,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF00558D), // Deep blue header
         title: Text(
-          "BPS-PC Guardian",
+          "SIGAP",
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -239,7 +239,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.1),
+                    color: accentColor.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, color: accentColor, size: 24),
@@ -277,7 +277,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           )
@@ -364,7 +364,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           )
@@ -465,7 +465,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           )

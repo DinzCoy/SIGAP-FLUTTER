@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
@@ -46,22 +44,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() => _isLoading = true);
 
     try {
-      final url = Uri.parse('${AuthService.baseUrl}/update_profile.php');
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "id": _userId,
-          "name": _nameController.text,
-          "email": _emailController.text,
-          "phone": _phoneController.text,
-          "nip": _nipController.text,
-        }),
+      final result = await AuthService.updateProfile(
+        id: _userId,
+        name: _nameController.text,
+        email: _emailController.text,
+        phone: _phoneController.text,
+        nip: _nipController.text,
       );
 
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && data['status'] == 'success') {
+      if (result == true) {
         // Save back to SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_name', _nameController.text);
@@ -78,7 +69,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(data['message'] ?? 'Gagal memperbarui profil')),
+            SnackBar(content: Text(result ?? 'Gagal memperbarui profil')),
           );
         }
       }

@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'pages/login_page.dart';
-import 'pages/technician_dashboard.dart'; // CRITICAL: included as requested
 
 void main() {
-  runApp(const BpsPcGuardianApp());
+  runApp(const SigapApp());
 }
 
-class BpsPcGuardianApp extends StatelessWidget {
-  const BpsPcGuardianApp({super.key});
+class SigapApp extends StatelessWidget {
+  const SigapApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BPS-PC Guardian',
+      title: 'SIGAP',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

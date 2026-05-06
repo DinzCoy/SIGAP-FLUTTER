@@ -36,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Text("Notifikasi", style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
             subtitle: Text("Terima pemberitahuan tentang status aset", style: GoogleFonts.inter(fontSize: 12)),
             value: _notificationsEnabled,
-            activeColor: const Color(0xFF00558D),
+            activeThumbColor: const Color(0xFF00558D),
             onChanged: (value) {
               setState(() => _notificationsEnabled = value);
             },
@@ -45,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Text("Mode Gelap (Dark Mode)", style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
             subtitle: Text("Ubah tema aplikasi menjadi gelap", style: GoogleFonts.inter(fontSize: 12)),
             value: _darkModeEnabled,
-            activeColor: const Color(0xFF00558D),
+            activeThumbColor: const Color(0xFF00558D),
             onChanged: (value) {
               setState(() => _darkModeEnabled = value);
               ScaffoldMessenger.of(context).showSnackBar(
@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () {
               showAboutDialog(
                 context: context,
-                applicationName: "BPS-PC Guardian",
+                applicationName: "SIGAP",
                 applicationVersion: "1.0.0",
                 applicationIcon: const Icon(Icons.security, size: 40, color: Color(0xFF00558D)),
                 children: [

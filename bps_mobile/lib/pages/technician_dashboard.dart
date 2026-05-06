@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'login_page.dart';
 import 'profile_page.dart';
@@ -20,7 +19,7 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'BPS-PC Guardian',
+          'SIGAP',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF00558D),
@@ -235,7 +234,7 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: color, size: 32),

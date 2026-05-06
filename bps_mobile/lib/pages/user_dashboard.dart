@@ -28,7 +28,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
         backgroundColor: const Color(0xFF00558D),
         elevation: 0,
         title: Text(
-          "BPS-PC Guardian",
+          "SIGAP",
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -197,7 +197,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           )
@@ -292,7 +292,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

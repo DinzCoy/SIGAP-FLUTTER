@@ -5,7 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:bps_mobile/main.dart';
@@ -13,7 +12,7 @@ import 'package:bps_mobile/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const BpsPcGuardianApp());
+    await tester.pumpWidget(const SigapApp());
 
     // The default counter test assertions have been removed since this app starts at LoginPage.
   });

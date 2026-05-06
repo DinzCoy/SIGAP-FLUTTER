@@ -46,7 +46,7 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: isDesktop ? 32 : 24),
               Text(
-                'BPS-PC Guardian',
+                'SIGAP',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 32,
@@ -60,7 +60,7 @@ class LoginPage extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 16,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   height: 1.5,
                 ),
               ),

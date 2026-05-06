@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
@@ -33,20 +31,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       final prefs = await SharedPreferences.getInstance();
       final userId = prefs.getString('user_id') ?? '';
 
-      final url = Uri.parse('${AuthService.baseUrl}/change_password.php');
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "id": userId,
-          "old_password": _oldPasswordController.text,
-          "new_password": _newPasswordController.text,
-        }),
+      final result = await AuthService.changePassword(
+        userId,
+        _oldPasswordController.text,
+        _newPasswordController.text,
       );
 
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && data['status'] == 'success') {
+      if (result == true) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Password berhasil diubah')),
@@ -56,7 +47,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(data['message'] ?? 'Gagal mengubah password')),
+            SnackBar(content: Text(result ?? 'Gagal mengubah password')),
           );
         }
       }
