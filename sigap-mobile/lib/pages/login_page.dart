@@ -35,7 +35,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 child: const Center(
                   child: Text(
-                    'SIGAP',
+                    'BPS',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: isDesktop ? 16 : 4),
               Text(
-                'Sistem Monitoring Terpadu Aset Komputer\nSIGAP Provinsi Sulawesi Selatan.',
+                'Sistem Monitoring Terpadu Aset Komputer\nBadan Pusat Statistik (BPS) Provinsi Sulawesi Selatan.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 16,
@@ -66,7 +66,7 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                '© 2026 SIGAP Sulsel',
+                '© 2026 BPS Sulsel',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 12,

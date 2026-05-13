@@ -76,8 +76,7 @@ class AuthService {
   /// Ubah Password.
   static Future<dynamic> changePassword(String userId, String oldPassword, String newPassword) async {
     try {
-      final response = await ApiClient.post('/change_password.php', {
-        "id": userId,
+      final response = await ApiClient.post('/user/change-password', {
         "old_password": oldPassword,
         "new_password": newPassword,
       });
@@ -95,19 +94,17 @@ class AuthService {
 
   /// Update Profil.
   static Future<dynamic> updateProfile({
-    required String id,
     required String name,
     required String email,
-    required String phone,
-    required String nip,
+    String? phone,
+    String? nip,
   }) async {
     try {
-      final response = await ApiClient.post('/update_profile.php', {
-        "id": id,
+      final response = await ApiClient.post('/user/update-profile', {
         "name": name,
         "email": email,
-        "phone": phone,
-        "nip": nip,
+        if (phone != null) "phone": phone,
+        if (nip != null) "nip": nip,
       });
 
       if (response.statusCode == 200) {

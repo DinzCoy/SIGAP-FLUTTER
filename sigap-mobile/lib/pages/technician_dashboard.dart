@@ -36,7 +36,7 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
               ),
               child: const Center(
                 child: Text(
-                  'SIGAP',
+                  'BPS',
                   style: TextStyle(
                     color: Color(0xFF00558D),
                     fontWeight: FontWeight.bold,
@@ -516,7 +516,7 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
                     const Icon(Icons.map, size: 48, color: Colors.grey),
                     const SizedBox(height: 8),
                     const Text(
-                      'Denah Kantor SIGAP',
+                      'Denah Kantor BPS',
                       style: TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 8),

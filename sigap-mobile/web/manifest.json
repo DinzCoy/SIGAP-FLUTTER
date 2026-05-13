@@ -1,6 +1,6 @@
 {
-    "name": "sigap_mobile",
-    "short_name": "sigap_mobile",
+    "name": "bps_mobile",
+    "short_name": "bps_mobile",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

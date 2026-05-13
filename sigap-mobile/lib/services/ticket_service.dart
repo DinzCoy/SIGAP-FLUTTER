@@ -45,7 +45,7 @@ class TicketService {
 
   /// Ambil daftar tiket milik user yang login
   static Future<List<TicketModel>> getMyTickets() async {
-    final response = await ApiClient.get('/user/tickets');
+    final response = await ApiClient.get('/tickets/my');
     final data = ApiClient.processResponse(response);
     final list = data['data'] as List? ?? [];
     return list.map((e) => TicketModel.fromJson(e)).toList();
@@ -54,8 +54,8 @@ class TicketService {
   /// Ambil semua tiket (untuk Admin/Teknisi)
   static Future<List<TicketModel>> getAllTickets({String? status}) async {
     final path = status != null
-        ? '/admin/tickets?status=$status'
-        : '/admin/tickets';
+        ? '/tickets?status=$status'
+        : '/tickets';
     final response = await ApiClient.get(path);
     final data = ApiClient.processResponse(response);
     final list = data['data'] as List? ?? [];
@@ -68,7 +68,7 @@ class TicketService {
     required String status,
     String? tanggapan,
   }) async {
-    final response = await ApiClient.post('/admin/tickets/$ticketId/status', {
+    final response = await ApiClient.post('/tickets/$ticketId/status', {
       'status': status,
       'tanggapan': tanggapan,
     });

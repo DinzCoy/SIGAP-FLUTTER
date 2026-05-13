@@ -45,7 +45,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     try {
       final result = await AuthService.updateProfile(
-        id: _userId,
         name: _nameController.text,
         email: _emailController.text,
         phone: _phoneController.text,

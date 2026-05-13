@@ -29,14 +29,14 @@ class AssetService {
   static Future<AssetModel> registerAsset(
     Map<String, dynamic> assetData,
   ) async {
-    final response = await ApiClient.post('/admin/assets', assetData);
+    final response = await ApiClient.post('/assets', assetData);
     final data = ApiClient.processResponse(response);
     return AssetModel.fromJson(data['data']);
   }
 
   /// Ambil semua aset
   static Future<List<AssetModel>> getAssets() async {
-    final response = await ApiClient.get('/admin/assets');
+    final response = await ApiClient.get('/assets');
     final data = ApiClient.processResponse(response);
     final list = data['data'] as List? ?? [];
     return list.map((e) => AssetModel.fromJson(e)).toList();

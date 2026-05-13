@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       name = prefs.getString('user_name') ?? 'Pengguna';
-      email = prefs.getString('user_email') ?? 'email@sigap.go.id';
+      email = prefs.getString('user_email') ?? 'email@bps.go.id';
       role = prefs.getString('user_role') ?? 'User';
       phone = prefs.getString('user_phone') ?? '-';
       nip = prefs.getString('user_nip') ?? '-';

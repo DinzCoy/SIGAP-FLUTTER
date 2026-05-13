@@ -1,4 +1,4 @@
-name: sigap_mobile
+name: bps_mobile
 description: "SIGAP Mobile - Smart Integrated Guardian and Protection"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.

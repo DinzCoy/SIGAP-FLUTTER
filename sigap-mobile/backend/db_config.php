@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $host = '127.0.0.1';
-$db   = 'sigap_db';
+$db   = 'bps_db';
 $user = 'root';
 $pass = ''; // Kosongkan jika default XAMPP
 $charset = 'utf8mb4';

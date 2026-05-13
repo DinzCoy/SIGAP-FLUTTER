@@ -26,8 +26,8 @@ class LoanService {
     required int assetId,
     required String alasan,
   }) async {
-    final response = await ApiClient.post('/asset/transfer', {
-      'asset_id': assetId,
+    final response = await ApiClient.post('/assets/$assetId/transfer', {
+      'asset_id': assetId, // Optional, since id is in URL
       'reason': alasan,
     });
     return ApiClient.processResponse(response);
@@ -35,7 +35,7 @@ class LoanService {
 
   /// Ambil riwayat pinjaman/transfer user
   static Future<List<LoanModel>> getMyLoans() async {
-    final response = await ApiClient.get('/user/loans');
+    final response = await ApiClient.get('/loans/my');
     final data = ApiClient.processResponse(response);
     final list = data['data'] as List? ?? [];
     return list.map((e) => LoanModel.fromJson(e)).toList();
@@ -43,7 +43,7 @@ class LoanService {
 
   /// Ambil semua pengajuan (untuk Admin)
   static Future<List<LoanModel>> getAllLoans({String? status}) async {
-    final path = status != null ? '/admin/loans?status=$status' : '/admin/loans';
+    final path = status != null ? '/loans?status=$status' : '/loans';
     final response = await ApiClient.get(path);
     final data = ApiClient.processResponse(response);
     final list = data['data'] as List? ?? [];
@@ -56,7 +56,7 @@ class LoanService {
     required String status, // 'disetujui' atau 'ditolak'
     String? catatan,
   }) async {
-    final response = await ApiClient.post('/admin/loans/$loanId/approve', {
+    final response = await ApiClient.post('/loans/$loanId/approve', {
       'status': status,
       'catatan_admin': catatan,
     });

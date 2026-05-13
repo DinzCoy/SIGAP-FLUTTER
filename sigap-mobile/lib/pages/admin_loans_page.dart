@@ -13,7 +13,8 @@ class AdminLoansPage extends StatefulWidget {
   State<AdminLoansPage> createState() => _AdminLoansPageState();
 }
 
-class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProviderStateMixin {
+class _AdminLoansPageState extends State<AdminLoansPage>
+    with SingleTickerProviderStateMixin {
   late Future<List<LoanModel>> _loansFuture;
   late TabController _tabController;
 
@@ -38,10 +39,16 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
   void _fetchLoans() {
     setState(() {
       String? status;
-      if (_tabController.index == 0) status = 'menunggu';
-      if (_tabController.index == 1) status = 'disetujui'; // Atau aktif
-      if (_tabController.index == 2) status = 'selesai'; // Termasuk ditolak/kembali
-      
+      if (_tabController.index == 0) {
+        status = 'menunggu';
+      }
+      if (_tabController.index == 1) {
+        status = 'disetujui'; // Atau aktif
+      }
+      if (_tabController.index == 2) {
+        status = 'selesai'; // Termasuk ditolak/kembali
+      }
+
       _loansFuture = LoanService.getAllLoans(status: status);
     });
   }
@@ -53,7 +60,11 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
       appBar: AppBar(
         backgroundColor: const Color(0xFF00558D),
         foregroundColor: Colors.white,
-        title: Text('Kelola Peminjaman (Admin)', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18)),
+        title: Text('Kelola Peminjaman (Admin)',
+            style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 18)),
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
@@ -81,9 +92,12 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.inbox_outlined, size: 80, color: Colors.grey.shade400),
+                  Icon(Icons.inbox_outlined,
+                      size: 80, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
-                  Text('Tidak ada data.', style: GoogleFonts.inter(fontSize: 16, color: Colors.grey.shade600)),
+                  Text('Tidak ada data.',
+                      style: GoogleFonts.inter(
+                          fontSize: 16, color: Colors.grey.shade600)),
                 ],
               ),
             );
@@ -108,13 +122,18 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
 
   Widget _buildAdminLoanCard(LoanModel loan) {
     final statusInfo = loan.statusInfo;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4))
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,36 +142,54 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Color(statusInfo['bgColor']).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Color(statusInfo['color']).withValues(alpha: 0.3)),
+                  border: Border.all(
+                      color: Color(statusInfo['color']).withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   statusInfo['label'],
-                  style: GoogleFonts.inter(color: Color(statusInfo['color']), fontWeight: FontWeight.w600, fontSize: 12),
+                  style: GoogleFonts.inter(
+                      color: Color(statusInfo['color']),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12),
                 ),
               ),
-              Text('#${loan.id}', style: GoogleFonts.inter(color: Colors.grey.shade400, fontWeight: FontWeight.bold)),
+              Text('#${loan.id}',
+                  style: GoogleFonts.inter(
+                      color: Colors.grey.shade400,
+                      fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 12),
-          Text(loan.namaUser ?? 'User ID: ${loan.userId}', style: GoogleFonts.inter(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w600)),
+          Text(loan.namaUser ?? 'User ID: ${loan.userId}',
+              style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600)),
           const SizedBox(height: 4),
           Row(
             children: [
-              Icon(loan.jenis == 'permanen' ? Icons.transfer_within_a_station : Icons.calendar_today, size: 14, color: Colors.grey.shade600),
+              Icon(
+                  loan.jenis == 'permanen'
+                      ? Icons.transfer_within_a_station
+                      : Icons.calendar_today,
+                  size: 14,
+                  color: Colors.grey.shade600),
               const SizedBox(width: 6),
               Text(
                 '${loan.jenis == 'permanen' ? 'Mutasi' : 'Pinjam'}: ${loan.namaAset}',
-                style: GoogleFonts.inter(fontSize: 14, color: Colors.grey.shade700),
+                style: GoogleFonts.inter(
+                    fontSize: 14, color: Colors.grey.shade700),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Text('Alasan: ${loan.alasan}', style: GoogleFonts.inter(fontSize: 13, color: Colors.black87)),
-          
+          Text('Alasan: ${loan.alasan}',
+              style: GoogleFonts.inter(fontSize: 13, color: Colors.black87)),
           if (loan.status == 'menunggu_persetujuan') ...[
             const SizedBox(height: 16),
             const Divider(),
@@ -172,7 +209,9 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => _processLoan(loan, true),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white),
                     child: const Text('Setujui'),
                   ),
                 ),
@@ -204,10 +243,14 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Batal')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Batal')),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(backgroundColor: isApprove ? Colors.green : Colors.red, foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: isApprove ? Colors.green : Colors.red,
+                foregroundColor: Colors.white),
             child: Text(isApprove ? 'Setujui' : 'Tolak'),
           ),
         ],
@@ -223,11 +266,14 @@ class _AdminLoansPageState extends State<AdminLoansPage> with SingleTickerProvid
         );
         _fetchLoans();
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Berhasil diproses'), backgroundColor: Colors.green));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Berhasil diproses'),
+              backgroundColor: Colors.green));
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal: $e'), backgroundColor: Colors.red));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Gagal: $e'), backgroundColor: Colors.red));
         }
       }
     }
