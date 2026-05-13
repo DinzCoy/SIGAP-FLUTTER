@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747164594216",
+    "project_id": "projek-magang-bps",
+    "storage_bucket": "projek-magang-bps.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747164594216:android:e230aaa0f0960150a4c51d",
+        "android_client_info": {
+          "package_name": "com.example.sigap_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkT0mXwbmE8X5HuxW8eaPAmJ_VUgoXUE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
