@@ -1,78 +1,98 @@
 // lib/services/loan_service.dart
-// Service untuk Peminjaman & Pengambilan Permanen Aset
+// Service untuk Peminjaman Aset — sesuai endpoint Laravel yang solid
 
 import 'api_client.dart';
 import '../models/loan_model.dart';
 
 class LoanService {
-  /// Ajukan peminjaman aset
+  // ─── BORROWER ─────────────────────────────────────────────────────────────
+
+  /// POST /loans — Ajukan peminjaman aset (setelah scan QR)
   static Future<Map<String, dynamic>> requestLoan({
     required int assetId,
     required String alasan,
-    required String tanggalMulai,
     required String tanggalKembali,
   }) async {
     final response = await ApiClient.post('/loans', {
-      'asset_id': assetId,
+      'asset_id':    assetId,
       'loan_reason': alasan,
-      'start_date': tanggalMulai,
-      'due_date': tanggalKembali,
+      'due_date':    tanggalKembali,
     });
     return ApiClient.processResponse(response);
   }
 
-  /// Ajukan pengambilan permanen (mutasi aset)
-  static Future<Map<String, dynamic>> requestPermanentTransfer({
-    required int assetId,
-    required String alasan,
-  }) async {
-    final response = await ApiClient.post('/assets/$assetId/transfer', {
-      'asset_id': assetId, // Optional, since id is in URL
-      'reason': alasan,
-    });
-    return ApiClient.processResponse(response);
-  }
-
-  /// Ambil riwayat pinjaman/transfer user
+  /// GET /user/loans — Riwayat pinjaman milik user login
   static Future<List<LoanModel>> getMyLoans() async {
-    final response = await ApiClient.get('/loans/my');
+    final response = await ApiClient.get('/user/loans');
     final data = ApiClient.processResponse(response);
-    final list = data['data'] as List? ?? [];
+
+    // Backend wraps: { data: { loans: [...] } }
+    dynamic raw = data['data'];
+    if (raw is Map && raw.containsKey('loans')) {
+      raw = raw['loans'];
+    }
+    final list = (raw as List?) ?? [];
     return list.map((e) => LoanModel.fromJson(e)).toList();
   }
 
-  /// Ambil semua pengajuan (untuk Admin)
-  static Future<List<LoanModel>> getAllLoans({String? status}) async {
-    final path = status != null ? '/loans?status=$status' : '/loans';
-    final response = await ApiClient.get(path);
+  // ─── ADMIN ────────────────────────────────────────────────────────────────
+
+  /// GET /loans?status=menunggu|disetujui|selesai&page=1&limit=10
+  /// Admin: ambil semua pengajuan dengan filter status + paginasi
+  static Future<Map<String, dynamic>> getAllLoans({
+    String? status,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final query = StringBuffer('?page=$page&limit=$limit');
+    if (status != null && status.isNotEmpty) query.write('&status=$status');
+
+    final response = await ApiClient.get('/loans$query');
     final data = ApiClient.processResponse(response);
-    final list = data['data'] as List? ?? [];
-    return list.map((e) => LoanModel.fromJson(e)).toList();
+
+    // Backend returns: { data: { data: [...], last_page: N, total: N } }
+    if (data['data'] is Map && data['data'].containsKey('data')) {
+      final inner = data['data'] as Map<String, dynamic>;
+      final list  = (inner['data'] as List?) ?? [];
+      return {
+        'data':      list.map((e) => LoanModel.fromJson(e)).toList(),
+        'last_page': inner['last_page'] ?? 1,
+        'total':     inner['total'] ?? list.length,
+      };
+    }
+
+    final list = (data['data'] as List?) ?? [];
+    return {
+      'data':      list.map((e) => LoanModel.fromJson(e)).toList(),
+      'last_page': 1,
+      'total':     list.length,
+    };
   }
 
-  /// Setujui atau Tolak pinjaman (Admin)
-  static Future<Map<String, dynamic>> approveLoan({
+  /// POST /loans/{id}/approve
+  /// Admin: setujui (status=disetujui) atau tolak (status=ditolak) pengajuan
+  static Future<void> approveLoan({
     required int loanId,
-    required String status, // 'disetujui' atau 'ditolak'
+    required String status,   // 'disetujui' | 'ditolak'
     String? catatan,
   }) async {
     final response = await ApiClient.post('/loans/$loanId/approve', {
-      'status': status,
-      'catatan_admin': catatan,
+      'status':        status,
+      'catatan_admin': catatan ?? '',
     });
-    return ApiClient.processResponse(response);
+    ApiClient.processResponse(response);
   }
 
-  /// Kembalikan aset (User/Admin)
-  static Future<Map<String, dynamic>> returnAsset({
+  // ─── SHARED ───────────────────────────────────────────────────────────────
+
+  /// POST /loans/{id}/return — Kembalikan aset (borrower atau admin)
+  static Future<void> returnAsset({
     required int loanId,
     required String kondisiKembali,
   }) async {
-    // Bisa berupa POST atau PUT tergantung desain Laravel
     final response = await ApiClient.post('/loans/$loanId/return', {
       'kondisi_kembali': kondisiKembali,
-      '_method': 'PUT', // Jika backend pakai PUT
     });
-    return ApiClient.processResponse(response);
+    ApiClient.processResponse(response);
   }
 }

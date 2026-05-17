@@ -43,11 +43,11 @@ class LoanModel {
       userId: json['user_id'],
       namaUser: json['user']?['name'] ?? json['nama_user'] ?? json['user_name'],
       namaAset: json['asset']?['name'] ?? json['nama_aset'] ?? json['asset_name'] ?? '',
-      kodeAset: json['asset']?['kode'] ?? json['kode_aset'] ?? json['asset_code'] ?? '',
+      kodeAset: json['asset']?['asset_code'] ?? json['kode_aset'] ?? json['asset_code'] ?? '',
       kategoriAset: json['kategori_aset'] ?? json['asset_category'],
       alasan: json['alasan'] ?? json['loan_reason'] ?? '',
       jenis: json['jenis'] ?? json['type'] ?? 'pinjam',
-      status: json['status'] ?? 'menunggu_persetujuan',
+      status: json['status'] ?? 'pending',
       tanggalMulai: json['tanggal_mulai'] ?? json['start_date'],
       tanggalKembali: json['tanggal_kembali'] ?? json['due_date'],
       tanggalDikembalikan: json['tanggal_dikembalikan'] ?? json['returned_at'],
@@ -57,51 +57,31 @@ class LoanModel {
   }
 
   bool get isPinjam => jenis == 'pinjam';
-  bool get isPending => status == 'menunggu_persetujuan';
-  bool get isAktif => status == 'aktif' || status == 'disetujui';
+  bool get isPending => status == 'pending';
+  bool get isAktif => status == 'active';
   bool get isJatuhTempo => status == 'jatuh_tempo';
 
+  // Status sesuai konstanta Laravel AssetLoan
   static const Map<String, Map<String, dynamic>> statusConfig = {
-    'menunggu_persetujuan': {
+    'pending': {
       'label': 'Menunggu Persetujuan',
       'color': 0xFFF59E0B,
       'bgColor': 0xFFFEF3C7,
     },
-    'pending': { // fallback
-      'label': 'Menunggu Persetujuan',
-      'color': 0xFFF59E0B,
-      'bgColor': 0xFFFEF3C7,
-    },
-    'disetujui': {
-      'label': 'Disetujui',
-      'color': 0xFF22C55E,
-      'bgColor': 0xFFF0FDF4,
-    },
-    'ditolak': {'label': 'Ditolak', 'color': 0xFFEF4444, 'bgColor': 0xFFFEF2F2},
-    'aktif': {
+    'active': {
       'label': 'Sedang Dipinjam',
       'color': 0xFF3B82F6,
       'bgColor': 0xFFEFF6FF,
     },
-    'dikembalikan': {
+    'returned': {
       'label': 'Sudah Dikembalikan',
       'color': 0xFF6B7280,
       'bgColor': 0xFFF3F4F6,
     },
-    'jatuh_tempo': {
-      'label': 'Jatuh Tempo!',
-      'color': 0xFFDC2626,
+    'rejected': {
+      'label': 'Ditolak',
+      'color': 0xFFEF4444,
       'bgColor': 0xFFFEF2F2,
-    },
-    'permanen': {
-      'label': 'Dialokasikan Permanen',
-      'color': 0xFF8B5CF6,
-      'bgColor': 0xFFF5F3FF,
-    },
-    'selesai': {
-      'label': 'Selesai',
-      'color': 0xFF6B7280,
-      'bgColor': 0xFFF3F4F6,
     },
   };
 

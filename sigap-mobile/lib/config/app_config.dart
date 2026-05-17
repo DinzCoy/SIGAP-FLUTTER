@@ -1,7 +1,7 @@
 class AppConfig {
   /// Base URL API Laravel Anda. 
-  /// Gunakan IP Address jika dijalankan dari HP/Emulator (contoh: http://192.168.1.xxx:8000/api)
-  static const String baseUrl = "http://10.58.173.2/api";
+  /// Menggunakan IP NetBird PC/Laptop lokal untuk koneksi yang konsisten
+  static const String baseUrl = "http://100.71.121.127:8000/api";
 
   /// API KEY untuk keamanan komunikasi antara Flutter dan Laravel.
   /// Pastikan nilai ini sama dengan yang dikonfigurasi di middleware Laravel Anda.

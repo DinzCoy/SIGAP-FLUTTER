@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -16,64 +17,61 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pengaturan Aplikasi", style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF00558D),
-        foregroundColor: Colors.white,
+        title: const Text("Pengaturan Aplikasi"),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           Text(
             "Preferensi",
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF00558D),
-            ),
+            style: AppTextStyles.titleMedium.copyWith(color: AppColors.primary),
           ),
           const SizedBox(height: 10),
           SwitchListTile(
-            title: Text("Notifikasi", style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
-            subtitle: Text("Terima pemberitahuan tentang status aset", style: GoogleFonts.inter(fontSize: 12)),
+            title: Text("Notifikasi", style: AppTextStyles.titleSmall),
+            subtitle: Text("Terima pemberitahuan tentang status aset", style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
             value: _notificationsEnabled,
-            activeThumbColor: const Color(0xFF00558D),
+            activeTrackColor: AppColors.primary.withValues(alpha: 0.5),
+            activeThumbColor: AppColors.primary,
             onChanged: (value) {
               setState(() => _notificationsEnabled = value);
             },
           ),
           SwitchListTile(
-            title: Text("Mode Gelap (Dark Mode)", style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
-            subtitle: Text("Ubah tema aplikasi menjadi gelap", style: GoogleFonts.inter(fontSize: 12)),
+            title: Text("Mode Gelap (Dark Mode)", style: AppTextStyles.titleSmall),
+            subtitle: Text("Ubah tema aplikasi menjadi gelap", style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
             value: _darkModeEnabled,
-            activeThumbColor: const Color(0xFF00558D),
+            activeTrackColor: AppColors.primary.withValues(alpha: 0.5),
+            activeThumbColor: AppColors.primary,
             onChanged: (value) {
               setState(() => _darkModeEnabled = value);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Fitur mode gelap sedang dalam pengembangan")),
+                SnackBar(
+                  content: const Text("Fitur mode gelap sedang dalam pengembangan"),
+                  backgroundColor: AppColors.primary,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
               );
             },
           ),
           const Divider(height: 30),
           Text(
             "Informasi",
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF00558D),
-            ),
+            style: AppTextStyles.titleMedium.copyWith(color: AppColors.primary),
           ),
           const SizedBox(height: 10),
           ListTile(
-            title: Text("Tentang Aplikasi", style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
-            trailing: const Icon(Icons.chevron_right),
+            title: Text("Tentang Aplikasi", style: AppTextStyles.titleSmall),
+            trailing: const Icon(Icons.chevron_right, color: AppColors.textHint),
             onTap: () {
               showAboutDialog(
                 context: context,
                 applicationName: "SIGAP",
                 applicationVersion: "1.0.0",
-                applicationIcon: const Icon(Icons.security, size: 40, color: Color(0xFF00558D)),
+                applicationIcon: const Icon(Icons.security_rounded, size: 40, color: AppColors.primary),
                 children: [
-                  const Text("Sistem Monitoring Terpadu Aset Komputer Badan Pusat Statistik Provinsi Sulawesi Selatan."),
+                  const Text("Sistem Guardian Aset dan Pelayanan IT Badan Pusat Statistik Provinsi Sulawesi Selatan."),
                 ],
               );
             },

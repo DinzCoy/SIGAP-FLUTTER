@@ -146,14 +146,31 @@ class NotificationService {
   }
 
   /// Dapatkan daftar notifikasi dari database Laravel
-  static Future<List<dynamic>> getNotifications() async {
+  static Future<Map<String, dynamic>> getNotifications({int page = 1, int limit = 10}) async {
     try {
-      final response = await ApiClient.get('/user/notifications');
+      final response = await ApiClient.get('/user/notifications?page=$page&limit=$limit');
       final data = ApiClient.processResponse(response);
-      return data['data'] as List? ?? [];
+      
+      if (data['data'] is Map && data['data'].containsKey('data')) {
+        final list = data['data']['data'] as List? ?? [];
+        final lastPage = data['data']['last_page'] ?? 1;
+        return {
+          'data': list,
+          'last_page': lastPage,
+        };
+      } else {
+        final list = data['data'] as List? ?? [];
+        return {
+          'data': list,
+          'last_page': 1,
+        };
+      }
     } catch (e) {
       debugPrint('Error fetching notifications: $e');
-      return [];
+      return {
+        'data': [],
+        'last_page': 1,
+      };
     }
   }
 

@@ -2,10 +2,13 @@
 // Halaman untuk menampilkan daftar notifikasi
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import '../models/notification_model.dart';
 import '../services/notification_service.dart';
+import '../theme/app_colors.dart';
+import '../widgets/common/app_skeletons.dart';
+import '../widgets/common/empty_state.dart';
+import '../widgets/common/app_button.dart';
+import '../widgets/notifications/notification_item.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -15,164 +18,209 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  late Future<List<NotificationModel>> _notificationsFuture;
+  final ScrollController _scrollController = ScrollController();
+  
+  List<NotificationModel> _notifications = [];
+  
+  bool _isLoading = true;
+  bool _isLoadingMore = false;
+  bool _hasError = false;
+  String _errorMessage = '';
+  
+  int _currentPage = 1;
+  final int _itemsPerPage = 10;
+  bool _hasMoreData = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchNotifications();
+    _fetchInitialData();
+    _scrollController.addListener(_onScroll);
   }
 
-  void _fetchNotifications() {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 50) {
+      _loadMoreData();
+    }
+  }
+
+  Future<void> _fetchInitialData() async {
     setState(() {
-      _notificationsFuture = NotificationService.getNotifications().then(
-        (data) => data.map((e) => NotificationModel.fromJson(e)).toList(),
-      );
+      _isLoading = true;
+      _hasError = false;
+      _currentPage = 1;
+      _notifications.clear();
+      _hasMoreData = true;
     });
+
+    try {
+      final rawData = await NotificationService.getNotifications(page: _currentPage, limit: _itemsPerPage);
+      final listRaw = rawData['data'] as List? ?? [];
+      final allNotifs = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
+      
+      if (mounted) {
+        setState(() {
+          _notifications = allNotifs;
+          final lastPage = rawData['last_page'] as int? ?? 1;
+          _hasMoreData = _currentPage < lastPage;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage = e.toString();
+        });
+      }
+    }
+  }
+
+  Future<void> _loadMoreData() async {
+    if (_isLoadingMore || !_hasMoreData || _isLoading) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    _currentPage++;
+    
+    try {
+      final rawData = await NotificationService.getNotifications(page: _currentPage, limit: _itemsPerPage);
+      
+      if (!mounted) return;
+      
+      setState(() {
+        final listRaw = rawData['data'] as List? ?? [];
+        final newNotifs = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
+        _notifications.addAll(newNotifs);
+        
+        final lastPage = rawData['last_page'] as int? ?? 1;
+        _hasMoreData = _currentPage < lastPage;
+        _isLoadingMore = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _currentPage--; // Revert page
+        _isLoadingMore = false;
+      });
+    }
   }
 
   Future<void> _markAsRead(NotificationModel notif) async {
     if (notif.isRead) return;
     try {
       await NotificationService.markAsRead(notif.id);
-      _fetchNotifications();
+      _fetchInitialData();
     } catch (e) {
       debugPrint('Failed to mark as read: $e');
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF00558D),
-        foregroundColor: Colors.white,
-        title: Text('Notifikasi', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white)),
-        elevation: 0,
-      ),
-      body: FutureBuilder<List<NotificationModel>>(
-        future: _notificationsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Gagal memuat: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.notifications_off_outlined, size: 80, color: Colors.grey.shade400),
-                  const SizedBox(height: 16),
-                  Text('Belum ada notifikasi.', style: GoogleFonts.inter(fontSize: 16, color: Colors.grey.shade600)),
-                ],
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: SafeArea(
+          child: ListSectionSkeleton(
+            title: 'Memuat Notifikasi...',
+            itemCount: 8,
+          ),
+        ),
+      );
+    }
+
+    if (_hasError) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(
+                'Gagal memuat notifikasi:\n$_errorMessage',
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: AppColors.inkMute),
+              ),
+              const SizedBox(height: 24),
+              AppButton.primary(
+                label: 'Coba Lagi',
+                onTap: _fetchInitialData,
+                fullWidth: false,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_notifications.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: EmptyState(
+            icon: Icons.notifications_off_outlined,
+            message: 'Belum Ada Notifikasi',
+            subMessage: 'Semua informasi terbaru akan muncul di sini.',
+            actionLabel: 'Refresh',
+            onAction: _fetchInitialData,
+          ),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _fetchInitialData,
+      color: AppColors.primary,
+      child: ListView.separated(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: _notifications.length + (_hasMoreData ? 1 : 0),
+        separatorBuilder: (_, _) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          if (index == _notifications.length) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
             );
           }
 
-          final notifications = snapshot.data!;
-          return RefreshIndicator(
-            onRefresh: () async => _fetchNotifications(),
-            child: ListView.separated(
-              itemCount: notifications.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
-              itemBuilder: (context, index) {
-                final notif = notifications[index];
-                return InkWell(
-                  onTap: () => _markAsRead(notif),
-                  child: Container(
-                    color: notif.isRead ? Colors.transparent : const Color(0xFF00558D).withValues(alpha: 0.05),
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: _getIconColor(notif.type).withValues(alpha: 0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(_getIcon(notif.type), color: _getIconColor(notif.type), size: 24),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                notif.title,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: notif.isRead ? FontWeight.w500 : FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                notif.body,
-                                style: GoogleFonts.inter(
-                                  fontSize: 13,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                _formatTime(notif.createdAt),
-                                style: GoogleFonts.inter(
-                                  fontSize: 11,
-                                  color: Colors.grey.shade400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (!notif.isRead)
-                          Container(
-                            width: 8,
-                            height: 8,
-                            margin: const EdgeInsets.only(top: 8),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF00558D),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+          return NotificationItem(
+            notif: _notifications[index],
+            onTap: () => _markAsRead(_notifications[index]),
           );
         },
       ),
     );
   }
 
-  IconData _getIcon(String type) {
-    switch (type) {
-      case 'ticket': return Icons.support_agent;
-      case 'loan': return Icons.assignment_turned_in;
-      case 'asset': return Icons.computer;
-      default: return Icons.notifications;
-    }
-  }
-
-  Color _getIconColor(String type) {
-    switch (type) {
-      case 'ticket': return Colors.orange;
-      case 'loan': return Colors.blue;
-      case 'asset': return Colors.purple;
-      default: return const Color(0xFF00558D);
-    }
-  }
-
-  String _formatTime(String dateStr) {
-    try {
-      final dt = DateTime.parse(dateStr).toLocal();
-      return DateFormat('dd MMM yyyy, HH:mm').format(dt);
-    } catch (_) {
-      return dateStr;
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('Notifikasi'),
+      ),
+      body: _buildBody(),
+    );
   }
 }

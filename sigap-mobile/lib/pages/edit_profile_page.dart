@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
+import '../theme/app_colors.dart';
+import '../widgets/common/app_button.dart';
+import '../widgets/common/app_text_field.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -61,21 +63,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profil berhasil diperbarui')),
+            SnackBar(
+              content: const Text('Profil berhasil diperbarui'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
           );
           Navigator.pop(context, true); // return true to indicate success
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result ?? 'Gagal memperbarui profil')),
+            SnackBar(
+              content: Text(result ?? 'Gagal memperbarui profil'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Terjadi kesalahan: $e')),
+          SnackBar(
+            content: Text('Terjadi kesalahan: $e'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
         );
       }
     } finally {
@@ -96,9 +113,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Profil", style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF00558D),
-        foregroundColor: Colors.white,
+        title: const Text("Edit Profil"),
       ),
       body: _userId.isEmpty
           ? const Center(child: CircularProgressIndicator())
@@ -108,62 +123,51 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    _buildTextField("Nama Lengkap", _nameController, Icons.person, required: true),
+                    AppTextField(
+                      label: "Nama Lengkap",
+                      controller: _nameController,
+                      prefixIcon: const Icon(Icons.person_rounded),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Nama Lengkap tidak boleh kosong";
+                        }
+                        return null;
+                      },
+                    ),
                     const SizedBox(height: 16),
-                    _buildTextField("Email", _emailController, Icons.email, required: true),
+                    AppTextField(
+                      label: "Email",
+                      controller: _emailController,
+                      prefixIcon: const Icon(Icons.email_rounded),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Email tidak boleh kosong";
+                        }
+                        return null;
+                      },
+                    ),
                     const SizedBox(height: 16),
-                    _buildTextField("Nomor Telepon", _phoneController, Icons.phone),
+                    AppTextField(
+                      label: "Nomor Telepon",
+                      controller: _phoneController,
+                      prefixIcon: const Icon(Icons.phone_rounded),
+                    ),
                     const SizedBox(height: 16),
-                    _buildTextField("NIP / ID", _nipController, Icons.badge),
+                    AppTextField(
+                      label: "NIP / ID",
+                      controller: _nipController,
+                      prefixIcon: const Icon(Icons.badge_rounded),
+                    ),
                     const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _saveProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00558D),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : Text(
-                                "Simpan Perubahan",
-                                style: GoogleFonts.inter(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
+                    AppButton.primary(
+                      label: "Simpan Perubahan",
+                      isLoading: _isLoading,
+                      onTap: _saveProfile,
                     ),
                   ],
                 ),
               ),
             ),
-    );
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller, IconData icon, {bool required = false}) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: const Color(0xFF00558D)),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF00558D), width: 2),
-        ),
-      ),
-      validator: (value) {
-        if (required && (value == null || value.trim().isEmpty)) {
-          return "$label tidak boleh kosong";
-        }
-        return null;
-      },
     );
   }
 }

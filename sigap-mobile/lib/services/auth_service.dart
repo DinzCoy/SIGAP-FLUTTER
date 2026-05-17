@@ -103,8 +103,8 @@ class AuthService {
       final response = await ApiClient.post('/user/update-profile', {
         "name": name,
         "email": email,
-        "phone": ?phone,
-        "nip": ?nip,
+        "phone": phone,
+        "nip": nip,
       });
 
       if (response.statusCode == 200) {

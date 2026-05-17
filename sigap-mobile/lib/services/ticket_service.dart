@@ -44,22 +44,46 @@ class TicketService {
   }
 
   /// Ambil daftar tiket milik user yang login
-  static Future<List<TicketModel>> getMyTickets() async {
-    final response = await ApiClient.get('/tickets/my');
+  static Future<Map<String, dynamic>> getMyTickets({int page = 1, int limit = 10}) async {
+    final response = await ApiClient.get('/tickets?page=$page&limit=$limit');
     final data = ApiClient.processResponse(response);
-    final list = data['data'] as List? ?? [];
-    return list.map((e) => TicketModel.fromJson(e)).toList();
+    
+    if (data['data'] is Map && data['data'].containsKey('data')) {
+      final list = data['data']['data'] as List? ?? [];
+      final lastPage = data['data']['last_page'] ?? 1;
+      return {
+        'data': list.map((e) => TicketModel.fromJson(e)).toList(),
+        'last_page': lastPage,
+      };
+    } else {
+      final list = data['data'] as List? ?? [];
+      return {
+        'data': list.map((e) => TicketModel.fromJson(e)).toList(),
+        'last_page': 1,
+      };
+    }
   }
 
   /// Ambil semua tiket (untuk Admin/Teknisi)
-  static Future<List<TicketModel>> getAllTickets({String? status}) async {
-    final path = status != null
-        ? '/tickets?status=$status'
-        : '/tickets';
-    final response = await ApiClient.get(path);
+  static Future<Map<String, dynamic>> getAllTickets({String? status, int page = 1, int limit = 10}) async {
+    final query = '?page=$page&limit=$limit${status != null ? '&status=$status' : ''}';
+    final response = await ApiClient.get('/tickets$query');
     final data = ApiClient.processResponse(response);
-    final list = data['data'] as List? ?? [];
-    return list.map((e) => TicketModel.fromJson(e)).toList();
+    
+    if (data['data'] is Map && data['data'].containsKey('data')) {
+      final list = data['data']['data'] as List? ?? [];
+      final lastPage = data['data']['last_page'] ?? 1;
+      return {
+        'data': list.map((e) => TicketModel.fromJson(e)).toList(),
+        'last_page': lastPage,
+      };
+    } else {
+      final list = data['data'] as List? ?? [];
+      return {
+        'data': list.map((e) => TicketModel.fromJson(e)).toList(),
+        'last_page': 1,
+      };
+    }
   }
 
   /// Update status tiket (untuk Teknisi/Admin)

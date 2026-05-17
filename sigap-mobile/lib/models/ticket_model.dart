@@ -44,17 +44,20 @@ class TicketModel {
     );
   }
 
-  static const Map<String, Map<String, dynamic>> statusConfig = {
-    'pending': {
-      'label': 'Menunggu',
-      'color': 0xFFF59E0B,
-      'bgColor': 0xFFFEF3C7,
-    },
-    'proses': {'label': 'Diproses', 'color': 0xFF3B82F6, 'bgColor': 0xFFEFF6FF},
-    'selesai': {'label': 'Selesai', 'color': 0xFF22C55E, 'bgColor': 0xFFF0FDF4},
-    'ditolak': {'label': 'Ditolak', 'color': 0xFFEF4444, 'bgColor': 0xFFFEF2F2},
-  };
+  // Semua status dari Laravel dipetakan ke tampilan yang ramah
+  static Map<String, dynamic> _getStatusInfo(String status) {
+    final s = status.trim();
+    // Selesai / Dibatalkan
+    if (s == 'Selesai') return {'label': 'Selesai', 'color': 0xFF22C55E, 'bgColor': 0xFFF0FDF4};
+    if (s == 'Dibatalkan') return {'label': 'Dibatalkan', 'color': 0xFFEF4444, 'bgColor': 0xFFFEF2F2};
+    // Sedang dikerjakan
+    if (s == 'In Progress') return {'label': 'Dikerjakan', 'color': 0xFF3B82F6, 'bgColor': 0xFFEFF6FF};
+    // Proses persetujuan
+    if (s == 'Approved') return {'label': 'Disetujui', 'color': 0xFF6366F1, 'bgColor': 0xFFEEF2FF};
+    if (s == 'Menunggu Persetujuan Biaya') return {'label': 'Menunggu Biaya', 'color': 0xFFF59E0B, 'bgColor': 0xFFFEF3C7};
+    // Semua status "menunggu" lainnya → Pending
+    return {'label': 'Menunggu', 'color': 0xFFF59E0B, 'bgColor': 0xFFFEF3C7};
+  }
 
-  Map<String, dynamic> get statusInfo =>
-      statusConfig[status.toLowerCase()] ?? statusConfig['pending']!;
+  Map<String, dynamic> get statusInfo => _getStatusInfo(status);
 }

@@ -2,12 +2,20 @@
 // Halaman Admin untuk Mengelola Peminjaman dan Mutasi
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../models/loan_model.dart';
 import '../services/loan_service.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
+import '../widgets/common/app_skeletons.dart';
+import '../widgets/common/empty_state.dart';
+import '../widgets/loan/admin_loan_card.dart';
+import '../widgets/loan/loan_process_dialog.dart';
+import '../widgets/common/app_button.dart';
 
 class AdminLoansPage extends StatefulWidget {
-  const AdminLoansPage({super.key});
+  /// [embeddedMode] = true → tanpa AppBar (dipakai dalam tab dashboard)
+  final bool embeddedMode;
+  const AdminLoansPage({super.key, this.embeddedMode = false});
 
   @override
   State<AdminLoansPage> createState() => _AdminLoansPageState();
@@ -15,8 +23,19 @@ class AdminLoansPage extends StatefulWidget {
 
 class _AdminLoansPageState extends State<AdminLoansPage>
     with SingleTickerProviderStateMixin {
-  late Future<List<LoanModel>> _loansFuture;
   late TabController _tabController;
+  final ScrollController _scrollController = ScrollController();
+  
+  List<LoanModel> _loans = [];
+  
+  bool _isLoading = true;
+  bool _isLoadingMore = false;
+  bool _hasError = false;
+  String _errorMessage = '';
+  
+  int _currentPage = 1;
+  final int _itemsPerPage = 10;
+  bool _hasMoreData = true;
 
   @override
   void initState() {
@@ -24,258 +43,265 @@ class _AdminLoansPageState extends State<AdminLoansPage>
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        _fetchLoans();
+        _fetchInitialData();
       }
     });
-    _fetchLoans();
+    _fetchInitialData();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  void _fetchLoans() {
-    setState(() {
-      String? status;
-      if (_tabController.index == 0) {
-        status = 'menunggu';
-      }
-      if (_tabController.index == 1) {
-        status = 'disetujui'; // Atau aktif
-      }
-      if (_tabController.index == 2) {
-        status = 'selesai'; // Termasuk ditolak/kembali
-      }
-
-      _loansFuture = LoanService.getAllLoans(status: status);
-    });
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 50) {
+      _loadMoreData();
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF00558D),
-        foregroundColor: Colors.white,
-        title: Text('Kelola Peminjaman (Admin)',
-            style: GoogleFonts.inter(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                fontSize: 18)),
-        elevation: 0,
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          labelStyle: GoogleFonts.inter(fontWeight: FontWeight.bold),
-          tabs: const [
-            Tab(text: 'Menunggu'),
-            Tab(text: 'Aktif'),
-            Tab(text: 'Selesai'),
-          ],
-        ),
+  Future<void> _fetchInitialData() async {
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+      _currentPage = 1;
+      _loans.clear();
+      _hasMoreData = true;
+    });
+
+    try {
+      String? status;
+      if (_tabController.index == 0) status = 'menunggu';
+      if (_tabController.index == 1) status = 'disetujui';
+      if (_tabController.index == 2) status = 'selesai';
+
+      final result = await LoanService.getAllLoans(status: status, page: _currentPage, limit: _itemsPerPage);
+      
+      if (mounted) {
+        setState(() {
+          _loans = result['data'] as List<LoanModel>;
+          final lastPage = result['last_page'] as int;
+          _hasMoreData = _currentPage < lastPage;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage = e.toString();
+        });
+      }
+    }
+  }
+
+  Future<void> _loadMoreData() async {
+    if (_isLoadingMore || !_hasMoreData || _isLoading) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    _currentPage++;
+    
+    try {
+      String? status;
+      if (_tabController.index == 0) status = 'menunggu';
+      if (_tabController.index == 1) status = 'disetujui';
+      if (_tabController.index == 2) status = 'selesai';
+
+      final result = await LoanService.getAllLoans(status: status, page: _currentPage, limit: _itemsPerPage);
+      
+      if (!mounted) return;
+      
+      setState(() {
+        final newLoans = result['data'] as List<LoanModel>;
+        _loans.addAll(newLoans);
+        
+        final lastPage = result['last_page'] as int;
+        _hasMoreData = _currentPage < lastPage;
+        _isLoadingMore = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _currentPage--; // Revert page
+        _isLoadingMore = false;
+      });
+    }
+  }
+
+  Future<void> _processLoan(LoanModel loan, bool isApprove) async {
+    final String? catatan = await showDialog<String>(
+      context: context,
+      builder: (ctx) => LoanProcessDialog(isApprove: isApprove),
+    );
+
+    if (catatan != null) {
+      try {
+        await LoanService.approveLoan(
+          loanId: loan.id,
+          status: isApprove ? 'disetujui' : 'ditolak',
+          catatan: catatan,
+        );
+        _fetchInitialData();
+        if (mounted) {
+          _showSnack('Berhasil diproses', isError: false);
+        }
+      } catch (e) {
+        if (mounted) {
+          _showSnack('Gagal: $e', isError: true);
+        }
+      }
+    }
+  }
+
+  void _showSnack(String message, {required bool isError}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? AppColors.error : AppColors.success,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
-      body: FutureBuilder<List<LoanModel>>(
-        future: _loansFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Gagal memuat: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.inbox_outlined,
-                      size: 80, color: Colors.grey.shade400),
-                  const SizedBox(height: 16),
-                  Text('Tidak ada data.',
-                      style: GoogleFonts.inter(
-                          fontSize: 16, color: Colors.grey.shade600)),
-                ],
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: SafeArea(
+          child: ListSectionSkeleton(
+            title: 'Memuat Data...',
+            itemCount: 5,
+          ),
+        ),
+      );
+    }
+
+    if (_hasError) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(
+                'Gagal memuat data:\n$_errorMessage',
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: AppColors.inkMute),
+              ),
+              const SizedBox(height: 24),
+              AppButton.primary(
+                label: 'Coba Lagi',
+                onTap: _fetchInitialData,
+                fullWidth: false,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_loans.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: EmptyState(
+            icon: Icons.inbox_outlined,
+            message: 'Tidak Ada Data',
+            subMessage: 'Tidak ada peminjaman di kategori ini.',
+            actionLabel: 'Refresh',
+            onAction: _fetchInitialData,
+          ),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _fetchInitialData,
+      color: AppColors.primary,
+      child: ListView.separated(
+        controller: _scrollController,
+        padding: EdgeInsets.only(
+          top: 16,
+          left: 16,
+          right: 16,
+          bottom: 16 + MediaQuery.of(context).padding.bottom,
+        ),
+        itemCount: _loans.length + (_hasMoreData ? 1 : 0),
+        separatorBuilder: (_, _) => const SizedBox(height: 16),
+        itemBuilder: (context, index) {
+          if (index == _loans.length) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
             );
           }
 
-          final loans = snapshot.data!;
-          return RefreshIndicator(
-            onRefresh: () async => _fetchLoans(),
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: loans.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                return _buildAdminLoanCard(loans[index]);
-              },
-            ),
+          return AdminLoanCard(
+            loan: _loans[index],
+            onProcess: _processLoan,
           );
         },
       ),
     );
   }
 
-  Widget _buildAdminLoanCard(LoanModel loan) {
-    final statusInfo = loan.statusInfo;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4))
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Color(statusInfo['bgColor']).withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                      color: Color(statusInfo['color']).withValues(alpha: 0.3)),
-                ),
-                child: Text(
-                  statusInfo['label'],
-                  style: GoogleFonts.inter(
-                      color: Color(statusInfo['color']),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12),
-                ),
-              ),
-              Text('#${loan.id}',
-                  style: GoogleFonts.inter(
-                      color: Colors.grey.shade400,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(loan.namaUser ?? 'User ID: ${loan.userId}',
-              style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w600)),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Icon(
-                  loan.jenis == 'permanen'
-                      ? Icons.transfer_within_a_station
-                      : Icons.calendar_today,
-                  size: 14,
-                  color: Colors.grey.shade600),
-              const SizedBox(width: 6),
-              Text(
-                '${loan.jenis == 'permanen' ? 'Mutasi' : 'Pinjam'}: ${loan.namaAset}',
-                style: GoogleFonts.inter(
-                    fontSize: 14, color: Colors.grey.shade700),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text('Alasan: ${loan.alasan}',
-              style: GoogleFonts.inter(fontSize: 13, color: Colors.black87)),
-          if (loan.status == 'menunggu_persetujuan') ...[
-            const SizedBox(height: 16),
-            const Divider(),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _processLoan(loan, false),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
-                    ),
-                    child: const Text('Tolak'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => _processLoan(loan, true),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white),
-                    child: const Text('Setujui'),
-                  ),
-                ),
-              ],
-            ),
-          ]
-        ],
-      ),
+  @override
+  Widget build(BuildContext context) {
+    final tabBar = TabBar(
+      controller: _tabController,
+      indicatorColor: Colors.white,
+      indicatorWeight: 3,
+      labelColor: Colors.white,
+      unselectedLabelColor: Colors.white70,
+      labelStyle: AppTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold),
+      tabs: const [
+        Tab(text: 'Menunggu'),
+        Tab(text: 'Aktif'),
+        Tab(text: 'Selesai'),
+      ],
     );
-  }
 
-  Future<void> _processLoan(LoanModel loan, bool isApprove) async {
-    final catatanCtrl = TextEditingController();
-    bool? confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(isApprove ? 'Setujui Pengajuan?' : 'Tolak Pengajuan?'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+    if (widget.embeddedMode) {
+      // Dalam tab dashboard — gunakan DefaultTabController + Column
+      return SafeArea(
+        top: false,
+        child: Column(
           children: [
-            TextFormField(
-              controller: catatanCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Catatan Admin (Opsional)',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 2,
-            )
+            Material(
+              color: AppColors.primary,
+              child: tabBar,
+            ),
+            Expanded(child: _buildBody()),
           ],
         ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Batal')),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-                backgroundColor: isApprove ? Colors.green : Colors.red,
-                foregroundColor: Colors.white),
-            child: Text(isApprove ? 'Setujui' : 'Tolak'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true) {
-      try {
-        await LoanService.approveLoan(
-          loanId: loan.id,
-          status: isApprove ? 'disetujui' : 'ditolak',
-          catatan: catatanCtrl.text,
-        );
-        _fetchLoans();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Berhasil diproses'),
-              backgroundColor: Colors.green));
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Gagal: $e'), backgroundColor: Colors.red));
-        }
-      }
+      );
     }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Kelola Peminjaman (Admin)'),
+        bottom: tabBar,
+      ),
+      body: _buildBody(),
+    );
   }
 }

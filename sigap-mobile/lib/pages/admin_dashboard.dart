@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'login_page.dart';
+import '../services/dashboard_service.dart';
+import '../theme/app_colors.dart';
+import '../widgets/dashboard/dashboard_header_v2.dart';
+import '../widgets/dashboard/stat_panel.dart';
+import '../widgets/dashboard/dashboard_bottom_nav.dart';
+import '../widgets/dashboard/recent_tickets_section.dart';
+import '../widgets/common/app_skeletons.dart';
+import '../widgets/common/logout_dialog.dart';
+import '../widgets/common/premium_background.dart';
+
 import 'profile_page.dart';
 import 'asset_scanner_page.dart';
 import 'admin_loans_page.dart';
 import 'notifications_page.dart';
+import 'all_tickets_page.dart';
+import '../widgets/common/fade_in.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -16,572 +27,205 @@ class AdminDashboardPage extends StatefulWidget {
 
 class _AdminDashboardPageState extends State<AdminDashboardPage> {
   int _selectedIndex = 0;
+  bool _isLoading = true;
+  String _adminName = 'Admin';
 
-  void _onItemTapped(int index) {
-    if (index == 1) { // Aset -> Scanner
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const AssetScannerPage()));
-      return;
+  int _activeTickets  = 0;
+  int _pendingTickets = 0;
+  int _pendingLoans   = 0;
+  List<Map<String, dynamic>> _recentTickets = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadName();
+    _fetchData();
+  }
+
+  Future<void> _loadName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() => _adminName = prefs.getString('user_name') ?? 'Admin');
+  }
+
+  Future<void> _fetchData() async {
+    setState(() => _isLoading = true);
+    final data = await DashboardService.fetchAdminDashboard();
+    if (data != null && mounted) {
+      final stats = data['stats'] as Map<String, dynamic>? ?? {};
+      final list  = (data['recent_tickets'] as List?) ?? [];
+      setState(() {
+        _activeTickets  = stats['active_tickets']  ?? 0;
+        _pendingTickets = stats['pending_tickets'] ?? 0;
+        _pendingLoans   = stats['pending_loans']   ?? 0;
+        _recentTickets  = list.cast<Map<String, dynamic>>();
+      });
     }
-    if (index == 3) { // Peminjaman -> Admin Loans
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminLoansPage()));
-      return;
+    if (mounted) setState(() => _isLoading = false);
+  }
+
+  void _onNavTap(int i) {
+    setState(() => _selectedIndex = i);
+  }
+
+  Widget _buildBody() {
+    // Tab 1 = Laporan Tiket (embedded)
+    if (_selectedIndex == 1) {
+      return const AllTicketsPage();
     }
-    setState(() {
-      _selectedIndex = index;
-    });
+    // Tab 2 = Pinjaman (embedded)
+    if (_selectedIndex == 2) {
+      return const AdminLoansPage(embeddedMode: true);
+    }
+    // Tab 3 = Profil (embedded)
+    if (_selectedIndex == 3) {
+      return const ProfilePage();
+    }
+
+    // Tab 0 = Beranda
+    return RefreshIndicator(
+      onRefresh: _fetchData,
+      color: AppColors.primary,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          DashboardHeaderV2(
+            name: _adminName,
+            role: 'Administrator SIGAP',
+            onNotification: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NotificationsPage()),
+            ),
+            onLogout: () => LogoutDialog.show(context),
+          ),
+
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                DashboardTransitionZone(
+                  onSearchTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Fitur pencarian admin segera hadir')),
+                    );
+                  },
+                  quickActions: [
+                    QuickAction(
+                      icon: Icons.qr_code_scanner_rounded,
+                      label: 'Scan Aset',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AssetScannerPage()),
+                      ),
+                    ),
+                    QuickAction(
+                      icon: Icons.assignment_outlined,
+                      label: 'Peminjaman',
+                      onTap: () => setState(() => _selectedIndex = 2),
+                    ),
+                    QuickAction(
+                      icon: Icons.confirmation_number_outlined,
+                      label: 'Daftar Tiket',
+                      onTap: () => setState(() => _selectedIndex = 1),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 24),
+                      FadeIn(
+                        delay: const Duration(milliseconds: 200),
+                        child: _isLoading
+                            ? const StatPanelSkeleton()
+                            : StatPanel(items: [
+                                StatItem(
+                                  value: '$_activeTickets',
+                                  label: 'Tiket Aktif',
+                                  icon: Icons.confirmation_number_outlined,
+                                  iconColor: AppColors.primary,
+                                ),
+                                StatItem(
+                                  value: '$_pendingTickets',
+                                  label: 'Tiket Baru',
+                                  icon: Icons.inbox_outlined,
+                                  iconColor: AppColors.accent,
+                                ),
+                                StatItem(
+                                  value: '$_pendingLoans',
+                                  label: 'Pinjaman',
+                                  icon: Icons.swap_horiz_rounded,
+                                  iconColor: AppColors.success,
+                                  onTap: () => setState(() => _selectedIndex = 2),
+                                ),
+                              ]),
+                      ),
+                      const SizedBox(height: 24),
+                      FadeIn(
+                        delay: const Duration(milliseconds: 400),
+                        child: RecentTicketsSection(
+                          title: 'Tiket Terbaru',
+                          tickets: _recentTickets,
+                          isLoading: _isLoading,
+                          emptyMessage: 'Tidak ada tiket masuk',
+                          onSeeAll: () => setState(() => _selectedIndex = 1),
+                        ),
+                      ),
+                      const SizedBox(height: 100),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Clean light gray background
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF00558D), // Deep blue header
-        title: Text(
-          "SIGAP",
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            tooltip: 'Notifikasi',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsPage()));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
-            tooltip: 'Scan Aset',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AssetScannerPage()));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            tooltip: 'Keluar',
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginPage()),
-              );
-            },
-          ),
-          const SizedBox(width: 8),
-        ],
+      extendBody: true,
+      backgroundColor: AppColors.background,
+      body: PremiumBackground(child: _buildBody()),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const AssetScannerPage()));
+        },
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.qr_code_scanner_rounded, size: 28),
       ),
-      body: _selectedIndex == 4
-          ? const ProfilePage()
-          : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Dashboard Admin",
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 24),
-              // Row 1: Quick Stats Cards
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  if (constraints.maxWidth > 800) {
-                    return Row(
-                      children: [
-                        Expanded(child: _buildStatCard(
-                          title: "Total Perangkat",
-                          count: "1,245",
-                          subtitle: "+12 minggu ini",
-                          subtitleColor: Colors.green,
-                          icon: Icons.computer,
-                          accentColor: const Color(0xFF00558D),
-                        )),
-                        const SizedBox(width: 16),
-                        Expanded(child: _buildStatCard(
-                          title: "Perangkat Baik",
-                          count: "1,180",
-                          subtitle: "Baik (94.7%)",
-                          subtitleColor: Colors.grey.shade700,
-                          icon: Icons.check_circle_outline,
-                          accentColor: Colors.green,
-                        )),
-                        const SizedBox(width: 16),
-                        Expanded(child: _buildStatCard(
-                          title: "Perangkat Rusak",
-                          count: "65",
-                          subtitle: "Rusak Ringan/Berat (5.3%)",
-                          subtitleColor: Colors.grey.shade700,
-                          icon: Icons.warning_amber_rounded,
-                          accentColor: Colors.orange,
-                        )),
-                      ],
-                    );
-                  } else {
-                    return Column(
-                      children: [
-                        _buildStatCard(
-                          title: "Total Perangkat",
-                          count: "1,245",
-                          subtitle: "+12 minggu ini",
-                          subtitleColor: Colors.green,
-                          icon: Icons.computer,
-                          accentColor: const Color(0xFF00558D),
-                        ),
-                        const SizedBox(height: 16),
-                        _buildStatCard(
-                          title: "Perangkat Baik",
-                          count: "1,180",
-                          subtitle: "Baik (94.7%)",
-                          subtitleColor: Colors.grey.shade700,
-                          icon: Icons.check_circle_outline,
-                          accentColor: Colors.green,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildStatCard(
-                          title: "Perangkat Rusak",
-                          count: "65",
-                          subtitle: "Rusak Ringan/Berat (5.3%)",
-                          subtitleColor: Colors.grey.shade700,
-                          icon: Icons.warning_amber_rounded,
-                          accentColor: Colors.orange,
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Admin Quick Actions
-              Text(
-                'Kelola',
-                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildAdminAction(
-                      icon: Icons.assignment_outlined,
-                      label: 'Peminjaman',
-                      subtitle: 'Kelola Pengajuan',
-                      color: Colors.blue,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminLoansPage())),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildAdminAction(
-                      icon: Icons.qr_code_scanner,
-                      label: 'Scan Aset',
-                      subtitle: 'Identifikasi QR',
-                      color: const Color(0xFF00558D),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AssetScannerPage())),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Row 2: Chart & Repair List
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  if (constraints.maxWidth > 800) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: _buildDonutChart()),
-                        const SizedBox(width: 16),
-                        Expanded(child: _buildRepairList()),
-                      ],
-                    );
-                  } else {
-                    return Column(
-                      children: [
-                        _buildDonutChart(),
-                        const SizedBox(height: 16),
-                        _buildRepairList(),
-                      ],
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Row 3: Activity Log
-              _buildActivityLog(),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF00558D),
-        selectedItemColor: Colors.lightBlueAccent,
-        unselectedItemColor: Colors.white70,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: DashboardBottomNav(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        onTap: _onNavTap,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Beranda"),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner), label: "Scan"),
-          BottomNavigationBarItem(icon: Icon(Icons.insert_chart), label: "Laporan"),
-          BottomNavigationBarItem(icon: Icon(Icons.assignment_turned_in), label: "Pinjaman"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdminAction({
-    required IconData icon,
-    required String label,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 3))],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87)),
-                Text(subtitle, style: GoogleFonts.inter(fontSize: 12, color: Colors.grey.shade500)),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String count,
-    required String subtitle,
-    required Color subtitleColor,
-    required IconData icon,
-    required Color accentColor,
-  }) {
-    return Card(
-      elevation: 2,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, color: accentColor, size: 24),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              count,
-              style: GoogleFonts.inter(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: subtitleColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDonutChart() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Status Perangkat Saat Ini",
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home_rounded),
+            label: 'Beranda',
           ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-               // Suggestion: use fl_chart package for actual chart implementation
-               // Currently using a placeholder circular container for donut chart UI
-               Container(
-                 width: 120,
-                 height: 120,
-                 decoration: BoxDecoration(
-                   shape: BoxShape.circle,
-                   border: Border.all(color: const Color(0xFF00558D), width: 12),
-                 ),
-                 child: Center(
-                   child: Text(
-                     "1,245\nTotal",
-                     textAlign: TextAlign.center,
-                     style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 13),
-                   ),
-                 ),
-               ),
-               const SizedBox(width: 24),
-               Expanded(
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     _buildLegendItem("Laptop", const Color(0xFF00558D)),
-                     const SizedBox(height: 8),
-                     _buildLegendItem("Desktop PC", Colors.blue.shade600),
-                     const SizedBox(height: 8),
-                     _buildLegendItem("Printer", Colors.orange),
-                     const SizedBox(height: 8),
-                     _buildLegendItem("Lainnya", Colors.grey.shade400),
-                   ],
-                 ),
-               )
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: Colors.black87,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            activeIcon: Icon(Icons.bar_chart_rounded),
+            label: 'Laporan',
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRepairList() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Laporan Kerusakan Terbaru",
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.swap_horiz_outlined),
+            activeIcon: Icon(Icons.swap_horiz_rounded),
+            label: 'Pinjaman',
           ),
-          const SizedBox(height: 16),
-          ListView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              _buildRepairItem(
-                initials: "M. A.",
-                icon: Icons.computer_outlined,
-                title: "Laptop Macet",
-                status: "Sedang Diperbaiki",
-                statusColor: Colors.amber.shade800,
-              ),
-              const Divider(),
-              _buildRepairItem(
-                initials: "A. S.",
-                icon: Icons.print_outlined,
-                title: "Printer Mati Total",
-                status: "Menunggu Teknisi",
-                statusColor: Colors.red.shade600,
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRepairItem({
-    required String initials,
-    required IconData icon,
-    required String title,
-    required String status,
-    required Color statusColor,
-  }) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(
-        backgroundColor: Colors.grey.shade200,
-        child: Text(
-          initials,
-          style: GoogleFonts.inter(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
-      ),
-      title: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.grey.shade700),
-          const SizedBox(width: 8),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: Colors.black87,
-            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline_rounded),
+            activeIcon: Icon(Icons.person_rounded),
+            label: 'Profil',
           ),
         ],
       ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 4.0),
-        child: Text(
-          status,
-          style: GoogleFonts.inter(
-            color: statusColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActivityLog() {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Log Aktivitas Terbaru",
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildLogEntry("14:30 - Admin mengalokasikan Laptop BMN-001 ke Ruang Rapat."),
-          const SizedBox(height: 12),
-          _buildLogEntry("13:15 - Teknisi Budi menyelesaikan perbaikan Printer P-02."),
-          const SizedBox(height: 12),
-          _buildLogEntry("10:05 - User Siti melaporkan Desktop PC D-14 error system."),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLogEntry(String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 6.0, right: 8.0),
-          child: Icon(Icons.circle, size: 8, color: Color(0xFF00558D)),
-        ),
-        Expanded(
-          child: Text(
-            text,
-            style: GoogleFonts.inter(
-              color: Colors.black87,
-              fontSize: 13,
-              height: 1.5,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

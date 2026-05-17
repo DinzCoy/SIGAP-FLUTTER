@@ -1,5 +1,5 @@
 // lib/models/asset_model.dart
-// Model data untuk Aset
+// Model data untuk Aset — termasuk loan_status dari hasil scan QR
 
 import 'package:flutter/material.dart';
 
@@ -11,12 +11,17 @@ class AssetModel {
   final String kondisi;
   final String lokasi;
   final String? pemegang;
-  final String? status; // tersedia, dipinjam, rusak, permanen
+  final String? status;       // status_kondisi: Berfungsi, Rusak, dll
   final String? merek;
   final String? model;
   final String? nilaiPerolehan;
   final String? tanggalPerolehan;
   final String? keterangan;
+
+  // ─── Loan Status dari POST /asset/scan ────────────────────────────────────
+  // 'available' | 'pending' | 'active'
+  final String loanStatus;
+  final Map<String, dynamic>? activeLoan; // {id, borrower, due_date}
 
   AssetModel({
     required this.id,
@@ -32,71 +37,109 @@ class AssetModel {
     this.nilaiPerolehan,
     this.tanggalPerolehan,
     this.keterangan,
+    this.loanStatus = 'available',
+    this.activeLoan,
   });
 
   factory AssetModel.fromJson(Map<String, dynamic> json) {
     return AssetModel(
-      id: json['id'] ?? 0,
-      kode: json['kode'] ?? json['asset_code'] ?? '',
-      nama: json['nama'] ?? json['name'] ?? '',
-      kategori: json['kategori'] ?? json['category'] ?? '',
-      kondisi: json['kondisi'] ?? json['condition'] ?? '',
-      lokasi: json['lokasi'] ?? json['location'] ?? '',
-      pemegang: json['pemegang'] ?? json['holder'],
-      status: json['status'],
-      merek: json['merek'] ?? json['brand'],
-      model: json['model'],
-      nilaiPerolehan: json['nilai_perolehan']?.toString(),
+      id:               json['id'] ?? 0,
+      kode:             json['kode'] ?? json['asset_code'] ?? '',
+      nama:             json['nama'] ?? json['name'] ?? '',
+      kategori:         json['kategori'] ?? json['category'] ?? '',
+      kondisi:          json['kondisi'] ?? json['status_kondisi'] ?? json['condition'] ?? '',
+      lokasi:           json['lokasi'] ?? json['room'] ?? json['location'] ?? '',
+      pemegang:         json['pemegang'] ?? json['holder'],
+      status:           json['status_kondisi'] ?? json['status'],
+      merek:            json['merek'] ?? json['merk'] ?? json['brand'],
+      model:            json['model'],
+      nilaiPerolehan:   json['nilai_perolehan']?.toString(),
       tanggalPerolehan: json['tanggal_perolehan'],
-      keterangan: json['keterangan'] ?? json['notes'],
+      keterangan:       json['keterangan'] ?? json['notes'],
+      loanStatus:       json['loan_status'] ?? 'available',
+      activeLoan:       json['active_loan'] != null
+                          ? Map<String, dynamic>.from(json['active_loan'])
+                          : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'kode': kode,
-      'nama': nama,
-      'kategori': kategori,
-      'kondisi': kondisi,
-      'lokasi': lokasi,
-      'pemegang': pemegang,
-      'status': status,
-      'merek': merek,
-      'model': model,
-      'nilai_perolehan': nilaiPerolehan,
-      'tanggal_perolehan': tanggalPerolehan,
-      'keterangan': keterangan,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'id':               id,
+    'kode':             kode,
+    'nama':             nama,
+    'kategori':         kategori,
+    'kondisi':          kondisi,
+    'lokasi':           lokasi,
+    'pemegang':         pemegang,
+    'status':           status,
+    'merek':            merek,
+    'model':            model,
+    'nilai_perolehan':  nilaiPerolehan,
+    'tanggal_perolehan':tanggalPerolehan,
+    'keterangan':       keterangan,
+  };
+
+  /// Apakah aset ini tersedia untuk dipinjam?
+  bool get isAvailable =>
+      loanStatus == 'available' &&
+      (status?.toLowerCase() == 'berfungsi' || kondisi.toLowerCase() == 'berfungsi');
+
+  /// Apakah sedang dalam proses pengajuan?
+  bool get isPendingLoan => loanStatus == 'pending';
+
+  /// Apakah sedang aktif dipinjam?
+  bool get isActiveLoan => loanStatus == 'active';
 
   Color get statusColor {
     switch (status?.toLowerCase()) {
-      case 'tersedia':
-        return const Color(0xFF22C55E); // green
-      case 'dipinjam':
-        return const Color(0xFFF59E0B); // amber
+      case 'berfungsi':
+        return const Color(0xFF22C55E);
       case 'rusak':
-        return const Color(0xFFEF4444); // red
-      case 'permanen':
-        return const Color(0xFF8B5CF6); // purple
+        return const Color(0xFFEF4444);
+      case 'tidak berfungsi':
+        return const Color(0xFFEF4444);
       default:
-        return const Color(0xFF6B7280); // gray
+        return const Color(0xFF6B7280);
     }
   }
 
   String get statusLabel {
     switch (status?.toLowerCase()) {
-      case 'tersedia':
-        return 'Tersedia';
-      case 'dipinjam':
-        return 'Sedang Dipinjam';
+      case 'berfungsi':
+        return 'Berfungsi';
       case 'rusak':
         return 'Rusak';
-      case 'permanen':
-        return 'Dialokasikan Permanen';
+      case 'tidak berfungsi':
+        return 'Tidak Berfungsi';
       default:
-        return status ?? 'Tidak Diketahui';
+        return status ?? kondisi;
+    }
+  }
+
+  /// Label khusus untuk status loan (ditampilkan di badge terpisah)
+  Color get loanStatusColor {
+    switch (loanStatus) {
+      case 'available':
+        return const Color(0xFF22C55E);
+      case 'pending':
+        return const Color(0xFFF59E0B);
+      case 'active':
+        return const Color(0xFF3B82F6);
+      default:
+        return const Color(0xFF6B7280);
+    }
+  }
+
+  String get loanStatusLabel {
+    switch (loanStatus) {
+      case 'available':
+        return 'Tersedia';
+      case 'pending':
+        return 'Sedang Diajukan';
+      case 'active':
+        return 'Sedang Dipinjam';
+      default:
+        return 'Tidak Diketahui';
     }
   }
 }
