@@ -18,6 +18,8 @@ import '../widgets/common/fade_in.dart';
 import 'profile_page.dart';
 import 'all_tickets_page.dart';
 import 'asset_scanner_page.dart';
+import 'leaderboard_page.dart';
+import 'maintenance_history_page.dart';
 
 // Teknisi TIDAK perlu fitur pinjaman — role teknisi bertugas memperbaiki aset,
 // bukan meminjam. Tab hanya: Beranda | Laporan | Profil
@@ -105,6 +107,32 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
                       const SnackBar(content: Text('Fitur pencarian segera hadir!')),
                     );
                   },
+                  quickActions: [
+                    QuickAction(
+                      icon: Icons.qr_code_scanner_rounded,
+                      label: 'Scan Aset',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AssetScannerPage()),
+                      ),
+                    ),
+                    QuickAction(
+                      icon: Icons.history_rounded,
+                      label: 'Riwayat Kerja',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const MaintenanceHistoryPage()),
+                      ),
+                    ),
+                    QuickAction(
+                      icon: Icons.leaderboard_outlined,
+                      label: 'Top Teknisi',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LeaderboardPage()),
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

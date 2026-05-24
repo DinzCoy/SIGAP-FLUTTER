@@ -18,6 +18,8 @@ import 'my_tickets_page.dart';
 import 'asset_scanner_page.dart';
 import 'my_loans_page.dart';
 import 'notifications_page.dart';
+import 'asset_catalog_page.dart';
+import 'leaderboard_page.dart';
 import '../widgets/common/fade_in.dart';
 
 class UserDashboardPage extends StatefulWidget {
@@ -123,14 +125,25 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                       ),
                     ),
                     QuickAction(
+                      icon: Icons.menu_book_outlined,
+                      label: 'Katalog Aset',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AssetCatalogPage()),
+                      ),
+                    ),
+                    QuickAction(
                       icon: Icons.swap_horiz_outlined,
                       label: 'Pinjam Aset',
                       onTap: () => setState(() => _selectedIndex = 1),
                     ),
                     QuickAction(
-                      icon: Icons.confirmation_number_outlined,
-                      label: 'Tiket Saya',
-                      onTap: () => setState(() => _selectedIndex = 2),
+                      icon: Icons.leaderboard_outlined,
+                      label: 'Top Teknisi',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LeaderboardPage()),
+                      ),
                     ),
                   ],
                 ),

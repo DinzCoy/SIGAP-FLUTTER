@@ -16,6 +16,7 @@ import 'asset_scanner_page.dart';
 import 'admin_loans_page.dart';
 import 'notifications_page.dart';
 import 'all_tickets_page.dart';
+import 'leaderboard_page.dart';
 import '../widgets/common/fade_in.dart';
 
 class AdminDashboardPage extends StatefulWidget {
@@ -125,6 +126,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       icon: Icons.confirmation_number_outlined,
                       label: 'Daftar Tiket',
                       onTap: () => setState(() => _selectedIndex = 1),
+                    ),
+                    QuickAction(
+                      icon: Icons.leaderboard_outlined,
+                      label: 'Top Teknisi',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LeaderboardPage()),
+                      ),
                     ),
                   ],
                 ),
