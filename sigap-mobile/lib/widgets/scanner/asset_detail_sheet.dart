@@ -35,7 +35,7 @@ class AssetDetailSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
@@ -69,7 +69,7 @@ class AssetDetailSheet extends StatelessWidget {
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.computer_rounded,
                           color: AppColors.primary,
                           size: 32,
@@ -142,20 +142,20 @@ class AssetDetailSheet extends StatelessWidget {
                     child: Column(
                       children: [
                         _DetailItem('Kondisi', asset.kondisi, Icons.verified_user_outlined),
-                        const Divider(height: 24, color: AppColors.border),
+                        Divider(height: 24, color: AppColors.border),
                         _DetailItem('Lokasi', asset.lokasi, Icons.location_on_outlined),
                         if (asset.pemegang != null && asset.pemegang!.isNotEmpty) ...[
-                          const Divider(height: 24, color: AppColors.border),
+                          Divider(height: 24, color: AppColors.border),
                           _DetailItem('Pemegang', asset.pemegang!, Icons.person_outline_rounded),
                         ],
                         if (asset.merek != null) ...[
-                          const Divider(height: 24, color: AppColors.border),
+                          Divider(height: 24, color: AppColors.border),
                           _DetailItem('Merek', asset.merek!, Icons.branding_watermark_outlined),
                         ],
                       ],
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
 
                   // ── Tombol Aksi (kontekstual) ─────────────────────────────
                   _buildActionButtons(context),
@@ -345,7 +345,7 @@ class _ScanAnotherButton extends StatelessWidget {
         label: const Text('Scan Aset Lain'),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.slate,
-          side: const BorderSide(color: AppColors.border, width: 1.5),
+          side: BorderSide(color: AppColors.border, width: 1.5),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: AppTextStyles.labelLarge,
         ),

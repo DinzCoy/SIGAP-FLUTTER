@@ -80,7 +80,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Icon & header
-          const Icon(Icons.lock_reset, size: 80, color: AppColors.primary),
+          Icon(Icons.lock_reset, size: 80, color: AppColors.primary),
           const SizedBox(height: 16),
           Text(
             'Atur Ulang Password',
@@ -100,7 +100,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
             label: 'Email atau Username',
             hint: 'Masukkan email atau username Anda',
             controller: _emailCtrl,
-            prefixIcon: const Icon(Icons.email_outlined, color: AppColors.primary),
+            prefixIcon: Icon(Icons.email_outlined, color: AppColors.primary),
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 20),
@@ -111,7 +111,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
             hint: 'Masukkan password baru',
             controller: _newCtrl,
             obscureText: _obscureNew,
-            prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary),
+            prefixIcon: Icon(Icons.lock_outline, color: AppColors.primary),
             suffixIcon: IconButton(
               icon: Icon(
                 _obscureNew ? Icons.visibility_off : Icons.visibility,
@@ -128,7 +128,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
             hint: 'Ulangi password baru',
             controller: _confirmCtrl,
             obscureText: _obscureConfirm,
-            prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary),
+            prefixIcon: Icon(Icons.lock_outline, color: AppColors.primary),
             suffixIcon: IconButton(
               icon: Icon(
                 _obscureConfirm ? Icons.visibility_off : Icons.visibility,

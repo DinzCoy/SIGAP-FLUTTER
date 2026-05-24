@@ -144,15 +144,15 @@ class _LoginFormState extends State<LoginForm> {
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppColors.radiusSm), // 6px
-            borderSide: const BorderSide(color: AppColors.hairline),
+            borderSide: BorderSide(color: AppColors.hairline),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppColors.radiusSm),
-            borderSide: const BorderSide(color: AppColors.hairline),
+            borderSide: BorderSide(color: AppColors.hairline),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppColors.radiusSm),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            borderSide: BorderSide(color: AppColors.primary, width: 2),
           ),
           filled: true,
           fillColor: AppColors.canvas,

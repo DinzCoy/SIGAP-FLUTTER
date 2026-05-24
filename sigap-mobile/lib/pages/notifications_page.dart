@@ -150,7 +150,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               Text(
                 'Gagal memuat notifikasi:\n$_errorMessage',
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.inkMute),
+                style: TextStyle(color: AppColors.inkMute),
               ),
               const SizedBox(height: 24),
               AppButton.primary(
@@ -189,7 +189,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         separatorBuilder: (_, _) => const Divider(height: 1),
         itemBuilder: (context, index) {
           if (index == _notifications.length) {
-            return const Padding(
+            return Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Center(
                 child: SizedBox(

@@ -41,7 +41,7 @@ class TaskActivitySection extends StatelessWidget {
                 children: [
                   tasks[i],
                   if (!isLast)
-                    const Divider(
+                    Divider(
                       height: 1,
                       indent: 32,
                       endIndent: 16,
@@ -81,7 +81,7 @@ class RepairTimelineSection extends StatelessWidget {
           child: items.isEmpty
               ? Row(
                   children: [
-                    const Icon(Icons.history_rounded,
+                    Icon(Icons.history_rounded,
                         size: 20, color: AppColors.textSecondary),
                     const SizedBox(width: 12),
                     Text(
@@ -132,7 +132,7 @@ class OfficeMapSection extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.map_outlined, size: 40, color: AppColors.textSecondary),
+                Icon(Icons.map_outlined, size: 40, color: AppColors.textSecondary),
                 const SizedBox(height: 8),
                 Text(
                   'Denah Kantor SIGAP',

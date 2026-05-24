@@ -56,7 +56,7 @@ class AppTextField extends StatelessWidget {
         hintText: hint,
         prefixIcon: prefixIcon != null
             ? IconTheme(
-                data: const IconThemeData(color: AppColors.inkMute, size: 20),
+                data: IconThemeData(color: AppColors.inkMute, size: 20),
                 child: prefixIcon!,
               )
             : null,
@@ -65,23 +65,23 @@ class AppTextField extends StatelessWidget {
         fillColor: AppColors.canvas,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusSm), // 6px
-          borderSide: const BorderSide(color: AppColors.hairline),
+          borderSide: BorderSide(color: AppColors.hairline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusSm),
-          borderSide: const BorderSide(color: AppColors.hairline),
+          borderSide: BorderSide(color: AppColors.hairline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusSm),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusSm),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderSide: BorderSide(color: AppColors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusSm),
-          borderSide: const BorderSide(color: AppColors.error, width: 2),
+          borderSide: BorderSide(color: AppColors.error, width: 2),
         ),
         labelStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.inkMute),
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.slate),

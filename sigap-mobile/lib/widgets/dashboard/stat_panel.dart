@@ -46,15 +46,15 @@ class StatItem {
   final String label;
   final String? subtitle;
   final IconData icon;
-  final Color iconColor;
+  final Color? iconColor;
   final VoidCallback? onTap;
 
-  const StatItem({
+  StatItem({
     required this.value,
     required this.label,
     this.subtitle,
     required this.icon,
-    this.iconColor = AppColors.primary,
+    this.iconColor,
     this.onTap,
   });
 }
@@ -66,6 +66,7 @@ class _StatCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = item.iconColor ?? AppColors.primary;
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -73,12 +74,12 @@ class _StatCell extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: item.iconColor.withValues(alpha: 0.08),
+            color: effectiveColor.withValues(alpha: 0.08),
             shape: BoxShape.circle,
           ),
           child: Icon(
             item.icon,
-            color: item.iconColor,
+            color: effectiveColor,
             size: 18,
           ),
         ),

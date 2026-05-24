@@ -73,8 +73,8 @@ class TicketCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.computer, size: 16, color: AppColors.slate),
-                  const SizedBox(width: 8),
+                  Icon(Icons.computer, size: 16, color: AppColors.slate),
+                  SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       ticket.namaAset!,
@@ -87,12 +87,12 @@ class TicketCard extends StatelessWidget {
           ],
           if (ticket.tanggapan != null && ticket.tanggapan!.isNotEmpty) ...[
             const SizedBox(height: 12),
-            const Divider(color: AppColors.hairline),
-            const SizedBox(height: 8),
+            Divider(color: AppColors.hairline),
+            SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
+                Icon(
                   Icons.reply_rounded,
                   size: 16,
                   color: AppColors.slate,

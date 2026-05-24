@@ -50,7 +50,7 @@ class StatusBadge extends StatelessWidget {
     if (l.contains('menunggu'))     return (AppColors.warning,  AppColors.warningBg);
     if (l.contains('ditolak'))      return (AppColors.error,    AppColors.errorBg);
     if (l.contains('disetujui'))    return (AppColors.success,  AppColors.successBg);
-    if (l.contains('dipinjam'))     return (AppColors.accent,   const Color(0xFFFFF0E0));
+    if (l.contains('dipinjam'))     return (AppColors.accent,   Color(0xFFFFF0E0));
     if (l.contains('dikembalikan')) return (AppColors.info,     AppColors.infoBg);
     if (l == 'pending')             return (AppColors.warning,  AppColors.warningBg);
     if (l == 'dikerjakan')          return (AppColors.primary,  AppColors.infoBg);

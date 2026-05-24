@@ -15,10 +15,10 @@ class LoadingIndicator extends StatelessWidget {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2.5),
+        CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2.5),
         if (message != null) ...[
           const SizedBox(height: 14),
-          Text(message!, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          Text(message!, style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
         ],
       ],
     );

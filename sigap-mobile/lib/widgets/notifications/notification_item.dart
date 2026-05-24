@@ -92,7 +92,7 @@ class NotificationItem extends StatelessWidget {
               Container(
                 width: 8, height: 8,
                 margin: const EdgeInsets.only(top: 8),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),

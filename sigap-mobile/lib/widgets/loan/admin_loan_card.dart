@@ -87,7 +87,7 @@ class AdminLoanCard extends StatelessWidget {
           
           if (loan.status == 'menunggu_persetujuan') ...[
             const SizedBox(height: 16),
-            const Divider(color: AppColors.divider),
+            Divider(color: AppColors.divider),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -96,7 +96,7 @@ class AdminLoanCard extends StatelessWidget {
                     onPressed: () => onProcess(loan, false),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.error,
-                      side: const BorderSide(color: AppColors.error),
+                      side: BorderSide(color: AppColors.error),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -115,7 +115,7 @@ class AdminLoanCard extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Setujui'),
                   ),

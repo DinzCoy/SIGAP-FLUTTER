@@ -22,12 +22,12 @@ class LoanAssetCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.computer_rounded, color: AppColors.primary),
+            child: Icon(Icons.computer_rounded, color: AppColors.primary),
           ),
           const SizedBox(width: 16),
           Expanded(

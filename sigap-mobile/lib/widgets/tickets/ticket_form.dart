@@ -73,11 +73,11 @@ class _TicketFormState extends State<TicketForm> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Container(
               width: 72, height: 72,
-              decoration: const BoxDecoration(color: AppColors.successBg, shape: BoxShape.circle),
-              child: const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 48),
+              decoration: BoxDecoration(color: AppColors.successBg, shape: BoxShape.circle),
+              child: Icon(Icons.check_circle_rounded, color: AppColors.success, size: 48),
             ),
             const SizedBox(height: 16),
             Text('Tiket Terkirim!', style: AppTextStyles.titleLarge),

@@ -41,4 +41,21 @@ class AssetService {
     final list = data['data'] as List? ?? [];
     return list.map((e) => AssetModel.fromJson(e)).toList();
   }
+
+  /// Ambil daftar aset milik user yang login
+  static Future<List<AssetModel>> getUserAssets() async {
+    final response = await ApiClient.get('/user/assets');
+    final data = ApiClient.processResponse(response);
+    final list = data['data'] as List? ?? [];
+    return list.map((e) => AssetModel.fromJson(e)).toList();
+  }
+
+  /// Ambil daftar aset yang tersedia untuk dipinjam
+  static Future<List<AssetModel>> getAvailableAssets({String? search}) async {
+    final query = search != null ? '?search=${Uri.encodeComponent(search)}' : '';
+    final response = await ApiClient.get('/assets/available$query');
+    final data = ApiClient.processResponse(response);
+    final list = data['data'] as List? ?? [];
+    return list.map((e) => AssetModel.fromJson(e)).toList();
+  }
 }

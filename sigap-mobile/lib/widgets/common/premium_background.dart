@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/theme_manager.dart';
 
 /// Painter untuk "Mesh Gradient" atmosphere — signature Stripe design.
 ///
 /// Menggunakan organic blob shapes dengan MaskFilter.blur untuk menciptakan
 /// efek mesh yang autentik: cream → lavender → indigo → ruby → magenta.
 /// Blobs diposisikan di upper-third sebagai backdrop utama.
+/// THEME-AWARE: Otomatis menyesuaikan warna berdasarkan tema aktif.
 class MeshGradientPainter extends CustomPainter {
   final double animValue;
 
@@ -13,7 +15,7 @@ class MeshGradientPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Base canvas - using a very subtle gradient for the base instead of solid soft white
+    // Base canvas - using a very subtle gradient for the base
     final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.drawRect(
       rect,
@@ -21,7 +23,7 @@ class MeshGradientPainter extends CustomPainter {
     );
 
     // ── Upper mesh atmosphere (signature Stripe vibe) ──────────────
-    
+
     // Blob 1: Amber/Cream — upper-left warm glow
     canvas.drawOval(
       Rect.fromCenter(
@@ -110,14 +112,14 @@ class MeshGradientPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant MeshGradientPainter oldDelegate) =>
-      oldDelegate.animValue != animValue;
+  bool shouldRepaint(covariant MeshGradientPainter oldDelegate) => true;
 }
 
 /// Background premium dengan Mesh Gradient atmosphere.
 ///
 /// Digunakan di: LoginPage, DashboardPage, dan semua marketing surfaces.
 /// Blobs mesh menempati upper-third — sesuai Stripe design language.
+/// THEME-AWARE: Otomatis menyesuaikan warna saat dark mode aktif.
 class PremiumBackground extends StatelessWidget {
   final Widget child;
 
@@ -128,18 +130,23 @@ class PremiumBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Mesh gradient layer — occupies full page, atmospheric backdrop
-        Positioned.fill(
-          child: CustomPaint(
-            painter: const MeshGradientPainter(),
-          ),
-        ),
+    return ListenableBuilder(
+      listenable: ThemeManager.instance,
+      builder: (context, _) {
+        return Stack(
+          children: [
+            // Mesh gradient layer — occupies full page, atmospheric backdrop
+            Positioned.fill(
+              child: CustomPaint(
+                painter: const MeshGradientPainter(),
+              ),
+            ),
 
-        // Content layer
-        Positioned.fill(child: child),
-      ],
+            // Content layer
+            Positioned.fill(child: child),
+          ],
+        );
+      },
     );
   }
 }
@@ -151,7 +158,7 @@ class HeaderMeshPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Base: deep indigo gradient
     final baseGradient = Paint()
-      ..shader = const LinearGradient(
+      ..shader = LinearGradient(
         colors: [AppColors.primary, AppColors.brandDark900],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -211,5 +218,5 @@ class HeaderMeshPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

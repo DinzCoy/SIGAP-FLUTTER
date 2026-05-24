@@ -42,7 +42,7 @@ class _LoanRequestFormState extends State<LoanRequestForm> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
+          colorScheme: ColorScheme.light(
             primary: AppColors.primary,
             onPrimary: Colors.white,
             onSurface: AppColors.textPrimary,
@@ -112,11 +112,11 @@ class _LoanRequestFormState extends State<LoanRequestForm> {
             Container(
               width: 72,
               height: 72,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.successBg,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle_rounded,
                 color: AppColors.success,
                 size: 48,

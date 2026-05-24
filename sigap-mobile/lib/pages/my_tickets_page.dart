@@ -184,7 +184,7 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
         separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           if (index == _tickets.length) {
-            return const Padding(
+            return Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Center(
                 child: SizedBox(

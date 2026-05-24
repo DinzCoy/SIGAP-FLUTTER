@@ -14,7 +14,7 @@ class AppTextStyles {
 
   // ── Display Tier — weight 300, negative tracking ─────────────────────
   // {typography.display-xxl}: 56px, w300, -1.4px, lh 1.03
-  static TextStyle displayXxl = GoogleFonts.inter(
+  static TextStyle get displayXxl => GoogleFonts.inter(
     fontSize: 56,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -23,7 +23,7 @@ class AppTextStyles {
   );
 
   // {typography.display-xl}: 48px, w300, -0.96px, lh 1.15
-  static TextStyle displayXl = GoogleFonts.inter(
+  static TextStyle get displayXl => GoogleFonts.inter(
     fontSize: 48,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -32,7 +32,7 @@ class AppTextStyles {
   );
 
   // {typography.display-lg}: 32px, w300, -0.64px, lh 1.1
-  static TextStyle displayLarge = GoogleFonts.inter(
+  static TextStyle get displayLarge => GoogleFonts.inter(
     fontSize: 32,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -41,7 +41,7 @@ class AppTextStyles {
   );
 
   // {typography.display-md}: 26px, w300, -0.26px, lh 1.12
-  static TextStyle displayMedium = GoogleFonts.inter(
+  static TextStyle get displayMedium => GoogleFonts.inter(
     fontSize: 26,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -51,7 +51,7 @@ class AppTextStyles {
 
   // ── Heading Tier — weight 300 ──────────────────────────────────────────
   // {typography.heading-lg}: 22px, w300, -0.22px, lh 1.1
-  static TextStyle headlineLarge = GoogleFonts.inter(
+  static TextStyle get headlineLarge => GoogleFonts.inter(
     fontSize: 22,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -60,7 +60,7 @@ class AppTextStyles {
   );
 
   // {typography.heading-md}: 20px, w300, -0.2px, lh 1.4
-  static TextStyle headlineMedium = GoogleFonts.inter(
+  static TextStyle get headlineMedium => GoogleFonts.inter(
     fontSize: 20,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -69,7 +69,7 @@ class AppTextStyles {
   );
 
   // {typography.heading-sm}: 18px, w300, 0, lh 1.4
-  static TextStyle headlineSmall = GoogleFonts.inter(
+  static TextStyle get headlineSmall => GoogleFonts.inter(
     fontSize: 18,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -79,7 +79,7 @@ class AppTextStyles {
 
   // ── Body Tier ───────────────────────────────────────────────────────────
   // {typography.body-lg}: 16px, w300, 0, lh 1.4
-  static TextStyle bodyLarge = GoogleFonts.inter(
+  static TextStyle get bodyLarge => GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -88,7 +88,7 @@ class AppTextStyles {
   );
 
   // {typography.body-md}: 15px, w300, 0, lh 1.4 — DEFAULT UI body
-  static TextStyle bodyMedium = GoogleFonts.inter(
+  static TextStyle get bodyMedium => GoogleFonts.inter(
     fontSize: 15,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -96,7 +96,7 @@ class AppTextStyles {
     height: 1.4,
   );
 
-  static TextStyle bodySmall = GoogleFonts.inter(
+  static TextStyle get bodySmall => GoogleFonts.inter(
     fontSize: 13,
     fontWeight: FontWeight.w300,
     color: AppColors.inkMute,
@@ -105,7 +105,7 @@ class AppTextStyles {
   );
 
   // {typography.body-tabular}: 14px, w300, -0.42px, tnum — ANGKA & UANG
-  static TextStyle bodyTabular = GoogleFonts.inter(
+  static TextStyle get bodyTabular => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -116,7 +116,7 @@ class AppTextStyles {
 
   // ── Button Tier — weight 400 (satu-satunya tier yang tidak w300) ───────
   // {typography.button-md}: 16px, w400, 0, lh 1.0
-  static TextStyle buttonMd = GoogleFonts.inter(
+  static TextStyle get buttonMd => GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.ink,
@@ -125,7 +125,7 @@ class AppTextStyles {
   );
 
   // {typography.button-sm}: 14px, w400, 0, lh 1.0
-  static TextStyle buttonSm = GoogleFonts.inter(
+  static TextStyle get buttonSm => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.ink,
@@ -135,7 +135,7 @@ class AppTextStyles {
 
   // ── Caption / Label ─────────────────────────────────────────────────────
   // {typography.caption}: 13px, w400, -0.39px, tnum
-  static TextStyle caption = GoogleFonts.inter(
+  static TextStyle get caption => GoogleFonts.inter(
     fontSize: 13,
     fontWeight: FontWeight.w400,
     color: AppColors.inkMute,
@@ -145,7 +145,7 @@ class AppTextStyles {
   );
 
   // {typography.micro}: 11px, w300, 0, lh 1.4
-  static TextStyle micro = GoogleFonts.inter(
+  static TextStyle get micro => GoogleFonts.inter(
     fontSize: 11,
     fontWeight: FontWeight.w300,
     color: AppColors.inkMute,
@@ -154,7 +154,7 @@ class AppTextStyles {
   );
 
   // {typography.micro-cap}: 10px, w400, +0.1px, lh 1.15 — ALL-CAPS eyebrow
-  static TextStyle microCap = GoogleFonts.inter(
+  static TextStyle get microCap => GoogleFonts.inter(
     fontSize: 10,
     fontWeight: FontWeight.w400,
     color: AppColors.inkMute,
@@ -164,7 +164,7 @@ class AppTextStyles {
 
   // ── Stat Number — tabular, dipakai di StatPanel ─────────────────────────
   /// Angka statistik besar — selalu tabular figures
-  static TextStyle statNumber = GoogleFonts.inter(
+  static TextStyle get statNumber => GoogleFonts.inter(
     fontSize: 28,
     fontWeight: FontWeight.w300,
     color: AppColors.ink,
@@ -174,21 +174,21 @@ class AppTextStyles {
   );
 
   // ── Label Tiers (untuk UI elements, nav, tags) ─────────────────────────
-  static TextStyle labelLarge = GoogleFonts.inter(
+  static TextStyle get labelLarge => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.ink,
     letterSpacing: 0,
   );
 
-  static TextStyle labelMedium = GoogleFonts.inter(
+  static TextStyle get labelMedium => GoogleFonts.inter(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.inkMute,
     letterSpacing: 0,
   );
 
-  static TextStyle labelSmall = GoogleFonts.inter(
+  static TextStyle get labelSmall => GoogleFonts.inter(
     fontSize: 11,
     fontWeight: FontWeight.w400,
     color: AppColors.inkMute,
@@ -196,20 +196,20 @@ class AppTextStyles {
   );
 
   // ── Title Tiers ─────────────────────────────────────────────────────────
-  static TextStyle titleLarge = GoogleFonts.inter(
+  static TextStyle get titleLarge => GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.ink,
     letterSpacing: -0.2,
   );
 
-  static TextStyle titleMedium = GoogleFonts.inter(
+  static TextStyle get titleMedium => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.ink,
   );
 
-  static TextStyle titleSmall = GoogleFonts.inter(
+  static TextStyle get titleSmall => GoogleFonts.inter(
     fontSize: 13,
     fontWeight: FontWeight.w400,
     color: AppColors.ink,
@@ -217,7 +217,7 @@ class AppTextStyles {
 
   // ── Khusus / Contextual ─────────────────────────────────────────────────
   /// Link — primary color, bukan di body size
-  static TextStyle link = GoogleFonts.inter(
+  static TextStyle get link => GoogleFonts.inter(
     fontSize: 15,
     fontWeight: FontWeight.w400,
     color: AppColors.primary,
@@ -225,7 +225,7 @@ class AppTextStyles {
   );
 
   /// On Primary — teks di atas surface indigo/navy
-  static TextStyle onPrimary = GoogleFonts.inter(
+  static TextStyle get onPrimary => GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.textOnPrimary,
@@ -233,7 +233,7 @@ class AppTextStyles {
   );
 
   /// Greeting kecil di header
-  static TextStyle greeting = GoogleFonts.inter(
+  static TextStyle get greeting => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.w300,
     color: Colors.white70,
@@ -241,7 +241,7 @@ class AppTextStyles {
   );
 
   /// Nama besar di header dashboard
-  static TextStyle greetingName = GoogleFonts.inter(
+  static TextStyle get greetingName => GoogleFonts.inter(
     fontSize: 24,
     fontWeight: FontWeight.w300,
     color: Colors.white,

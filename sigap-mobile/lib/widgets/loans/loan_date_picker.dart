@@ -35,7 +35,7 @@ class LoanDatePicker extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.calendar_today_rounded,
                   size: 18,
                   color: AppColors.primary,

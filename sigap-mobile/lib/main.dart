@@ -6,12 +6,18 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'pages/login_page.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
+import 'theme/theme_manager.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inisialisasi format tanggal Indonesia
   await initializeDateFormatting('id_ID', null);
+
+  // Inisialisasi ThemeManager sebelum menjalankan aplikasi
+  await ThemeManager.instance.initialize();
 
   try {
     await Firebase.initializeApp();
@@ -38,11 +44,20 @@ class SigapApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SIGAP',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      home: const LoginPage(),
+    return ListenableBuilder(
+      listenable: ThemeManager.instance,
+      builder: (context, _) {
+        return MaterialApp(
+          key: ValueKey(ThemeManager.instance.themeMode),
+          navigatorKey: navigatorKey,
+          title: 'SIGAP',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark, // Theme Gelap Adaptif
+          themeMode: ThemeManager.instance.themeMode,
+          home: const LoginPage(),
+        );
+      },
     );
   }
 }

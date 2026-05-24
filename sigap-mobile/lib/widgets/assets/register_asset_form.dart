@@ -103,7 +103,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.border)),
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.primary, width: 1.5)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.primary, width: 1.5)),
           ),
         ),
       ],
@@ -127,7 +127,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.info_outline, color: AppColors.primary),
+                Icon(Icons.info_outline, color: AppColors.primary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -148,7 +148,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
             hint: '',
             controller: _kodeCtrl,
             readOnly: true,
-            prefixIcon: const Icon(Icons.qr_code, color: AppColors.primary, size: 20),
+            prefixIcon: Icon(Icons.qr_code, color: AppColors.primary, size: 20),
           ),
           const SizedBox(height: 16),
 
@@ -156,7 +156,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
             label: 'Nama Aset *',
             hint: 'Cth: Laptop Admin 1',
             controller: _namaCtrl,
-            prefixIcon: const Icon(Icons.computer, color: AppColors.primary, size: 20),
+            prefixIcon: Icon(Icons.computer, color: AppColors.primary, size: 20),
             validator: (v) => v!.isEmpty ? 'Nama wajib diisi' : null,
           ),
           const SizedBox(height: 16),
@@ -179,7 +179,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
                   label: 'Merek',
                   hint: 'Cth: Asus',
                   controller: _merekCtrl,
-                  prefixIcon: const Icon(Icons.branding_watermark, color: AppColors.primary, size: 20),
+                  prefixIcon: Icon(Icons.branding_watermark, color: AppColors.primary, size: 20),
                 ),
               ),
               const SizedBox(width: 16),
@@ -188,7 +188,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
                   label: 'Model/Tipe',
                   hint: 'Cth: Zenbook',
                   controller: _modelCtrl,
-                  prefixIcon: const Icon(Icons.model_training, color: AppColors.primary, size: 20),
+                  prefixIcon: Icon(Icons.model_training, color: AppColors.primary, size: 20),
                 ),
               ),
             ],
@@ -199,7 +199,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
             label: 'Lokasi Penyimpanan *',
             hint: 'Cth: Ruang Server / Gudang IT',
             controller: _lokasiCtrl,
-            prefixIcon: const Icon(Icons.location_on, color: AppColors.primary, size: 20),
+            prefixIcon: Icon(Icons.location_on, color: AppColors.primary, size: 20),
             validator: (v) => v!.isEmpty ? 'Lokasi wajib diisi' : null,
           ),
           const SizedBox(height: 16),
@@ -209,7 +209,7 @@ class _RegisterAssetFormState extends State<RegisterAssetForm> {
             hint: 'Cth: 15000000',
             controller: _nilaiCtrl,
             keyboardType: TextInputType.number,
-            prefixIcon: const Icon(Icons.attach_money, color: AppColors.primary, size: 20),
+            prefixIcon: Icon(Icons.attach_money, color: AppColors.primary, size: 20),
           ),
           const SizedBox(height: 32),
 

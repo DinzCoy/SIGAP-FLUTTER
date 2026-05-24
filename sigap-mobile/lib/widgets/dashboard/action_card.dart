@@ -77,7 +77,7 @@ class _ActionCardState extends State<ActionCard> {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.inkMute, // {colors.ink-mute}
                 size: 18

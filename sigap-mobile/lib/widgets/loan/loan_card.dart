@@ -117,7 +117,7 @@ class LoanCard extends StatelessWidget {
                       ? '${_formatShortDate(loan.tanggalMulai)} - ${_formatShortDate(loan.tanggalKembali)}'
                       : 'Diajukan: ${_formatShortDate(loan.createdAt)}',
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: Divider(height: 1, color: AppColors.border),
                 ),
@@ -144,7 +144,7 @@ class LoanCard extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.error),
+                    Icon(Icons.info_outline_rounded, size: 16, color: AppColors.error),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
@@ -181,12 +181,12 @@ class LoanCard extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: onReturn,
                   icon: const Icon(Icons.assignment_return_rounded, size: 18),
-                  label: const Text('Kembalikan Aset'),
+                  label: Text('Kembalikan Aset'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.surface,
                     foregroundColor: AppColors.primary,
                     elevation: 0,
-                    side: const BorderSide(color: AppColors.primary, width: 1.5),
+                    side: BorderSide(color: AppColors.primary, width: 1.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

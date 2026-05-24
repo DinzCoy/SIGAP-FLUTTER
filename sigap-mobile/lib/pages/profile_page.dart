@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       // Putih: agar celah sub-pixel antara SliverAppBar (ungu) dan
       // body tidak menampilkan warna primer yang "bocor".
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -63,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
               // Transform.translate aman karena tidak menggunakan margin.
               offset: const Offset(0, -1),
               child: Container(
-                color: Colors.white,
+                color: AppColors.background,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                   child: Column(
@@ -248,9 +248,9 @@ class _ProfileSliverHeader extends StatelessWidget {
               bottom: 0,
               child: Container(
                 height: curveHeight,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(32),
                     topRight: Radius.circular(32),
                   ),
@@ -284,7 +284,7 @@ class _ProfileInfoSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.border, width: 1),
         boxShadow: [
@@ -336,7 +336,7 @@ class _ProfileSettingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.border, width: 1),
         boxShadow: [
@@ -441,7 +441,7 @@ class _SettingTile extends StatelessWidget {
         child: Icon(icon, color: AppColors.primary, size: 20),
       ),
       title: Text(title, style: AppTextStyles.titleSmall),
-      trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textHint, size: 20),
+      trailing: Icon(Icons.chevron_right_rounded, color: AppColors.textHint, size: 20),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
     );
   }

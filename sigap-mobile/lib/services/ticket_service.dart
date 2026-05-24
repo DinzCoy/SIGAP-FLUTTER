@@ -98,4 +98,32 @@ class TicketService {
     });
     return ApiClient.processResponse(response);
   }
+
+  /// Ambil riwayat maintenance (servis) teknisi/ketua tim
+  static Future<Map<String, dynamic>> getMaintenanceHistory({
+    required int page,
+    required int limit,
+    String? bulan,
+  }) async {
+    final query = '?page=$page&limit=$limit${bulan != null ? '&bulan=$bulan' : ''}';
+    final response = await ApiClient.get('/technician/maintenance$query');
+    final data = ApiClient.processResponse(response);
+    
+    // Kembalikan map 'data' dari response JSON
+    final resData = data['data'] as Map<String, dynamic>? ?? {};
+    return {
+      'data': resData['data'] as List? ?? [],
+      'total': resData['total'] ?? 0,
+      'last_page': resData['last_page'] ?? 1,
+      'is_ketua_tim': resData['is_ketua_tim'] ?? false,
+    };
+  }
+
+  /// Ambil daftar semua teknisi
+  static Future<List<Map<String, dynamic>>> getTechnicians() async {
+    final response = await ApiClient.get('/technicians');
+    final data = ApiClient.processResponse(response);
+    final list = data['data'] as List? ?? [];
+    return list.cast<Map<String, dynamic>>();
+  }
 }

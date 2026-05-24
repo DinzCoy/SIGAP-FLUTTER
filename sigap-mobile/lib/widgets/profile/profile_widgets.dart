@@ -13,7 +13,7 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
@@ -142,14 +142,14 @@ class ProfileActionCard extends StatelessWidget {
             ListTile(
               leading: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.surface,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(items[i].icon, color: AppColors.textPrimary, size: 20),
               ),
               title: Text(items[i].title, style: AppTextStyles.titleSmall),
-              trailing: const Icon(Icons.chevron_right, color: AppColors.textHint),
+              trailing: Icon(Icons.chevron_right, color: AppColors.textHint),
               onTap: items[i].onTap,
             ),
           ],

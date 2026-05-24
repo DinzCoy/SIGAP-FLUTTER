@@ -55,7 +55,7 @@ class RecentTicketsSection extends StatelessWidget {
                     children: [
                       TicketItem.fromMap(tickets[i]),
                       if (!isLast)
-                        const Divider(
+                        Divider(
                           height: 1,
                           indent: 32,
                           endIndent: 16,

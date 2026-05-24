@@ -212,7 +212,7 @@ class _HeaderBackground extends StatelessWidget {
           bottom: -1, // -1 untuk overlap sedikit agar tidak ada celah pixel
           child: Container(
             height: 30,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.background,
               borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
@@ -250,7 +250,7 @@ class DashboardTransitionZone extends StatelessWidget {
               child: Container(
                 height: 52,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -263,7 +263,7 @@ class DashboardTransitionZone extends StatelessWidget {
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
-                    const Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
+                    Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -278,7 +278,7 @@ class DashboardTransitionZone extends StatelessWidget {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.tune_rounded, color: AppColors.primary, size: 16),
+                      child: Icon(Icons.tune_rounded, color: AppColors.primary, size: 16),
                     ),
                   ],
                 ),
@@ -322,7 +322,7 @@ class _QuickActionChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.border, width: 1),
           ),

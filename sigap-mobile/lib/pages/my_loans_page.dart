@@ -143,7 +143,7 @@ class _MyLoansPageState extends State<MyLoansPage> {
               Text(
                 'Gagal memuat peminjaman:\n$_errorMessage',
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.inkMute),
+                style: TextStyle(color: AppColors.inkMute),
               ),
               const SizedBox(height: 24),
               AppButton.primary(
@@ -187,7 +187,7 @@ class _MyLoansPageState extends State<MyLoansPage> {
         separatorBuilder: (_, _) => const SizedBox(height: 16),
         itemBuilder: (context, index) {
           if (index == _loans.length) {
-            return const Padding(
+            return Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Center(
                 child: SizedBox(
