@@ -228,10 +228,6 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
                         child: RepairTimelineSection(items: _repairTimeline),
                       ),
                       const SizedBox(height: 24),
-                      const FadeIn(
-                        delay: Duration(milliseconds: 800),
-                        child: OfficeMapSection(),
-                      ),
                       const SizedBox(height: 80),
                     ],
                   ),
