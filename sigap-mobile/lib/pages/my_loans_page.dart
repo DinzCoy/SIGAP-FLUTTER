@@ -12,6 +12,7 @@ import '../widgets/loan/loan_card.dart';
 import '../widgets/loan/return_asset_dialog.dart';
 import '../widgets/common/fade_in.dart';
 import '../widgets/common/app_button.dart';
+import 'admin_loans_page.dart';
 
 class MyLoansPage extends StatefulWidget {
   /// [embeddedMode] = true → tanpa AppBar (dipakai dalam tab dashboard)
@@ -305,8 +306,36 @@ class _MyLoansPageState extends State<MyLoansPage> {
     }).toList();
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: MediaQuery.of(context).padding.top + kToolbarHeight + 16),
+        if (widget.embeddedMode) ...[
+          SizedBox(height: MediaQuery.of(context).padding.top + 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Pinjaman Saya',
+                  style: AppTextStyles.titleLarge.copyWith(fontWeight: FontWeight.w800),
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminLoansPage()));
+                  },
+                  icon: const Icon(Icons.inbox_rounded),
+                  label: const Text('Permintaan Masuk'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ] else ...[
+          const SizedBox(height: 16),
+        ],
         _buildFilterChips(),
         const SizedBox(height: 8),
         Expanded(
