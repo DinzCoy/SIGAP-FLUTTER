@@ -21,6 +21,7 @@ import 'my_loans_page.dart';
 import 'notifications_page.dart';
 import 'asset_catalog_page.dart';
 import 'leaderboard_page.dart';
+import 'my_assets_page.dart';
 import '../widgets/common/fade_in.dart';
 
 class UserDashboardPage extends StatefulWidget {
@@ -220,6 +221,19 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                           ),
                         ),
 
+                        const SizedBox(height: 16),
+
+                        // ── Shortcut Card Aset Saya ──
+                        FadeIn(
+                          delay: const Duration(milliseconds: 375),
+                          child:MyAssetShortcutCard(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const MyAssetsPage()),
+                            ),
+                          ),
+                        ),
+
                         const SizedBox(height: 24),
 
                         FadeIn(
@@ -358,6 +372,85 @@ class _LoanShortcutCard extends StatelessWidget {
                     'Lihat riwayat & status peminjaman Anda',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.75),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.white,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MyAssetShortcutCard extends StatelessWidget {
+  final VoidCallback onTap;
+  const _MyAssetShortcutCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFF0EA5E9), // Sky blue
+              const Color(0xFF0284C7).withValues(alpha: 0.8),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0EA5E9).withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(
+                Icons.devices_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Aset Saya',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Lihat aset yang sedang Anda pegang',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.85),
                       fontSize: 12,
                     ),
                   ),
