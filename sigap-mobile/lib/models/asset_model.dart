@@ -45,12 +45,21 @@ class AssetModel {
     return AssetModel(
       id: json['id'] != null ? int.tryParse(json['id'].toString()) ?? 0 : 0,
       kode: json['kode'] ?? json['asset_code'] ?? '',
-      nama: json['nama'] ?? json['name'] ?? '',
+      nama: json['nama'] ?? 
+            (json['device_name'] is Map ? json['device_name']['name'] : json['device_name']) ?? 
+            json['name'] ?? 
+            '',
       kategori: json['kategori'] ?? json['category'] ?? '',
       kondisi:
           json['kondisi'] ?? json['status_kondisi'] ?? json['condition'] ?? '',
-      lokasi: json['lokasi'] ?? json['room'] ?? json['location'] ?? '',
-      pemegang: json['pemegang'] ?? json['holder'],
+      lokasi: json['lokasi'] ?? 
+              json['room_name'] ?? 
+              (json['room'] is Map ? json['room']['name'] : json['room']) ?? 
+              json['location'] ?? 
+              '',
+      pemegang: json['pemegang'] ?? 
+                (json['user'] is Map ? json['user']['name'] : json['user']) ?? 
+                json['holder'],
       status: json['status_kondisi'] ?? json['status'],
       merek: json['merek'] ?? json['merk'] ?? json['brand'],
       model: json['model'],
