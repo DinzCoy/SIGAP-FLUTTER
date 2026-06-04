@@ -4,7 +4,7 @@ import '../../models/notification_model.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 
-/// Satu item notifikasi dalam list — menampilkan ikon, judul, body, waktu,
+/// Satu item notifikasi dalam list — menampilkan foto/ikon, judul, body, waktu,
 /// dan dot indikator jika belum dibaca.
 class NotificationItem extends StatelessWidget {
   final NotificationModel notif;
@@ -17,8 +17,13 @@ class NotificationItem extends StatelessWidget {
       case 'ticket':
         return Icons.support_agent;
       case 'loan':
+      case 'permintaan_peminjaman':
+      case 'peminjaman_disetujui':
+      case 'peminjaman_ditolak':
+      case 'peminjaman_dikembalikan':
         return Icons.assignment_turned_in;
       case 'asset':
+      case 'mutasi_aset':
         return Icons.computer;
       default:
         return Icons.notifications;
@@ -30,8 +35,13 @@ class NotificationItem extends StatelessWidget {
       case 'ticket':
         return AppColors.accent;
       case 'loan':
+      case 'permintaan_peminjaman':
+      case 'peminjaman_disetujui':
+      case 'peminjaman_ditolak':
+      case 'peminjaman_dikembalikan':
         return AppColors.info;
       case 'asset':
+      case 'mutasi_aset':
         return AppColors.primaryLight;
       default:
         return AppColors.primary;
@@ -45,6 +55,29 @@ class NotificationItem extends StatelessWidget {
     } catch (_) {
       return dateStr;
     }
+  }
+
+  /// Widget avatar: foto profil jika ada, fallback ke icon berwarna
+  Widget _buildAvatar(Color color) {
+    if (notif.userPhoto != null && notif.userPhoto!.isNotEmpty) {
+      return CircleAvatar(
+        radius: 22,
+        backgroundColor: color.withValues(alpha: 0.1),
+        backgroundImage: NetworkImage(notif.userPhoto!),
+        onBackgroundImageError: (e, s) {},
+        child: null,
+      );
+    }
+
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(_getIcon(notif.type), color: color, size: 22),
+    );
   }
 
   @override
@@ -61,15 +94,8 @@ class NotificationItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Icon
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(_getIcon(notif.type), color: color, size: 24),
-            ),
+            // Avatar: foto profil atau ikon
+            _buildAvatar(color),
             const SizedBox(width: 16),
 
             // Konten

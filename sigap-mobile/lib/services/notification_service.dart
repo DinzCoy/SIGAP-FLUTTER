@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import 'api_client.dart';
 import 'dart:convert';
 
@@ -94,6 +95,7 @@ class NotificationService {
   }
 
   /// Menampilkan notifikasi lokal saat aplikasi di foreground
+  /// Jika ada foto peminjam (imageUrl), gambar akan didownload dan ditampilkan
   static void _showLocalNotification(
     RemoteMessage message,
     AndroidNotificationChannel channel,
@@ -102,10 +104,92 @@ class NotificationService {
     AndroidNotification? android = message.notification?.android;
 
     if (notification != null && android != null) {
+      // Ambil URL foto dari payload FCM — backend mengirimkan via field 'image' di notification
+      // atau via field data 'foto_peminjam'
+      final String? imageUrl = message.data['foto_peminjam']?.isNotEmpty == true
+          ? message.data['foto_peminjam']
+          : null;
+
+      if (imageUrl != null) {
+        // Download gambar secara async lalu tampilkan notifikasi
+        _showNotificationWithImage(
+          notification.hashCode,
+          notification.title ?? '',
+          notification.body ?? '',
+          imageUrl,
+          channel,
+          jsonEncode(message.data),
+        );
+      } else {
+        // Tampilkan notifikasi biasa tanpa foto
+        _localNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: '@mipmap/ic_launcher',
+              importance: Importance.high,
+              priority: Priority.high,
+            ),
+          ),
+          payload: jsonEncode(message.data),
+        );
+      }
+    }
+  }
+
+  /// Download gambar dari URL lalu tampilkan notifikasi dengan BigPicture style
+  static Future<void> _showNotificationWithImage(
+    int id,
+    String title,
+    String body,
+    String imageUrl,
+    AndroidNotificationChannel channel,
+    String payload,
+  ) async {
+    try {
+      // Download gambar dari URL
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode == 200) {
+        final bytes = response.bodyBytes;
+
+        _localNotificationsPlugin.show(
+          id,
+          title,
+          body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: '@mipmap/ic_launcher',
+              importance: Importance.high,
+              priority: Priority.high,
+              styleInformation: BigPictureStyleInformation(
+                ByteArrayAndroidBitmap(bytes),
+                largeIcon: ByteArrayAndroidBitmap(bytes),
+                hideExpandedLargeIcon: false,
+                contentTitle: title,
+                summaryText: body,
+              ),
+            ),
+          ),
+          payload: payload,
+        );
+      } else {
+        throw Exception('Gagal download gambar: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('FCM: Gagal tampilkan notif dengan foto: $e');
+      // Fallback: tampilkan tanpa foto
       _localNotificationsPlugin.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
+        id,
+        title,
+        body,
         NotificationDetails(
           android: AndroidNotificationDetails(
             channel.id,
@@ -116,10 +200,11 @@ class NotificationService {
             priority: Priority.high,
           ),
         ),
-        payload: jsonEncode(message.data),
+        payload: payload,
       );
     }
   }
+
 
   /// Mendapatkan FCM token dan mengirimkannya ke Laravel
   static Future<void> _updateFCMToken() async {

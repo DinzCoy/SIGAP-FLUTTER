@@ -218,7 +218,9 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                           child: _MyAssetShortcutCard(
                             onTap: () => Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const MyAssetsPage()),
+                              MaterialPageRoute(
+                                builder: (_) => const MyAssetsPage(),
+                              ),
                             ),
                           ),
                         ),
@@ -297,8 +299,6 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
     );
   }
 }
-
-
 
 class _MyAssetShortcutCard extends StatelessWidget {
   final VoidCallback onTap;

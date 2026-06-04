@@ -8,6 +8,7 @@ class NotificationModel {
   final String type; // 'ticket' | 'loan' | 'asset' | 'system'
   final bool isRead;
   final int? referenceId;
+  final String? userPhoto; // Foto profil pengirim/peminjam (dari 'foto_peminjam')
   final String createdAt;
 
   NotificationModel({
@@ -17,6 +18,7 @@ class NotificationModel {
     required this.type,
     required this.isRead,
     this.referenceId,
+    this.userPhoto,
     required this.createdAt,
   });
 
@@ -40,6 +42,7 @@ class NotificationModel {
           json['read_at'] != null ||
           json['sudah_dibaca'] == true,
       referenceId: parsedRefId,
+      userPhoto: dataPayload['foto_peminjam']?.toString(),
       createdAt: json['created_at']?.toString() ?? '',
     );
   }
