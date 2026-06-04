@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:intl/date_symbol_data_local.dart';
-import 'pages/login_page.dart';
 import 'pages/splash_page.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';

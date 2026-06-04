@@ -70,9 +70,9 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => nextPage,
+          pageBuilder: (_, _, _) => nextPage,
           transitionDuration: const Duration(milliseconds: 500),
-          transitionsBuilder: (_, animation, __, child) {
+          transitionsBuilder: (_, animation, _, child) {
             return FadeTransition(opacity: animation, child: child);
           },
         ),
@@ -81,9 +81,9 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const LoginPage(),
+          pageBuilder: (_, _, _) => const LoginPage(),
           transitionDuration: const Duration(milliseconds: 500),
-          transitionsBuilder: (_, animation, __, child) {
+          transitionsBuilder: (_, animation, _, child) {
             return FadeTransition(opacity: animation, child: child);
           },
         ),
@@ -133,7 +133,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
               ),
               const SizedBox(height: 8),
               Text(
-                'Sistem Informasi Geografis\n& Pemantauan Aset',
+                'Sistem Guardian Aset &Pelayanan IT',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
