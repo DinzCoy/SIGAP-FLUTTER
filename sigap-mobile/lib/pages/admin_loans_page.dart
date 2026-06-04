@@ -212,11 +212,11 @@ class _AdminLoansPageState extends State<AdminLoansPage>
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Detail Peminjaman',
+                  loan.jenis == 'permanen' ? 'Detail Mutasi' : 'Detail Peminjaman',
                   style: AppTextStyles.titleLarge.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 20),
-                _buildDetailRow('ID Peminjaman', '#${loan.id}'),
+                _buildDetailRow(loan.jenis == 'permanen' ? 'ID Mutasi' : 'ID Peminjaman', '#${loan.id}'),
                 _buildDetailRow('Peminjam', loan.namaUser ?? 'User ID: ${loan.userId}'),
                 _buildDetailRow('Aset', loan.namaAset),
                 _buildDetailRow('Pemilik Aset', loan.assetOwner ?? '-'),
@@ -225,8 +225,9 @@ class _AdminLoansPageState extends State<AdminLoansPage>
                 const SizedBox(height: 12),
                 Divider(color: AppColors.divider),
                 const SizedBox(height: 12),
-                _buildDetailRow('Tanggal Pinjam', _formatDate(loan.tanggalMulai ?? loan.createdAt)),
-                _buildDetailRow('Kapan Dikembalikan', _formatDate(loan.tanggalKembali ?? loan.tanggalDikembalikan)),
+                _buildDetailRow(loan.jenis == 'permanen' ? 'Tanggal Mutasi' : 'Tanggal Pinjam', _formatDate(loan.tanggalMulai ?? loan.createdAt)),
+                if (loan.jenis != 'permanen')
+                  _buildDetailRow('Kapan Dikembalikan', _formatDate(loan.tanggalKembali ?? loan.tanggalDikembalikan)),
                 _buildDetailRow('Status Saat Ini', loan.statusInfo['label']),
                 const SizedBox(height: 24),
                 AppButton.primary(
