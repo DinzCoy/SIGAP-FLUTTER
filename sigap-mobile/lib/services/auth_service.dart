@@ -1,14 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/app_config.dart';
 import 'api_client.dart';
 
 class AuthService {
   /// Verifikasi Login ke Laravel.
-  static Future<dynamic> verifyLogin(
-    String email,
-    String password,
-    String role,
-  ) async {
+  static Future<dynamic> verifyLogin(String email, String password) async {
     try {
       final response = await ApiClient.postPublic('/login', {
         "email": email,
@@ -18,33 +17,28 @@ class AuthService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['status'] == 'success') {
-          // Data user dan token sekarang dibungkus dalam objek 'data' oleh Laravel
           final responseData = data['data'];
           final user = responseData['user'];
-          
+
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('user_id', user['id'].toString());
           await prefs.setString('user_email', user['email']);
-          
-          // Ambil nama role pertama dari list roles yang dikirim Laravel
-          String roleName = 'User';
-          if (user['roles'] != null && (user['roles'] as List).isNotEmpty) {
-            roleName = user['roles'][0]['name'];
-          }
-          await prefs.setString('user_role', roleName);
-          
           await prefs.setString('user_name', user['name'] ?? '');
           await prefs.setString('user_phone', user['phone'] ?? '');
           await prefs.setString('user_nip', user['nip'] ?? '');
-          
+          await prefs.setString('user_photo_url', user['photo_url'] ?? '');
+
           if (responseData['token'] != null) {
             await prefs.setString('user_token', responseData['token']);
           } else {
             await prefs.setString('user_token', user['id'].toString());
           }
-          return true;
+
+          final roles =
+              (user['roles'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+          return {'success': true, 'roles': roles};
         } else {
-          return data['message'];
+          return {'success': false, 'message': data['message']};
         }
       } else {
         return "Error ${response.statusCode}: ${response.reasonPhrase}";
@@ -74,7 +68,11 @@ class AuthService {
   }
 
   /// Ubah Password.
-  static Future<dynamic> changePassword(String userId, String oldPassword, String newPassword) async {
+  static Future<dynamic> changePassword(
+    String userId,
+    String oldPassword,
+    String newPassword,
+  ) async {
     try {
       final response = await ApiClient.post('/user/change-password', {
         "old_password": oldPassword,
@@ -98,18 +96,33 @@ class AuthService {
     required String email,
     String? phone,
     String? nip,
+    File? fotoProfil,
+    bool hapusFoto = false,
   }) async {
     try {
-      final response = await ApiClient.post('/user/update-profile', {
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "nip": nip,
-      });
+      final token = await getToken();
+      final url = Uri.parse('${AppConfig.baseUrl}/user/update-profile');
+      final request = http.MultipartRequest('POST', url);
+      
+      request.headers.addAll(AppConfig.getHeaders(token));
+      request.fields['name'] = name;
+      request.fields['email'] = email;
+      if (phone != null) request.fields['phone'] = phone;
+      if (nip != null) request.fields['nip'] = nip;
+      if (hapusFoto) request.fields['hapus_foto'] = '1';
+
+      if (fotoProfil != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('foto_profil', fotoProfil.path),
+        );
+      }
+
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data['status'] == 'success' ? true : data['message'];
+        return data['status'] == 'success' ? data : data['message'];
       } else {
         return "Error ${response.statusCode}";
       }

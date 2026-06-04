@@ -37,7 +37,7 @@ class _LoanProcessDialogState extends State<LoanProcessDialog> {
             controller: _catatanCtrl,
             maxLines: 2,
             hint: 'Berikan alasan atau catatan tambahan...',
-          )
+          ),
         ],
       ),
       actions: [
@@ -45,15 +45,21 @@ class _LoanProcessDialogState extends State<LoanProcessDialog> {
           onPressed: () => Navigator.pop(context, null),
           child: Text(
             'Batal',
-            style: AppTextStyles.labelLarge.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.labelLarge.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
         ),
         ElevatedButton(
           onPressed: () => Navigator.pop(context, _catatanCtrl.text),
           style: ElevatedButton.styleFrom(
-            backgroundColor: widget.isApprove ? AppColors.success : AppColors.error,
+            backgroundColor: widget.isApprove
+                ? AppColors.success
+                : AppColors.error,
             foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           child: Text(
             widget.isApprove ? 'Setujui' : 'Tolak',

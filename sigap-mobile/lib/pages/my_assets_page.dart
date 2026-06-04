@@ -57,8 +57,8 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
 
   void _showQrDialog(BuildContext context, AssetModel asset) {
     // Gunakan kode (bmn_number) untuk scan, atau ID jika kosong (format fallback Laravel: assets/{id}/scan)
-    final qrData = asset.kode.isNotEmpty 
-        ? asset.kode 
+    final qrData = asset.kode.isNotEmpty
+        ? asset.kode
         : 'assets/${asset.id}/scan';
 
     showModalBottomSheet(
@@ -154,9 +154,7 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Aset Saya'),
-      ),
+      appBar: AppBar(title: const Text('Aset Saya')),
       body: _buildBody(),
     );
   }
@@ -196,7 +194,11 @@ class _AssetCard extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(Icons.computer_rounded, color: AppColors.primary, size: 28),
+              child: Icon(
+                Icons.computer_rounded,
+                color: AppColors.primary,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -216,11 +218,17 @@ class _AssetCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.qr_code_2_rounded, size: 14, color: AppColors.inkMute),
+                      Icon(
+                        Icons.qr_code_2_rounded,
+                        size: 14,
+                        color: AppColors.inkMute,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          asset.kode.isNotEmpty ? asset.kode : 'assets/${asset.id}/scan',
+                          asset.kode.isNotEmpty
+                              ? asset.kode
+                              : 'assets/${asset.id}/scan',
                           style: TextStyle(
                             color: AppColors.inkMute,
                             fontSize: 12,

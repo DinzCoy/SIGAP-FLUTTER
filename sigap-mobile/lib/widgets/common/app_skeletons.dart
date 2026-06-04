@@ -107,7 +107,10 @@ class QuickActionSkeleton extends StatelessWidget {
           for (int i = 0; i < 3; i++) ...[
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 8,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.canvas,
                   borderRadius: BorderRadius.circular(AppColors.radiusXl),
@@ -158,27 +161,38 @@ class ListSectionSkeleton extends StatelessWidget {
               border: Border.all(color: AppColors.hairline),
             ),
             child: Column(
-              children: List.generate(itemCount, (i) => Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    const SkeletonCircle(size: 40),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SkeletonBox(width: 140, height: 16, borderRadius: 4),
-                          SizedBox(height: 8),
-                          SkeletonBox(width: 80, height: 12, borderRadius: 4),
-                        ],
+              children: List.generate(
+                itemCount,
+                (i) => Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      const SkeletonCircle(size: 40),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SkeletonBox(
+                              width: 140,
+                              height: 16,
+                              borderRadius: 4,
+                            ),
+                            SizedBox(height: 8),
+                            SkeletonBox(width: 80, height: 12, borderRadius: 4),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SkeletonBox(width: 60, height: 24, borderRadius: AppColors.radiusPill),
-                  ],
+                      const SkeletonBox(
+                        width: 60,
+                        height: 24,
+                        borderRadius: AppColors.radiusPill,
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+              ),
             ),
           ),
         ),

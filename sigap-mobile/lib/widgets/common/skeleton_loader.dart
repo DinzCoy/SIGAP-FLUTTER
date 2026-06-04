@@ -7,11 +7,7 @@ class SkeletonLoader extends StatelessWidget {
   final Widget child;
   final bool enabled;
 
-  const SkeletonLoader({
-    super.key,
-    required this.child,
-    this.enabled = true,
-  });
+  const SkeletonLoader({super.key, required this.child, this.enabled = true});
 
   @override
   Widget build(BuildContext context) {

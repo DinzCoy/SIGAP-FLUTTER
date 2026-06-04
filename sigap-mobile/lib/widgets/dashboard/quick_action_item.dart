@@ -24,7 +24,8 @@ class QuickActionItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.canvas,
         borderRadius: BorderRadius.circular(AppColors.radiusXl), // 16px
-        boxShadow: AppColors.floatShadow, // Level 2 shadow for "floating" effect
+        boxShadow:
+            AppColors.floatShadow, // Level 2 shadow for "floating" effect
         border: Border.all(color: AppColors.hairline.withValues(alpha: 0.5)),
       ),
       child: Material(
@@ -42,7 +43,9 @@ class QuickActionItem extends StatelessWidget {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(AppColors.radiusMd), // 8px square-ish
+                    borderRadius: BorderRadius.circular(
+                      AppColors.radiusMd,
+                    ), // 8px square-ish
                   ),
                   child: Icon(icon, color: color, size: 24),
                 ),
@@ -66,6 +69,3 @@ class QuickActionItem extends StatelessWidget {
     );
   }
 }
-
-
-

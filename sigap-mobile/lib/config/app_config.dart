@@ -1,7 +1,7 @@
 class AppConfig {
-  /// Base URL API Laravel Anda. 
-  /// Menggunakan IP NetBird PC/Laptop lokal untuk koneksi yang konsisten
-  static const String baseUrl = "http://100.71.121.127:8000/api";
+  /// Base URL API Laravel Anda.
+  /// Mengarah ke server cPanel production
+  static const String baseUrl = "https://sigap.makagang.stat7300.net/api";
 
   /// API KEY untuk keamanan komunikasi antara Flutter dan Laravel.
   /// Pastikan nilai ini sama dengan yang dikonfigurasi di middleware Laravel Anda.
@@ -14,11 +14,13 @@ class AppConfig {
       "Accept": "application/json",
       "SUPER-API-KEY": apiKey,
     };
-    
+
     if (token != null) {
-      headers["Authorization"] = "Bearer $token";
+      // Menggunakan header custom X-Auth-Token karena server cPanel/Apache
+      // memblokir header 'Authorization: Bearer' sebelum sampai ke PHP.
+      headers["X-Auth-Token"] = token;
     }
-    
+
     return headers;
   }
 }

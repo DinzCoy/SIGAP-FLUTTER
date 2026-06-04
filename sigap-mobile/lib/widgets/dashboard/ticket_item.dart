@@ -26,22 +26,16 @@ class TicketItem extends StatelessWidget {
   /// Buat dari Map JSON API
   factory TicketItem.fromMap(Map<String, dynamic> map, {VoidCallback? onTap}) {
     return TicketItem(
-      title:        map['title']         as String? ?? '-',
+      title: map['title'] as String? ?? '-',
       reporterName: map['reporter_name'] as String? ?? '-',
-      date:         map['date']          as String? ?? '-',
-      status:       map['status']        as String? ?? '',
-      priority:     map['priority']      as String? ?? 'Rendah',
-      onTap:        onTap,
+      date: map['date'] as String? ?? '-',
+      status: map['status'] as String? ?? '',
+      priority: map['priority'] as String? ?? 'Rendah',
+      onTap: onTap,
     );
   }
 
-  Color get _barColor {
-    final s = status.toLowerCase();
-    if (s.contains('progress'))  return AppColors.primary;
-    if (s.contains('menunggu'))  return AppColors.warning;
-    if (s.contains('selesai'))   return AppColors.success;
-    return AppColors.border;
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +43,10 @@ class TicketItem extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center, // Aligned center for a cleaner tabular look
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Softer status bar
-            Container(
-              width: 4, height: 40,
-              margin: const EdgeInsets.only(right: 16),
-              decoration: BoxDecoration(
-                color: _barColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Konten tengah
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,41 +55,68 @@ class TicketItem extends StatelessWidget {
                     title,
                     style: AppTextStyles.titleSmall.copyWith(
                       color: AppColors.ink,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.person_rounded,
-                          size: 14, color: AppColors.slate),
-                      const SizedBox(width: 4),
-                      Text(
-                        reporterName, 
-                        style: AppTextStyles.caption.copyWith(color: AppColors.slate),
+                      Expanded(
+                        flex: 3,
+                        child: Row(
+                          children: [
+                            Icon(Icons.person_rounded, size: 14, color: AppColors.primary),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                reporterName,
+                                style: AppTextStyles.caption.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.inkSecondary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(width: 12),
-                      Icon(Icons.schedule_rounded,
-                          size: 14, color: AppColors.slate),
-                      const SizedBox(width: 4),
-                      Text(
-                        date, 
-                        style: AppTextStyles.caption.copyWith(color: AppColors.slate),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 2,
+                        child: Row(
+                          children: [
+                            Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.primary),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                date,
+                                style: AppTextStyles.caption.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.inkSecondary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
-            // Badge prioritas
-            StatusBadge(priority, small: true),
+            const SizedBox(width: 12),
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: StatusBadge(priority, small: true),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

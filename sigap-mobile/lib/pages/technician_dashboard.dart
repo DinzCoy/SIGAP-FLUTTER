@@ -16,10 +16,12 @@ import '../services/dashboard_service.dart';
 import '../widgets/common/fade_in.dart';
 
 import 'profile_page.dart';
+import 'search_page.dart';
 import 'all_tickets_page.dart';
 import 'asset_scanner_page.dart';
 import 'leaderboard_page.dart';
 import 'maintenance_history_page.dart';
+import 'asset_catalog_page.dart';
 
 // Teknisi TIDAK perlu fitur pinjaman — role teknisi bertugas memperbaiki aset,
 // bukan meminjam. Tab hanya: Beranda | Laporan | Profil
@@ -36,6 +38,8 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
   int _selectedIndex = 0;
   bool _isLoading = true;
   String _techName = 'Teknisi';
+  String _roleName = 'Teknisi';
+  String _photoUrl = '';
 
   int _waitingCount = 0;
   int _processCount = 0;
@@ -52,35 +56,49 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
 
   Future<void> _loadName() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() => _techName = prefs.getString('user_name') ?? 'Teknisi');
+    setState(() {
+      _techName = prefs.getString('user_name') ?? 'Teknisi';
+      _roleName = prefs.getString('user_role') ?? 'Teknisi';
+      _photoUrl = prefs.getString('user_photo_url') ?? '';
+    });
   }
 
   Future<void> _fetchData() async {
     setState(() => _isLoading = true);
     final data = await DashboardService.fetchTechnicianDashboard();
     if (data != null && mounted) {
-      final stats    = data['stats'] as Map<String, dynamic>? ?? {};
-      final list     = (data['tasks'] as List?) ?? [];
+      final stats = data['stats'] as Map<String, dynamic>? ?? {};
+      final list = (data['tasks'] as List?) ?? [];
       final timeline = (data['repair_timeline'] as List?) ?? [];
       setState(() {
-        _waitingCount   = stats['waiting'] ?? 0;
-        _processCount   = stats['processing'] ?? 0;
-        _doneCount      = stats['completed'] ?? 0;
-        _tasks          = list.cast<Map<String, dynamic>>();
+        _waitingCount = stats['waiting'] ?? 0;
+        _processCount = stats['processing'] ?? 0;
+        _doneCount = stats['completed'] ?? 0;
+        _tasks = list.cast<Map<String, dynamic>>();
         _repairTimeline = timeline.cast<Map<String, dynamic>>();
       });
     }
     if (mounted) setState(() => _isLoading = false);
   }
 
-  void _onNavTap(int index) => setState(() => _selectedIndex = index);
+  void _onNavTap(int index) {
+    if (index == 0) _loadName();
+    setState(() => _selectedIndex = index);
+  }
 
   Widget _buildBody() {
-    // index 1 = Laporan, index 2 = Profil
-    if (_selectedIndex == 1) return const AllTicketsPage();
-    if (_selectedIndex == 2) return const ProfilePage();
+    return IndexedStack(
+      index: _selectedIndex,
+      children: [
+        _buildHomeContent(),
+        const AllTicketsPage(embeddedMode: true),
+        const MaintenanceHistoryPage(embeddedMode: true),
+        const ProfilePage(),
+      ],
+    );
+  }
 
-    // index 0 = Beranda
+  Widget _buildHomeContent() {
     return RefreshIndicator(
       onRefresh: _fetchData,
       color: AppColors.primary,
@@ -89,7 +107,8 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
         slivers: [
           DashboardHeaderV2(
             name: _techName,
-            role: 'Teknisi IT SIGAP',
+            photoUrl: _photoUrl,
+            role: _roleName == 'Ketua Tim' ? 'Ketua Tim IT SIGAP' : 'Teknisi IT SIGAP',
             onNotification: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const NotificationsPage()),
@@ -103,8 +122,9 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
               children: [
                 DashboardTransitionZone(
                   onSearchTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Fitur pencarian segera hadir!')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SearchPage()),
                     );
                   },
                   quickActions: [
@@ -113,15 +133,24 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
                       label: 'Scan Aset',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const AssetScannerPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const AssetScannerPage(),
+                        ),
                       ),
                     ),
                     QuickAction(
                       icon: Icons.history_rounded,
                       label: 'Riwayat Kerja',
+                      onTap: () => setState(() => _selectedIndex = 2),
+                    ),
+                    QuickAction(
+                      icon: Icons.menu_book_outlined,
+                      label: 'Katalog Aset',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const MaintenanceHistoryPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const AssetCatalogPage(),
+                        ),
                       ),
                     ),
                     QuickAction(
@@ -129,7 +158,9 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
                       label: 'Top Teknisi',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const LeaderboardPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const LeaderboardPage(),
+                        ),
                       ),
                     ),
                   ],
@@ -143,26 +174,28 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
                         delay: const Duration(milliseconds: 200),
                         child: _isLoading
                             ? const StatPanelSkeleton()
-                            : StatPanel(items: [
-                                StatItem(
-                                  value: '$_waitingCount',
-                                  label: 'Ditunggu',
-                                  icon: Icons.access_time_filled,
-                                  iconColor: AppColors.warning,
-                                ),
-                                StatItem(
-                                  value: '$_processCount',
-                                  label: 'Proses',
-                                  icon: Icons.build_circle,
-                                  iconColor: AppColors.primary,
-                                ),
-                                StatItem(
-                                  value: '$_doneCount',
-                                  label: 'Selesai',
-                                  icon: Icons.check_circle,
-                                  iconColor: AppColors.success,
-                                ),
-                              ]),
+                            : StatPanel(
+                                items: [
+                                  StatItem(
+                                    value: '$_waitingCount',
+                                    label: 'Ditunggu',
+                                    icon: Icons.access_time_filled,
+                                    iconColor: AppColors.warning,
+                                  ),
+                                  StatItem(
+                                    value: '$_processCount',
+                                    label: 'Proses',
+                                    icon: Icons.build_circle,
+                                    iconColor: AppColors.primary,
+                                  ),
+                                  StatItem(
+                                    value: '$_doneCount',
+                                    label: 'Selesai',
+                                    icon: Icons.check_circle,
+                                    iconColor: AppColors.success,
+                                  ),
+                                ],
+                              ),
                       ),
                       const SizedBox(height: 24),
                       if (_isLoading)
@@ -229,7 +262,7 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
         child: const Icon(Icons.qr_code_scanner_rounded, size: 28),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // 3 item: Beranda | [FAB center] | Laporan | Profil
+      // 4 item: Beranda | Laporan | [FAB center] | Riwayat | Profil
       bottomNavigationBar: DashboardBottomNav(
         currentIndex: _selectedIndex,
         onTap: _onNavTap,
@@ -243,6 +276,11 @@ class _TechnicianDashboardPageState extends State<TechnicianDashboardPage> {
             icon: Icon(Icons.insert_chart_outlined),
             activeIcon: Icon(Icons.insert_chart_rounded),
             label: 'Laporan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_rounded),
+            activeIcon: Icon(Icons.history_rounded),
+            label: 'Riwayat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline_rounded),

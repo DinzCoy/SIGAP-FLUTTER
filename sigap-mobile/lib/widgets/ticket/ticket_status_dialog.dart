@@ -104,7 +104,10 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
       _isLoadingTech = false;
 
       if (widget.ticket.technicianId != null) {
-        final hasTech = list.any((tech) => int.tryParse(tech['id'].toString()) == widget.ticket.technicianId);
+        final hasTech = list.any(
+          (tech) =>
+              int.tryParse(tech['id'].toString()) == widget.ticket.technicianId,
+        );
         if (hasTech) {
           _selectedTechnicianId = widget.ticket.technicianId;
         }
@@ -115,13 +118,16 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
   List<Map<String, dynamic>> _getFilteredOptions() {
     if (_userRoleId == null) {
       // Selagi loading, tampilkan status aktif saat ini saja agar tidak kosong
-      return _statusOptions.where((opt) => opt['value'] == widget.ticket.status).toList();
+      return _statusOptions
+          .where((opt) => opt['value'] == widget.ticket.status)
+          .toList();
     }
 
     final int roleId = _userRoleId!;
     final List<String> allowedStatuses;
 
-    if (roleId == 2) { // Admin
+    if (roleId == 2) {
+      // Admin
       allowedStatuses = [
         TicketModel.statusMenungguPengelola,
         TicketModel.statusKeKetuaTim,
@@ -132,7 +138,8 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
         TicketModel.statusSelesai,
         TicketModel.statusDibatalkan,
       ];
-    } else if (roleId == 4) { // Pengelola Barang
+    } else if (roleId == 4) {
+      // Pengelola Barang
       allowedStatuses = [
         TicketModel.statusKeKetuaTim,
         TicketModel.statusMenungguBiaya,
@@ -140,13 +147,15 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
         TicketModel.statusSelesai,
         TicketModel.statusDibatalkan,
       ];
-    } else if (roleId == 7) { // Ketua Tim
+    } else if (roleId == 7) {
+      // Ketua Tim
       allowedStatuses = [
         TicketModel.statusKeTeknisi,
         TicketModel.statusSelesai,
         TicketModel.statusDibatalkan,
       ];
-    } else if (roleId == 3) { // Teknisi
+    } else if (roleId == 3) {
+      // Teknisi
       allowedStatuses = [
         TicketModel.statusInProgress,
         TicketModel.statusMenungguBiaya,
@@ -216,14 +225,21 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
                       final color = opt['color'] as Color;
 
                       return InkWell(
-                        onTap: () => setState(() => _selectedStatus = opt['value'] as String),
+                        onTap: () => setState(
+                          () => _selectedStatus = opt['value'] as String,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 150),
                           margin: const EdgeInsets.only(bottom: 6),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
-                            color: isSelected ? color.withAlpha(25) : Colors.transparent,
+                            color: isSelected
+                                ? color.withAlpha(25)
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: isSelected ? color : AppColors.hairline,
@@ -232,33 +248,47 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
                           ),
                           child: Row(
                             children: [
-                              Icon(opt['icon'] as IconData, size: 18, color: color),
+                              Icon(
+                                opt['icon'] as IconData,
+                                size: 18,
+                                color: color,
+                              ),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   opt['label'] as String,
                                   style: AppTextStyles.bodyMedium.copyWith(
                                     color: isSelected ? color : AppColors.ink,
-                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
                                   ),
                                 ),
                               ),
                               if (isSelected)
-                                Icon(Icons.check_rounded, size: 18, color: color),
+                                Icon(
+                                  Icons.check_rounded,
+                                  size: 18,
+                                  color: color,
+                                ),
                             ],
                           ),
                         ),
                       );
                     },
                   );
-                }
+                },
               ),
             ),
             const SizedBox(height: 12),
 
             // ── Opsi Pilih Teknisi (Jika status adalah "Diteruskan ke Teknisi" & role adalah Admin/Ketua Tim) ────────
-            if (_selectedStatus == TicketModel.statusKeTeknisi && (_userRoleId == 2 || _userRoleId == 7)) ...[
-              Text('Pilih Teknisi untuk Ditugaskan:', style: AppTextStyles.labelMedium),
+            if (_selectedStatus == TicketModel.statusKeTeknisi &&
+                (_userRoleId == 2 || _userRoleId == 7)) ...[
+              Text(
+                'Pilih Teknisi untuk Ditugaskan:',
+                style: AppTextStyles.labelMedium,
+              ),
               const SizedBox(height: 8),
               _isLoadingTech
                   ? const Center(
@@ -272,51 +302,63 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
                       ),
                     )
                   : _technicians.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Tidak ada teknisi aktif yang ditemukan.',
-                            style: AppTextStyles.bodySmall.copyWith(color: AppColors.error),
-                          ),
-                        )
-                      : Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: AppColors.canvasSoft,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.hairline),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<int>(
-                              value: _selectedTechnicianId,
-                              hint: Text(
-                                'Pilih Teknisi...',
-                                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.slate),
-                              ),
-                              isExpanded: true,
-                              icon: Icon(Icons.arrow_drop_down_rounded, color: AppColors.inkMute),
-                              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.ink),
-                              dropdownColor: AppColors.canvas,
-                              borderRadius: BorderRadius.circular(8),
-                              items: _technicians.map((tech) {
-                                return DropdownMenuItem<int>(
-                                  value: int.tryParse(tech['id'].toString()),
-                                  child: Text(tech['name'].toString()),
-                                );
-                              }).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedTechnicianId = val;
-                                });
-                              },
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'Tidak ada teknisi aktif yang ditemukan.',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.error,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.canvasSoft,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.hairline),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          value: _selectedTechnicianId,
+                          hint: Text(
+                            'Pilih Teknisi...',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.slate,
                             ),
                           ),
+                          isExpanded: true,
+                          icon: Icon(
+                            Icons.arrow_drop_down_rounded,
+                            color: AppColors.inkMute,
+                          ),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.ink,
+                          ),
+                          dropdownColor: AppColors.canvas,
+                          borderRadius: BorderRadius.circular(8),
+                          items: _technicians.map((tech) {
+                            return DropdownMenuItem<int>(
+                              value: int.tryParse(tech['id'].toString()),
+                              child: Text(tech['name'].toString()),
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            setState(() {
+                              _selectedTechnicianId = val;
+                            });
+                          },
                         ),
+                      ),
+                    ),
               if (_selectedTechnicianId == null) ...[
                 const SizedBox(height: 4),
                 Text(
                   '* Harap pilih teknisi sebelum menyimpan status ini.',
-                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.error, fontSize: 11),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.error,
+                    fontSize: 11,
+                  ),
                 ),
               ],
               const SizedBox(height: 16),
@@ -330,7 +372,9 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: 'Tulis catatan atau tanggapan...',
-                hintStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.slate),
+                hintStyle: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.slate,
+                ),
                 filled: true,
                 fillColor: AppColors.canvasSoft,
                 border: OutlineInputBorder(
@@ -355,7 +399,9 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: AppColors.hairline),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: Text('Batal', style: AppTextStyles.labelMedium),
@@ -364,14 +410,18 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: (_selectedStatus == TicketModel.statusKeTeknisi && (_userRoleId == 2 || _userRoleId == 7) && _selectedTechnicianId == null)
+                    onPressed:
+                        (_selectedStatus == TicketModel.statusKeTeknisi &&
+                            (_userRoleId == 2 || _userRoleId == 7) &&
+                            _selectedTechnicianId == null)
                         ? null
                         : () {
                             final Map<String, dynamic> result = {
                               'status': _selectedStatus,
                               'tanggapan': _tanggapanCtrl.text,
                             };
-                            if (_selectedStatus == TicketModel.statusKeTeknisi) {
+                            if (_selectedStatus ==
+                                TicketModel.statusKeTeknisi) {
                               result['technician_id'] = _selectedTechnicianId;
                             }
                             Navigator.pop(context, result);
@@ -381,10 +431,17 @@ class _TicketStatusDialogState extends State<TicketStatusDialog> {
                       foregroundColor: Colors.white,
                       disabledBackgroundColor: AppColors.border,
                       disabledForegroundColor: AppColors.textHint,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    child: Text('Simpan', style: AppTextStyles.labelMedium.copyWith(color: Colors.white)),
+                    child: Text(
+                      'Simpan',
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],

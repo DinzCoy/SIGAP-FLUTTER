@@ -9,6 +9,7 @@ import '../../widgets/common/app_text_field.dart';
 import 'ticket_header_banner.dart';
 import 'ticket_jenis_grid.dart';
 import 'ticket_foto_section.dart';
+import 'ticket_priority_selector.dart';
 
 /// Form pengajuan tiket IT. Berisi semua logika submit dan state foto/jenis.
 class TicketForm extends StatefulWidget {
@@ -19,13 +20,14 @@ class TicketForm extends StatefulWidget {
 }
 
 class _TicketFormState extends State<TicketForm> {
-  final _formKey     = GlobalKey<FormState>();
-  final _judulCtrl   = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _judulCtrl = TextEditingController();
   final _deskripsiCtrl = TextEditingController();
 
   String _selectedJenis = TicketJenisGrid.jenisLayanan.first;
-  File?  _fotoFile;
-  bool   _isLoading = false;
+  String _selectedPriority = 'Sedang';
+  File? _fotoFile;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -44,21 +46,26 @@ class _TicketFormState extends State<TicketForm> {
     setState(() => _isLoading = true);
     try {
       await TicketService.createTicket(
-        judul     : _judulCtrl.text.trim(),
-        deskripsi : _deskripsiCtrl.text.trim(),
-        jenis     : _selectedJenis,
-        foto      : _fotoFile,
+        judul: _judulCtrl.text.trim(),
+        deskripsi: _deskripsiCtrl.text.trim(),
+        jenis: _selectedJenis,
+        priority: _selectedPriority,
+        foto: _fotoFile,
       );
       if (!mounted) return;
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Gagal mengirim tiket: $e'),
-        backgroundColor: AppColors.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mengirim tiket: $e'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -75,9 +82,17 @@ class _TicketFormState extends State<TicketForm> {
           children: [
             SizedBox(height: 16),
             Container(
-              width: 72, height: 72,
-              decoration: BoxDecoration(color: AppColors.successBg, shape: BoxShape.circle),
-              child: Icon(Icons.check_circle_rounded, color: AppColors.success, size: 48),
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.successBg,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.success,
+                size: 48,
+              ),
             ),
             const SizedBox(height: 16),
             Text('Tiket Terkirim!', style: AppTextStyles.titleLarge),
@@ -85,7 +100,9 @@ class _TicketFormState extends State<TicketForm> {
             Text(
               'Laporan Anda telah diterima. Tim IT akan segera menindaklanjuti.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 24),
             AppButton.primary(
@@ -124,9 +141,19 @@ class _TicketFormState extends State<TicketForm> {
             hint: 'cth. Laptop tidak bisa menyala',
             controller: _judulCtrl,
             prefixIcon: const Icon(Icons.title_rounded),
-            validator: (v) => v == null || v.trim().isEmpty ? 'Judul tidak boleh kosong' : null,
+            validator: (v) => v == null || v.trim().isEmpty
+                ? 'Judul tidak boleh kosong'
+                : null,
           ),
           const SizedBox(height: 16),
+
+          Text('Tingkat Prioritas *', style: AppTextStyles.titleSmall),
+          const SizedBox(height: 10),
+          TicketPrioritySelector(
+            selected: _selectedPriority,
+            onSelected: (v) => setState(() => _selectedPriority = v),
+          ),
+          const SizedBox(height: 24),
 
           AppTextField(
             label: 'Deskripsi Masalah *',
@@ -143,10 +170,10 @@ class _TicketFormState extends State<TicketForm> {
           Text('Foto Masalah (Opsional)', style: AppTextStyles.titleSmall),
           const SizedBox(height: 8),
           TicketFotoSection(
-            fotoFile : _fotoFile,
-            onCamera : () => _pickImage(ImageSource.camera),
+            fotoFile: _fotoFile,
+            onCamera: () => _pickImage(ImageSource.camera),
             onGallery: () => _pickImage(ImageSource.gallery),
-            onRemove : () => setState(() => _fotoFile = null),
+            onRemove: () => setState(() => _fotoFile = null),
           ),
           const SizedBox(height: 32),
 

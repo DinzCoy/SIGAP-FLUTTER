@@ -57,8 +57,8 @@ class AppTheme {
           elevation: 0,
           minimumSize: const Size(64, 44), // Touch target WCAG AAA
           padding: const EdgeInsets.symmetric(
-            horizontal: AppColors.spaceLg,  // 16px
-            vertical: AppColors.spaceSm,    // 8px
+            horizontal: AppColors.spaceLg, // 16px
+            vertical: AppColors.spaceSm, // 8px
           ),
           shape: const StadiumBorder(), // pill = 9999px radius
           textStyle: AppTextStyles.buttonMd.copyWith(color: Colors.white),
@@ -117,7 +117,7 @@ class AppTheme {
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textHint),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppColors.spaceMd, // 12px
-          vertical: AppColors.spaceSm,  // 8px
+          vertical: AppColors.spaceSm, // 8px
         ),
         isDense: false,
       ),
@@ -177,10 +177,12 @@ class AppTheme {
       // ── Chip — {pill-tag-soft} ───────────────────────────────────────────
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.primaryBgSub,
-        labelStyle: AppTextStyles.microCap.copyWith(color: AppColors.primaryDeep),
+        labelStyle: AppTextStyles.microCap.copyWith(
+          color: AppColors.primaryDeep,
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: AppColors.spaceSm, // 8px
-          vertical: AppColors.spaceXs,  // 4px
+          vertical: AppColors.spaceXs, // 4px
         ),
         shape: const StadiumBorder(), // pill
         side: BorderSide.none,
@@ -188,21 +190,21 @@ class AppTheme {
 
       // ── Text Theme ───────────────────────────────────────────────────────
       textTheme: TextTheme(
-        displayLarge:  AppTextStyles.displayXxl,
+        displayLarge: AppTextStyles.displayXxl,
         displayMedium: AppTextStyles.displayXl,
-        displaySmall:  AppTextStyles.displayLarge,
+        displaySmall: AppTextStyles.displayLarge,
         headlineLarge: AppTextStyles.headlineLarge,
-        headlineMedium:AppTextStyles.headlineMedium,
+        headlineMedium: AppTextStyles.headlineMedium,
         headlineSmall: AppTextStyles.headlineSmall,
-        titleLarge:    AppTextStyles.titleLarge,
-        titleMedium:   AppTextStyles.titleMedium,
-        titleSmall:    AppTextStyles.titleSmall,
-        bodyLarge:     AppTextStyles.bodyLarge,
-        bodyMedium:    AppTextStyles.bodyMedium,
-        bodySmall:     AppTextStyles.bodySmall,
-        labelLarge:    AppTextStyles.labelLarge,
-        labelMedium:   AppTextStyles.labelMedium,
-        labelSmall:    AppTextStyles.labelSmall,
+        titleLarge: AppTextStyles.titleLarge,
+        titleMedium: AppTextStyles.titleMedium,
+        titleSmall: AppTextStyles.titleSmall,
+        bodyLarge: AppTextStyles.bodyLarge,
+        bodyMedium: AppTextStyles.bodyMedium,
+        bodySmall: AppTextStyles.bodySmall,
+        labelLarge: AppTextStyles.labelLarge,
+        labelMedium: AppTextStyles.labelMedium,
+        labelSmall: AppTextStyles.labelSmall,
       ),
     );
   }
@@ -370,7 +372,9 @@ class AppTheme {
       // ── Chip ─────────────────────────────────────────────────────────────
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.primaryBgSub,
-        labelStyle: AppTextStyles.microCap.copyWith(color: AppColors.primaryDeep),
+        labelStyle: AppTextStyles.microCap.copyWith(
+          color: AppColors.primaryDeep,
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: AppColors.spaceSm,
           vertical: AppColors.spaceXs,
@@ -381,21 +385,21 @@ class AppTheme {
 
       // ── Text Theme ───────────────────────────────────────────────────────
       textTheme: TextTheme(
-        displayLarge:  AppTextStyles.displayXxl,
+        displayLarge: AppTextStyles.displayXxl,
         displayMedium: AppTextStyles.displayXl,
-        displaySmall:  AppTextStyles.displayLarge,
+        displaySmall: AppTextStyles.displayLarge,
         headlineLarge: AppTextStyles.headlineLarge,
-        headlineMedium:AppTextStyles.headlineMedium,
+        headlineMedium: AppTextStyles.headlineMedium,
         headlineSmall: AppTextStyles.headlineSmall,
-        titleLarge:    AppTextStyles.titleLarge,
-        titleMedium:   AppTextStyles.titleMedium,
-        titleSmall:    AppTextStyles.titleSmall,
-        bodyLarge:     AppTextStyles.bodyLarge,
-        bodyMedium:    AppTextStyles.bodyMedium,
-        bodySmall:     AppTextStyles.bodySmall,
-        labelLarge:    AppTextStyles.labelLarge,
-        labelMedium:   AppTextStyles.labelMedium,
-        labelSmall:    AppTextStyles.labelSmall,
+        titleLarge: AppTextStyles.titleLarge,
+        titleMedium: AppTextStyles.titleMedium,
+        titleSmall: AppTextStyles.titleSmall,
+        bodyLarge: AppTextStyles.bodyLarge,
+        bodyMedium: AppTextStyles.bodyMedium,
+        bodySmall: AppTextStyles.bodySmall,
+        labelLarge: AppTextStyles.labelLarge,
+        labelMedium: AppTextStyles.labelMedium,
+        labelSmall: AppTextStyles.labelSmall,
       ),
     );
   }

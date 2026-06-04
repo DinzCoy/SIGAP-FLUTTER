@@ -122,10 +122,7 @@ class _AssetCatalogPageState extends State<AssetCatalogPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: AppColors.primary,
-                    width: 1.5,
-                  ),
+                  borderSide: BorderSide(color: AppColors.primary, width: 1.5),
                 ),
               ),
             ),
@@ -386,16 +383,26 @@ class _AssetCatalogCard extends StatelessWidget {
 
   IconData _categoryIcon(String? kategori) {
     final k = kategori?.toLowerCase() ?? '';
-    if (k.contains('laptop') || k.contains('komputer') || k.contains('computer')) {
+    if (k.contains('laptop') ||
+        k.contains('komputer') ||
+        k.contains('computer')) {
       return Icons.laptop_mac_rounded;
     }
-    if (k.contains('printer')) { return Icons.print_rounded; }
+    if (k.contains('printer')) {
+      return Icons.print_rounded;
+    }
     if (k.contains('proyektor') || k.contains('projector')) {
       return Icons.videocam_rounded;
     }
-    if (k.contains('telepon') || k.contains('phone')) { return Icons.phone_outlined; }
-    if (k.contains('kamera') || k.contains('camera')) { return Icons.camera_alt_outlined; }
-    if (k.contains('server')) { return Icons.dns_rounded; }
+    if (k.contains('telepon') || k.contains('phone')) {
+      return Icons.phone_outlined;
+    }
+    if (k.contains('kamera') || k.contains('camera')) {
+      return Icons.camera_alt_outlined;
+    }
+    if (k.contains('server')) {
+      return Icons.dns_rounded;
+    }
     return Icons.devices_other_rounded;
   }
 }

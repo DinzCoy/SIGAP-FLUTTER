@@ -13,6 +13,7 @@ import '../widgets/common/logout_dialog.dart';
 import '../widgets/common/premium_background.dart';
 
 import 'profile_page.dart';
+import 'search_page.dart';
 import 'it_service_page.dart';
 import 'my_tickets_page.dart';
 import 'asset_scanner_page.dart';
@@ -33,6 +34,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
   int _selectedIndex = 0;
   bool _isLoading = true;
   String _userName = 'Pengguna';
+  String _photoUrl = '';
 
   // Data real dari Laravel
   int _pendingCount = 0;
@@ -51,6 +53,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _userName = prefs.getString('user_name') ?? 'Pengguna';
+      _photoUrl = prefs.getString('user_photo_url') ?? '';
     });
   }
 
@@ -71,25 +74,26 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
   }
 
   void _onItemTapped(int index) {
+    if (index == 0) {
+      _loadNameFromPrefs();
+    }
     // Index 1 (Pinjaman) & 2 (Laporan) & 3 (Profil) di-embed, bukan push
     setState(() => _selectedIndex = index);
   }
 
   Widget _buildBody() {
-    // Tab 1 = Pinjaman
-    if (_selectedIndex == 1) {
-      return const MyLoansPage(embeddedMode: true);
-    }
-    // Tab 2 = Laporan (Tiket)
-    if (_selectedIndex == 2) {
-      return const MyTicketsPage();
-    }
-    // Tab 3 = Profil
-    if (_selectedIndex == 3) {
-      return const ProfilePage();
-    }
+    return IndexedStack(
+      index: _selectedIndex,
+      children: [
+        _buildHomeContent(),
+        const MyLoansPage(embeddedMode: true),
+        const MyTicketsPage(embeddedMode: true),
+        const ProfilePage(),
+      ],
+    );
+  }
 
-    // Tab 0 = Beranda
+  Widget _buildHomeContent() {
     return RefreshIndicator(
       onRefresh: _fetchDashboardData,
       color: AppColors.primary,
@@ -98,6 +102,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
         slivers: [
           DashboardHeaderV2(
             name: _userName,
+            photoUrl: _photoUrl,
             role: 'Pengguna SIGAP',
             onNotification: () => Navigator.push(
               context,
@@ -111,8 +116,9 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
               children: [
                 DashboardTransitionZone(
                   onSearchTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Fitur pencarian akan segera hadir')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SearchPage()),
                     );
                   },
                   quickActions: [
@@ -121,7 +127,9 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                       label: 'Buat Laporan',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const ItServicePage()),
+                        MaterialPageRoute(
+                          builder: (_) => const ItServicePage(),
+                        ),
                       ),
                     ),
                     QuickAction(
@@ -129,7 +137,9 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                       label: 'Katalog Aset',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const AssetCatalogPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const AssetCatalogPage(),
+                        ),
                       ),
                     ),
                     QuickAction(
@@ -142,7 +152,9 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                       label: 'Top Teknisi',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const LeaderboardPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const LeaderboardPage(),
+                        ),
                       ),
                     ),
                   ],
@@ -167,31 +179,35 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                       ] else ...[
                         FadeIn(
                           delay: const Duration(milliseconds: 200),
-                          child: const SectionHeader(title: 'Status Tiket Saya'),
+                          child: const SectionHeader(
+                            title: 'Status Tiket Saya',
+                          ),
                         ),
                         const SizedBox(height: 10),
                         FadeIn(
                           delay: const Duration(milliseconds: 300),
-                          child: StatPanel(items: [
-                            StatItem(
-                              value: '$_pendingCount',
-                              label: 'Pending',
-                              icon: Icons.access_time_rounded,
-                              iconColor: AppColors.warning,
-                            ),
-                            StatItem(
-                              value: '$_inProgressCount',
-                              label: 'Proses',
-                              icon: Icons.settings_suggest_outlined,
-                              iconColor: AppColors.primary,
-                            ),
-                            StatItem(
-                              value: '$_completedCount',
-                              label: 'Selesai',
-                              icon: Icons.check_circle_outline_rounded,
-                              iconColor: AppColors.success,
-                            ),
-                          ]),
+                          child: StatPanel(
+                            items: [
+                              StatItem(
+                                value: '$_pendingCount',
+                                label: 'Pending',
+                                icon: Icons.access_time_rounded,
+                                iconColor: AppColors.warning,
+                              ),
+                              StatItem(
+                                value: '$_inProgressCount',
+                                label: 'Proses',
+                                icon: Icons.settings_suggest_outlined,
+                                iconColor: AppColors.primary,
+                              ),
+                              StatItem(
+                                value: '$_completedCount',
+                                label: 'Selesai',
+                                icon: Icons.check_circle_outline_rounded,
+                                iconColor: AppColors.success,
+                              ),
+                            ],
+                          ),
                         ),
 
                         const SizedBox(height: 24),
@@ -237,7 +253,10 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
       body: PremiumBackground(child: _buildBody()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const AssetScannerPage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AssetScannerPage()),
+          );
         },
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
@@ -315,7 +334,11 @@ class _LoanShortcutCard extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.swap_horiz_rounded, color: Colors.white, size: 28),
+              child: const Icon(
+                Icons.swap_horiz_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -341,7 +364,11 @@ class _LoanShortcutCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 16),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.white,
+              size: 16,
+            ),
           ],
         ),
       ),

@@ -65,6 +65,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
         default:
           nextPage = const UserDashboardPage();
       }
+      if (!mounted) return;
       
       Navigator.pushReplacement(
         context,
@@ -121,7 +122,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'SIGAP',
                 style: TextStyle(
                   fontSize: 32,
@@ -131,7 +132,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Sistem Informasi Geografis\n& Pemantauan Aset',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -141,7 +142,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                 ),
               ),
               const SizedBox(height: 48),
-              const CircularProgressIndicator(
+              CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                 strokeWidth: 3,
               ),

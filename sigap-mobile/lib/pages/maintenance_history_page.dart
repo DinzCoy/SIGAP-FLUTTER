@@ -45,7 +45,8 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
         _page < _lastPage) {
       _fetchMore();
@@ -70,11 +71,11 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
       if (mounted) {
         final list = (result['data'] as List).cast<Map<String, dynamic>>();
         setState(() {
-          _items      = list;
-          _total      = result['total'] ?? list.length;
-          _lastPage   = result['last_page'] ?? 1;
+          _items = list;
+          _total = result['total'] ?? list.length;
+          _lastPage = result['last_page'] ?? 1;
           _isKetuaTim = result['is_ketua_tim'] == true;
-          _page       = 1;
+          _page = 1;
         });
       }
     } catch (e) {
@@ -101,8 +102,8 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
           _lastPage = result['last_page'] ?? _lastPage;
         });
       }
-    } catch (_) {}
-    finally {
+    } catch (_) {
+    } finally {
       if (mounted) setState(() => _isLoadingMore = false);
     }
   }
@@ -152,19 +153,28 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
               Expanded(
                 child: Text(
                   _isLoading ? 'Memuat...' : '$_total pekerjaan selesai',
-                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
               // Filter bulan
               GestureDetector(
                 onTap: _pickBulan,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: _selectedBulan != null ? AppColors.primary : AppColors.canvasSoft,
+                    color: _selectedBulan != null
+                        ? AppColors.primary
+                        : AppColors.canvasSoft,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: _selectedBulan != null ? AppColors.primary : AppColors.hairline,
+                      color: _selectedBulan != null
+                          ? AppColors.primary
+                          : AppColors.hairline,
                     ),
                   ),
                   child: Row(
@@ -173,7 +183,9 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
                       Icon(
                         Icons.calendar_month_rounded,
                         size: 14,
-                        color: _selectedBulan != null ? Colors.white : AppColors.inkMute,
+                        color: _selectedBulan != null
+                            ? Colors.white
+                            : AppColors.inkMute,
                       ),
                       const SizedBox(width: 5),
                       Text(
@@ -181,7 +193,9 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
                             ? _formatBulan(_selectedBulan!)
                             : 'Filter Bulan',
                         style: AppTextStyles.caption.copyWith(
-                          color: _selectedBulan != null ? Colors.white : AppColors.inkMute,
+                          color: _selectedBulan != null
+                              ? Colors.white
+                              : AppColors.inkMute,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -189,7 +203,11 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
                         const SizedBox(width: 4),
                         GestureDetector(
                           onTap: _clearBulan,
-                          child: const Icon(Icons.close_rounded, size: 14, color: Colors.white),
+                          child: const Icon(
+                            Icons.close_rounded,
+                            size: 14,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ],
@@ -268,11 +286,25 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.cloud_off_rounded, size: 56, color: AppColors.inkMute.withValues(alpha: 0.4)),
+          Icon(
+            Icons.cloud_off_rounded,
+            size: 56,
+            color: AppColors.inkMute.withValues(alpha: 0.4),
+          ),
           const SizedBox(height: 12),
-          Text(_errorMsg!, textAlign: TextAlign.center, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+          Text(
+            _errorMsg!,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
           const SizedBox(height: 16),
-          TextButton.icon(onPressed: () => _fetch(reset: true), icon: const Icon(Icons.refresh_rounded), label: const Text('Coba Lagi')),
+          TextButton.icon(
+            onPressed: () => _fetch(reset: true),
+            icon: const Icon(Icons.refresh_rounded),
+            label: const Text('Coba Lagi'),
+          ),
         ],
       ),
     );
@@ -283,11 +315,19 @@ class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.build_circle_outlined, size: 72, color: AppColors.primary.withValues(alpha: 0.25)),
+          Icon(
+            Icons.build_circle_outlined,
+            size: 72,
+            color: AppColors.primary.withValues(alpha: 0.25),
+          ),
           const SizedBox(height: 16),
           Text(
-            _selectedBulan != null ? 'Tidak ada riwayat di bulan ini' : 'Belum ada riwayat maintenance',
-            style: AppTextStyles.titleSmall.copyWith(color: AppColors.textSecondary),
+            _selectedBulan != null
+                ? 'Tidak ada riwayat di bulan ini'
+                : 'Belum ada riwayat maintenance',
+            style: AppTextStyles.titleSmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -326,14 +366,20 @@ class _MaintenanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selesai = item['selesai_pada'] != null
-        ? DateFormat('d MMM yyyy', 'id_ID').format(DateTime.parse(item['selesai_pada']))
+        ? DateFormat(
+            'd MMM yyyy',
+            'id_ID',
+          ).format(DateTime.parse(item['selesai_pada']))
         : '-';
     final dibuat = item['dibuat_pada'] != null
-        ? DateFormat('d MMM yyyy', 'id_ID').format(DateTime.parse(item['dibuat_pada']))
+        ? DateFormat(
+            'd MMM yyyy',
+            'id_ID',
+          ).format(DateTime.parse(item['dibuat_pada']))
         : '-';
 
     final String kategori = item['kategori'] ?? item['tipe'] ?? '-';
-    final bool isService   = kategori.toLowerCase() == 'service';
+    final bool isService = kategori.toLowerCase() == 'service';
     // Tiket yang dikerjakan anggota tim (bukan oleh si Ketua sendiri)
     final bool isDelegated = isKetuaTim && (item['is_delegated'] == true);
 
@@ -344,7 +390,9 @@ class _MaintenanceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: AppColors.cardShadow,
         border: Border.all(
-          color: isDelegated ? AppColors.primary.withValues(alpha: 0.25) : AppColors.hairline,
+          color: isDelegated
+              ? AppColors.primary.withValues(alpha: 0.25)
+              : AppColors.hairline,
         ),
       ),
       child: Padding(
@@ -384,7 +432,9 @@ class _MaintenanceCard extends StatelessWidget {
                       const SizedBox(height: 3),
                       Text(
                         '#${item['id']} · $kategori',
-                        style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -394,7 +444,10 @@ class _MaintenanceCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.successBg,
                         borderRadius: BorderRadius.circular(20),
@@ -411,16 +464,25 @@ class _MaintenanceCard extends StatelessWidget {
                     if (isDelegated) ...[
                       const SizedBox(height: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.group_outlined, size: 11, color: AppColors.primary),
+                            Icon(
+                              Icons.group_outlined,
+                              size: 11,
+                              color: AppColors.primary,
+                            ),
                             const SizedBox(width: 3),
                             Text(
                               'Tim',
@@ -446,14 +508,20 @@ class _MaintenanceCard extends StatelessWidget {
             ),
 
             // ── Meta Info ──────────────────────────────────────────────────
-            _MetaRow(icon: Icons.devices_outlined, label: item['nama_aset'] ?? 'Aset tidak diketahui'),
+            _MetaRow(
+              icon: Icons.devices_outlined,
+              label: item['nama_aset'] ?? 'Aset tidak diketahui',
+            ),
             if (item['lokasi'] != null) ...[
               const SizedBox(height: 6),
               _MetaRow(icon: Icons.location_on_outlined, label: item['lokasi']),
             ],
             if (item['pelapor'] != null) ...[
               const SizedBox(height: 6),
-              _MetaRow(icon: Icons.person_outline_rounded, label: 'Pelapor: ${item['pelapor']}'),
+              _MetaRow(
+                icon: Icons.person_outline_rounded,
+                label: 'Pelapor: ${item['pelapor']}',
+              ),
             ],
             // Tampilkan nama teknisi yang mengerjakan (penting untuk Ketua Tim)
             if (item['teknisi'] != null) ...[
@@ -472,11 +540,19 @@ class _MaintenanceCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _DateChip(label: 'Dibuat', value: dibuat, color: AppColors.inkMute),
+                  child: _DateChip(
+                    label: 'Dibuat',
+                    value: dibuat,
+                    color: AppColors.inkMute,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: _DateChip(label: 'Selesai', value: selesai, color: AppColors.success),
+                  child: _DateChip(
+                    label: 'Selesai',
+                    value: selesai,
+                    color: AppColors.success,
+                  ),
                 ),
               ],
             ),
@@ -486,7 +562,6 @@ class _MaintenanceCard extends StatelessWidget {
     );
   }
 }
-
 
 class _MetaRow extends StatelessWidget {
   final IconData icon;
@@ -502,7 +577,9 @@ class _MetaRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -516,7 +593,11 @@ class _DateChip extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
-  const _DateChip({required this.label, required this.value, required this.color});
+  const _DateChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -530,9 +611,18 @@ class _DateChip extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: AppTextStyles.caption.copyWith(color: AppColors.textHint)),
+          Text(
+            label,
+            style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+          ),
           const SizedBox(height: 2),
-          Text(value, style: AppTextStyles.bodySmall.copyWith(color: color, fontWeight: FontWeight.w600)),
+          Text(
+            value,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
@@ -559,15 +649,36 @@ class _MaintenanceCardSkeleton extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(width: 44, height: 44, decoration: BoxDecoration(color: AppColors.hairline, borderRadius: BorderRadius.circular(12))),
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.hairline,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(height: 14, width: 160, decoration: BoxDecoration(color: AppColors.hairline, borderRadius: BorderRadius.circular(6))),
+                    Container(
+                      height: 14,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        color: AppColors.hairline,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
                     const SizedBox(height: 6),
-                    Container(height: 10, width: 80, decoration: BoxDecoration(color: AppColors.hairline, borderRadius: BorderRadius.circular(6))),
+                    Container(
+                      height: 10,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: AppColors.hairline,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -576,9 +687,23 @@ class _MaintenanceCardSkeleton extends StatelessWidget {
           const SizedBox(height: 12),
           Container(height: 1, color: AppColors.hairline),
           const SizedBox(height: 12),
-          Container(height: 10, width: 180, decoration: BoxDecoration(color: AppColors.hairline, borderRadius: BorderRadius.circular(6))),
+          Container(
+            height: 10,
+            width: 180,
+            decoration: BoxDecoration(
+              color: AppColors.hairline,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ),
           const SizedBox(height: 8),
-          Container(height: 10, width: 120, decoration: BoxDecoration(color: AppColors.hairline, borderRadius: BorderRadius.circular(6))),
+          Container(
+            height: 10,
+            width: 120,
+            decoration: BoxDecoration(
+              color: AppColors.hairline,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ),
         ],
       ),
     );

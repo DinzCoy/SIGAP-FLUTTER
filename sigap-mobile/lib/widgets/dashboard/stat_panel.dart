@@ -17,7 +17,9 @@ class StatPanel extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.canvas, // {colors.canvas}
-        borderRadius: BorderRadius.circular(AppColors.radiusXl), // {rounded.xl} = 16px
+        borderRadius: BorderRadius.circular(
+          AppColors.radiusXl,
+        ), // {rounded.xl} = 16px
         border: Border.all(color: AppColors.hairline), // {colors.hairline}
         boxShadow: AppColors.floatShadow, // Level 2
       ),
@@ -77,11 +79,7 @@ class _StatCell extends StatelessWidget {
             color: effectiveColor.withValues(alpha: 0.08),
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            item.icon,
-            color: effectiveColor,
-            size: 18,
-          ),
+          child: Icon(item.icon, color: effectiveColor, size: 18),
         ),
         const SizedBox(height: AppColors.spaceMd),
         Text(
@@ -122,4 +120,3 @@ class _StatCell extends StatelessWidget {
 }
 
 /// Versi loading skeleton untuk StatPanel
-

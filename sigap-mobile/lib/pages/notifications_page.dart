@@ -19,14 +19,14 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
   final ScrollController _scrollController = ScrollController();
-  
+
   List<NotificationModel> _notifications = [];
-  
+
   bool _isLoading = true;
   bool _isLoadingMore = false;
   bool _hasError = false;
   String _errorMessage = '';
-  
+
   int _currentPage = 1;
   final int _itemsPerPage = 10;
   bool _hasMoreData = true;
@@ -45,7 +45,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 50) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 50) {
       _loadMoreData();
     }
   }
@@ -60,10 +61,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
     });
 
     try {
-      final rawData = await NotificationService.getNotifications(page: _currentPage, limit: _itemsPerPage);
+      final rawData = await NotificationService.getNotifications(
+        page: _currentPage,
+        limit: _itemsPerPage,
+      );
       final listRaw = rawData['data'] as List? ?? [];
-      final allNotifs = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
-      
+      final allNotifs = listRaw
+          .map((e) => NotificationModel.fromJson(e))
+          .toList();
+
       if (mounted) {
         setState(() {
           _notifications = allNotifs;
@@ -91,17 +97,22 @@ class _NotificationsPageState extends State<NotificationsPage> {
     });
 
     _currentPage++;
-    
+
     try {
-      final rawData = await NotificationService.getNotifications(page: _currentPage, limit: _itemsPerPage);
-      
+      final rawData = await NotificationService.getNotifications(
+        page: _currentPage,
+        limit: _itemsPerPage,
+      );
+
       if (!mounted) return;
-      
+
       setState(() {
         final listRaw = rawData['data'] as List? ?? [];
-        final newNotifs = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
+        final newNotifs = listRaw
+            .map((e) => NotificationModel.fromJson(e))
+            .toList();
         _notifications.addAll(newNotifs);
-        
+
         final lastPage = rawData['last_page'] as int? ?? 1;
         _hasMoreData = _currentPage < lastPage;
         _isLoadingMore = false;
@@ -217,9 +228,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Notifikasi'),
-      ),
+      appBar: AppBar(title: const Text('Notifikasi')),
       body: _buildBody(),
     );
   }

@@ -35,10 +35,7 @@ class RecentTicketsSection extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         if (tickets.isEmpty)
-          EmptyState(
-            icon: Icons.inbox_outlined,
-            message: emptyMessage,
-          )
+          EmptyState(icon: Icons.inbox_outlined, message: emptyMessage)
         else
           Container(
             decoration: BoxDecoration(
@@ -47,29 +44,24 @@ class RecentTicketsSection extends StatelessWidget {
               boxShadow: AppColors.cardShadow,
             ),
             child: Column(
-              children: List.generate(
-                tickets.length,
-                (i) {
-                  final isLast = i == tickets.length - 1;
-                  return Column(
-                    children: [
-                      TicketItem.fromMap(tickets[i]),
-                      if (!isLast)
-                        Divider(
-                          height: 1,
-                          indent: 32,
-                          endIndent: 16,
-                          color: AppColors.divider,
-                        ),
-                    ],
-                  );
-                },
-              ),
+              children: List.generate(tickets.length, (i) {
+                final isLast = i == tickets.length - 1;
+                return Column(
+                  children: [
+                    TicketItem.fromMap(tickets[i]),
+                    if (!isLast)
+                      Divider(
+                        height: 1,
+                        indent: 16,
+                        endIndent: 16,
+                        color: AppColors.divider,
+                      ),
+                  ],
+                );
+              }),
             ),
           ),
       ],
     );
   }
-
-
 }

@@ -35,7 +35,12 @@ class EmptyState extends StatelessWidget {
         children: [
           Icon(icon, size: 52, color: AppColors.border),
           const SizedBox(height: 14),
-          Text(message, style: AppTextStyles.titleSmall.copyWith(color: AppColors.textSecondary)),
+          Text(
+            message,
+            style: AppTextStyles.titleSmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
           if (subMessage != null) ...[
             const SizedBox(height: 6),
             Text(
@@ -46,10 +51,7 @@ class EmptyState extends StatelessWidget {
           ],
           if (actionLabel != null && onAction != null) ...[
             const SizedBox(height: 24),
-            AppButton.ghost(
-              label: actionLabel!,
-              onTap: onAction,
-            ),
+            AppButton.ghost(label: actionLabel!, onTap: onAction),
           ],
         ],
       ),

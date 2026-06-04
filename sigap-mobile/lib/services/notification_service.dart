@@ -9,7 +9,8 @@ import 'api_client.dart';
 import 'dart:convert';
 
 class NotificationService {
-  static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  static final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -21,11 +22,8 @@ class NotificationService {
 
     try {
       // 1. Request permission (untuk iOS dan Android 13+)
-      NotificationSettings settings = await _firebaseMessaging.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
+      NotificationSettings settings = await _firebaseMessaging
+          .requestPermission(alert: true, badge: true, sound: true);
 
       if (settings.authorizationStatus != AuthorizationStatus.authorized) {
         debugPrint('User declined or has not accepted permission');
@@ -35,11 +33,10 @@ class NotificationService {
       // 2. Setup Local Notifications untuk foreground
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@mipmap/ic_launcher');
-          
+
       // Untuk iOS bisa tambahkan DarwinInitializationSettings jika diperlukan
-      const InitializationSettings initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid,
-      );
+      const InitializationSettings initializationSettings =
+          InitializationSettings(android: initializationSettingsAndroid);
 
       await _localNotificationsPlugin.initialize(
         initializationSettings,
@@ -59,7 +56,8 @@ class NotificationService {
 
       await _localNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.createNotificationChannel(channel);
 
       // 4. Handle pesan saat aplikasi di foreground
@@ -68,7 +66,9 @@ class NotificationService {
         debugPrint('Message data: ${message.data}');
 
         if (message.notification != null) {
-          debugPrint('Message also contained a notification: ${message.notification}');
+          debugPrint(
+            'Message also contained a notification: ${message.notification}',
+          );
           _showLocalNotification(message, channel);
         }
       });
@@ -94,7 +94,10 @@ class NotificationService {
   }
 
   /// Menampilkan notifikasi lokal saat aplikasi di foreground
-  static void _showLocalNotification(RemoteMessage message, AndroidNotificationChannel channel) {
+  static void _showLocalNotification(
+    RemoteMessage message,
+    AndroidNotificationChannel channel,
+  ) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
 
@@ -122,7 +125,7 @@ class NotificationService {
   static Future<void> _updateFCMToken() async {
     final prefs = await SharedPreferences.getInstance();
     final isLogin = prefs.getBool('isLogin') ?? false;
-    
+
     if (isLogin) {
       final token = await _firebaseMessaging.getToken();
       if (token != null) {
@@ -136,9 +139,7 @@ class NotificationService {
   static Future<void> _sendTokenToServer(String fcmToken) async {
     try {
       // Pastikan backend SIGAP (Laravel) memiliki endpoint ini
-      await ApiClient.post('/user/fcm-token', {
-        'fcm_token': fcmToken,
-      });
+      await ApiClient.post('/user/fcm-token', {'fcm_token': fcmToken});
       debugPrint('FCM Token berhasil disinkronisasi dengan server');
     } catch (e) {
       debugPrint('Gagal mengirim FCM token ke server: $e');
@@ -146,36 +147,32 @@ class NotificationService {
   }
 
   /// Dapatkan daftar notifikasi dari database Laravel
-  static Future<Map<String, dynamic>> getNotifications({int page = 1, int limit = 10}) async {
+  static Future<Map<String, dynamic>> getNotifications({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await ApiClient.get('/user/notifications?page=$page&limit=$limit');
+      final response = await ApiClient.get(
+        '/user/notifications?page=$page&limit=$limit',
+      );
       final data = ApiClient.processResponse(response);
-      
+
       if (data['data'] is Map && data['data'].containsKey('data')) {
         final list = data['data']['data'] as List? ?? [];
-        final lastPage = data['data']['last_page'] ?? 1;
-        return {
-          'data': list,
-          'last_page': lastPage,
-        };
+        final lastPage = int.tryParse(data['data']['last_page']?.toString() ?? '') ?? 1;
+        return {'data': list, 'last_page': lastPage};
       } else {
         final list = data['data'] as List? ?? [];
-        return {
-          'data': list,
-          'last_page': 1,
-        };
+        return {'data': list, 'last_page': 1};
       }
     } catch (e) {
       debugPrint('Error fetching notifications: $e');
-      return {
-        'data': [],
-        'last_page': 1,
-      };
+      return {'data': [], 'last_page': 1};
     }
   }
 
   /// Tandai notifikasi sebagai telah dibaca
-  static Future<void> markAsRead(int notificationId) async {
+  static Future<void> markAsRead(String notificationId) async {
     try {
       await ApiClient.post('/user/notifications/$notificationId/read', {});
     } catch (e) {

@@ -14,19 +14,27 @@ class NotificationItem extends StatelessWidget {
 
   static IconData _getIcon(String type) {
     switch (type) {
-      case 'ticket': return Icons.support_agent;
-      case 'loan':   return Icons.assignment_turned_in;
-      case 'asset':  return Icons.computer;
-      default:       return Icons.notifications;
+      case 'ticket':
+        return Icons.support_agent;
+      case 'loan':
+        return Icons.assignment_turned_in;
+      case 'asset':
+        return Icons.computer;
+      default:
+        return Icons.notifications;
     }
   }
 
   static Color _getColor(String type) {
     switch (type) {
-      case 'ticket': return AppColors.accent;
-      case 'loan':   return AppColors.info;
-      case 'asset':  return AppColors.primaryLight;
-      default:       return AppColors.primary;
+      case 'ticket':
+        return AppColors.accent;
+      case 'loan':
+        return AppColors.info;
+      case 'asset':
+        return AppColors.primaryLight;
+      default:
+        return AppColors.primary;
     }
   }
 
@@ -46,7 +54,9 @@ class NotificationItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        color: notif.isRead ? Colors.transparent : AppColors.primary.withValues(alpha: 0.05),
+        color: notif.isRead
+            ? Colors.transparent
+            : AppColors.primary.withValues(alpha: 0.05),
         padding: const EdgeInsets.all(16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,18 +80,24 @@ class NotificationItem extends StatelessWidget {
                   Text(
                     notif.title,
                     style: AppTextStyles.titleSmall.copyWith(
-                      fontWeight: notif.isRead ? FontWeight.w500 : FontWeight.bold,
+                      fontWeight: notif.isRead
+                          ? FontWeight.w500
+                          : FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     notif.body,
-                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     _formatTime(notif.createdAt),
-                    style: AppTextStyles.labelSmall.copyWith(color: AppColors.textHint),
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.textHint,
+                    ),
                   ),
                 ],
               ),
@@ -90,7 +106,8 @@ class NotificationItem extends StatelessWidget {
             // Dot belum dibaca
             if (!notif.isRead)
               Container(
-                width: 8, height: 8,
+                width: 8,
+                height: 8,
                 margin: const EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   color: AppColors.primary,

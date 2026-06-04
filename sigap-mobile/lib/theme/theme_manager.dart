@@ -11,7 +11,7 @@ class ThemeManager extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
 
   ThemeMode get themeMode => _themeMode;
-  
+
   bool get isDarkMode => _themeMode == ThemeMode.dark;
 
   /// Inisialisasi status tema saat aplikasi pertama kali dijalankan.
@@ -36,14 +36,14 @@ class ThemeManager extends ChangeNotifier {
   /// Mengubah tema aktif aplikasi secara dinamis (Light <-> Dark).
   Future<void> toggleTheme(bool enableDark) async {
     _themeMode = enableDark ? ThemeMode.dark : ThemeMode.light;
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('is_dark_mode', enableDark);
     } catch (e) {
       debugPrint('Error menyimpan preferensi tema: $e');
     }
-    
+
     notifyListeners();
   }
 

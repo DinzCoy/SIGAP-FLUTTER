@@ -85,7 +85,10 @@ class AppTextField extends StatelessWidget {
         ),
         labelStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.inkMute),
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.slate),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
     );
   }

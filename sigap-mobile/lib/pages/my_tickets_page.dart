@@ -14,7 +14,8 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
 class MyTicketsPage extends StatefulWidget {
-  const MyTicketsPage({super.key});
+  final bool embeddedMode;
+  const MyTicketsPage({super.key, this.embeddedMode = false});
 
   @override
   State<MyTicketsPage> createState() => _MyTicketsPageState();
@@ -22,14 +23,14 @@ class MyTicketsPage extends StatefulWidget {
 
 class _MyTicketsPageState extends State<MyTicketsPage> {
   final ScrollController _scrollController = ScrollController();
-  
+
   List<TicketModel> _tickets = [];
-  
+
   bool _isLoading = true;
   bool _isLoadingMore = false;
   bool _hasError = false;
   String _errorMessage = '';
-  
+
   int _currentPage = 1;
   final int _itemsPerPage = 10;
   bool _hasMoreData = true;
@@ -40,7 +41,7 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
     _fetchInitialData();
     _scrollController.addListener(_onScroll);
   }
-  
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -48,7 +49,8 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 50) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 50) {
       _loadMoreData();
     }
   }
@@ -63,8 +65,11 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
     });
 
     try {
-      final result = await TicketService.getMyTickets(page: _currentPage, limit: _itemsPerPage);
-      
+      final result = await TicketService.getMyTickets(
+        page: _currentPage,
+        limit: _itemsPerPage,
+      );
+
       if (mounted) {
         setState(() {
           _tickets = result['data'] as List<TicketModel>;
@@ -92,16 +97,19 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
     });
 
     _currentPage++;
-    
+
     try {
-      final result = await TicketService.getMyTickets(page: _currentPage, limit: _itemsPerPage);
-      
+      final result = await TicketService.getMyTickets(
+        page: _currentPage,
+        limit: _itemsPerPage,
+      );
+
       if (!mounted) return;
-      
+
       setState(() {
         final newTickets = result['data'] as List<TicketModel>;
         _tickets.addAll(newTickets);
-        
+
         final lastPage = result['last_page'] as int;
         _hasMoreData = _currentPage < lastPage;
         _isLoadingMore = false;
@@ -115,15 +123,54 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
     }
   }
 
+  String _selectedFilter = 'Semua';
+
+  Widget _buildFilterChips() {
+    final filters = ['Semua', 'Menunggu', 'Proses', 'Selesai'];
+    return SizedBox(
+      height: 50,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemCount: filters.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final filter = filters[index];
+          final isSelected = _selectedFilter == filter;
+          return ChoiceChip(
+            label: Text(
+              filter,
+              style: TextStyle(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? Colors.white : AppColors.slate,
+              ),
+            ),
+            selected: isSelected,
+            selectedColor: AppColors.primary,
+            backgroundColor: AppColors.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: isSelected ? AppColors.primary : AppColors.border,
+              ),
+            ),
+            onSelected: (selected) {
+              if (selected) {
+                setState(() => _selectedFilter = filter);
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildBody() {
     if (_isLoading) {
       return const SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: SafeArea(
-          child: ListSectionSkeleton(
-            title: 'Memuat Tiket...',
-            itemCount: 5,
-          ),
+          child: ListSectionSkeleton(title: 'Memuat Tiket...', itemCount: 5),
         ),
       );
     }
@@ -140,7 +187,9 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
               Text(
                 'Gagal memuat tiket:\n$_errorMessage',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.inkMute),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.inkMute,
+                ),
               ),
               const SizedBox(height: 24),
               AppButton.primary(
@@ -154,62 +203,127 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
       );
     }
 
-    if (_tickets.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: EmptyState(
-            icon: Icons.inbox_rounded,
-            message: 'Belum ada tiket.',
-            subMessage: 'Anda belum pernah membuat tiket layanan IT.',
-            actionLabel: 'Refresh',
-            onAction: _fetchInitialData,
-          ),
-        ),
-      );
-    }
+    final filteredTickets = _tickets.where((ticket) {
+      if (_selectedFilter == 'Semua') return true;
+      if (_selectedFilter == 'Menunggu') return ticket.statusInfo['label'] == 'Menunggu';
+      if (_selectedFilter == 'Proses') return ticket.isActive && ticket.statusInfo['label'] != 'Menunggu';
+      if (_selectedFilter == 'Selesai') return !ticket.isActive;
+      return true;
+    }).toList();
 
-    return RefreshIndicator(
-      onRefresh: _fetchInitialData,
-      color: AppColors.primary,
-      child: ListView.separated(
-        controller: _scrollController,
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top + kToolbarHeight + 16,
-          left: 16,
-          right: 16,
-          bottom: 16 + MediaQuery.of(context).padding.bottom,
-        ),
-        itemCount: _tickets.length + (_hasMoreData ? 1 : 0),
-        separatorBuilder: (_, _) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          if (index == _tickets.length) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.primary,
+    return Column(
+      children: [
+        SizedBox(height: widget.embeddedMode ? 8 : MediaQuery.of(context).padding.top + kToolbarHeight + 16),
+        _buildFilterChips(),
+        const SizedBox(height: 8),
+        Expanded(
+          child: filteredTickets.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: EmptyState(
+                      icon: Icons.inbox_rounded,
+                      message: 'Tidak Ada Tiket',
+                      subMessage: 'Belum ada tiket untuk kategori ini.',
+                      actionLabel: 'Refresh',
+                      onAction: _fetchInitialData,
+                    ),
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _fetchInitialData,
+                  color: AppColors.primary,
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    padding: EdgeInsets.only(
+                      top: 8,
+                      left: 16,
+                      right: 16,
+                      bottom: 16 + MediaQuery.of(context).padding.bottom,
+                    ),
+                    itemCount: filteredTickets.length + (_hasMoreData ? 1 : 0),
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      if (index == filteredTickets.length) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return FadeIn(
+                        delay: Duration(milliseconds: 50 * (index % _itemsPerPage)),
+                        child: TicketCard(ticket: filteredTickets[index]),
+                      );
+                    },
                   ),
                 ),
-              ),
-            );
-          }
-
-          return FadeIn(
-            delay: Duration(milliseconds: 50 * (index % _itemsPerPage)),
-            child: TicketCard(ticket: _tickets[index]),
-          );
-        },
-      ),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.embeddedMode) {
+      return SafeArea(
+        top: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).padding.top + 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.history_rounded, color: AppColors.primary, size: 28),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Riwayat Tiket',
+                          style: AppTextStyles.headlineSmall.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.ink,
+                          ),
+                        ),
+                        Text(
+                          'Pantau status laporan layanan IT Anda',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(child: _buildBody()),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.canvasCream,
@@ -219,9 +333,7 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
-      body: PremiumBackground(
-        child: _buildBody(),
-      ),
+      body: PremiumBackground(child: _buildBody()),
     );
   }
 }

@@ -7,7 +7,10 @@ import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../common/app_button.dart';
+import '../common/app_snackbar.dart';
 import '../common/app_text_field.dart';
+import '../common/role_selection_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -19,20 +22,32 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   bool _obscurePassword = true;
   bool _rememberMe = false;
-  String? _selectedRole;
   bool _isLoading = false;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final List<String> _roles = [
-    'Admin',
-    'Pimpinan',
-    'Teknisi',
-    'Pengelola Barang',
-    'Pengelola Ruangan',
-    'User',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final rememberMe = prefs.getBool('remember_me') ?? false;
+    if (rememberMe) {
+      final savedEmail = prefs.getString('saved_email') ?? '';
+      final savedPassword = prefs.getString('saved_password') ?? '';
+      if (mounted) {
+        setState(() {
+          _rememberMe = true;
+          _emailController.text = savedEmail;
+          _passwordController.text = savedPassword;
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -42,54 +57,107 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _handleLogin() async {
-    if (_selectedRole == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pilih Role terlebih dahulu!')),
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      AppSnackbar.showWarning(
+        context,
+        title: 'Perhatian',
+        message: 'Email/Username dan Password tidak boleh kosong.',
       );
       return;
     }
 
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
     setState(() => _isLoading = true);
 
-    final loginResult = await AuthService.verifyLogin(
-      email,
-      password,
-      _selectedRole!,
-    );
+    final loginResult = await AuthService.verifyLogin(email, password);
 
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (loginResult == true) {
-      Widget nextPage;
-      switch (_selectedRole) {
-        case 'Admin':
-          nextPage = const AdminDashboardPage();
-          break;
-        case 'Teknisi':
-          nextPage = const TechnicianDashboardPage();
-          break;
-        case 'User':
-          nextPage = const UserDashboardPage();
-          break;
-        default:
-          // Pimpinan, Pengelola Barang, Pengelola Ruangan belum
-          // punya dashboard khusus — gunakan UserDashboardPage sementara.
-          nextPage = const UserDashboardPage();
+    if (loginResult is Map && loginResult['success'] == true) {
+      // Simpan kredensial jika Remember Me dicentang
+      final prefs = await SharedPreferences.getInstance();
+      if (_rememberMe) {
+        await prefs.setBool('remember_me', true);
+        await prefs.setString('saved_email', email);
+        await prefs.setString('saved_password', password);
+      } else {
+        await prefs.setBool('remember_me', false);
+        await prefs.remove('saved_email');
+        await prefs.remove('saved_password');
       }
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => nextPage),
-      );
+      final roles = loginResult['roles'] as List<Map<String, dynamic>>;
+
+      if (!mounted) return;
+
+      if (roles.isEmpty) {
+        await prefs.setString('user_role', 'User');
+        await prefs.setInt('user_role_id', 6);
+        _navigateToRole('User');
+      } else if (roles.length == 1) {
+        final roleId = int.tryParse(roles[0]['id'].toString()) ?? 6;
+        final roleName = roles[0]['name'] ?? 'User';
+        await prefs.setString('user_role', roleName);
+        await prefs.setInt('user_role_id', roleId);
+        _navigateToRole(roleName);
+      } else {
+        RoleSelectionSheet.show(
+          context,
+          roles: roles,
+          onRoleSelected: (roleId, roleName) async {
+            await prefs.setString('user_role', roleName);
+            await prefs.setInt('user_role_id', roleId);
+            
+            // Tunggu animasi pop selesai supaya tidak nabrak pushReplacement (_debugLocked)
+            await Future.delayed(const Duration(milliseconds: 300));
+            if (!mounted) return;
+            _navigateToRole(roleName);
+          },
+        );
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loginResult.toString())),
+      String msg = 'Pastikan email/username dan password yang Anda masukkan sudah benar.';
+      if (loginResult is Map) {
+        msg = loginResult['message'] ?? msg;
+      } else if (loginResult is String) {
+        // Jika backend mengembalikan pesan error default
+        if (loginResult.contains('401')) {
+          msg = 'Email/Username atau Password yang Anda masukkan salah.';
+        } else {
+          msg = loginResult;
+        }
+      }
+      
+      AppSnackbar.showError(
+        context,
+        title: 'Gagal Masuk',
+        message: msg,
       );
     }
+  }
+
+  void _navigateToRole(String role) {
+    Widget nextPage;
+    switch (role) {
+      case 'Admin':
+      case 'Administrator':
+        nextPage = const AdminDashboardPage();
+        break;
+      case 'Ketua Tim':
+      case 'Teknisi':
+        nextPage = const TechnicianDashboardPage();
+        break;
+      case 'User':
+      default:
+        nextPage = const UserDashboardPage();
+    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => nextPage),
+    );
   }
 
   @override
@@ -97,9 +165,7 @@ class _LoginFormState extends State<LoginForm> {
     final List<Widget> items = [
       Text(
         'Selamat Datang',
-        style: AppTextStyles.headlineLarge.copyWith(
-          color: AppColors.ink,
-        ),
+        style: AppTextStyles.headlineLarge.copyWith(color: AppColors.ink),
       ),
       const SizedBox(height: 8),
       Text(
@@ -107,7 +173,7 @@ class _LoginFormState extends State<LoginForm> {
         style: AppTextStyles.bodyMedium.copyWith(color: AppColors.inkMute),
       ),
       const SizedBox(height: 40),
-      
+
       AppTextField(
         label: 'Email atau Username',
         hint: 'Masukkan email atau username',
@@ -115,7 +181,7 @@ class _LoginFormState extends State<LoginForm> {
         prefixIcon: const Icon(Icons.person_outline_rounded),
       ),
       const SizedBox(height: 20),
-      
+
       AppTextField(
         label: 'Password',
         hint: 'Masukkan kata sandi',
@@ -124,7 +190,9 @@ class _LoginFormState extends State<LoginForm> {
         prefixIcon: const Icon(Icons.lock_outline_rounded),
         suffixIcon: IconButton(
           icon: Icon(
-            _obscurePassword ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+            _obscurePassword
+                ? Icons.visibility_off_rounded
+                : Icons.visibility_rounded,
             color: AppColors.textSecondary,
           ),
           onPressed: () {
@@ -135,44 +203,10 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ),
       const SizedBox(height: 20),
-      
-      DropdownMenu<String>(
-        initialSelection: _selectedRole,
-        hintText: '-- Pilih Role Aktif --',
-        label: const Text('Masuk Sebagai'),
-        expandedInsets: EdgeInsets.zero,
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppColors.radiusSm), // 6px
-            borderSide: BorderSide(color: AppColors.hairline),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppColors.radiusSm),
-            borderSide: BorderSide(color: AppColors.hairline),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppColors.radiusSm),
-            borderSide: BorderSide(color: AppColors.primary, width: 2),
-          ),
-          filled: true,
-          fillColor: AppColors.canvas,
-        ),
-        dropdownMenuEntries: _roles.map((role) {
-          final isEnabled = role == 'Admin' || role == 'User' || role == 'Teknisi';
-          return DropdownMenuEntry<String>(
-            value: role, 
-            label: role,
-            enabled: isEnabled,
-          );
-        }).toList(),
-        onSelected: (value) {
-          setState(() {
-            _selectedRole = value;
-          });
-        },
-      ),
-      const SizedBox(height: 20),
-      
+
+      // Dropdown role dihapus, menggunakan RoleSelectionSheet setelah login
+      const SizedBox(height: 8),
+
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -200,7 +234,7 @@ class _LoginFormState extends State<LoginForm> {
         ],
       ),
       const SizedBox(height: 32),
-      
+
       AppButton.primary(
         label: 'Masuk ke Dashboard',
         isLoading: _isLoading,

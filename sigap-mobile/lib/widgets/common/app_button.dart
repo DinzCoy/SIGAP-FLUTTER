@@ -69,27 +69,27 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = switch (_variant) {
-      _ButtonVariant.primary   => AppColors.primary,
+      _ButtonVariant.primary => AppColors.primary,
       _ButtonVariant.secondary => Colors.transparent,
-      _ButtonVariant.accent    => AppColors.accent,
-      _ButtonVariant.ghost     => Colors.transparent,
-      _ButtonVariant.dark      => AppColors.brandDark900,
+      _ButtonVariant.accent => AppColors.accent,
+      _ButtonVariant.ghost => Colors.transparent,
+      _ButtonVariant.dark => AppColors.brandDark900,
     };
-    
+
     final gradient = switch (_variant) {
-      _ButtonVariant.primary   => AppColors.primaryGradient,
-      _ButtonVariant.accent    => AppColors.accentGradient,
+      _ButtonVariant.primary => AppColors.primaryGradient,
+      _ButtonVariant.accent => AppColors.accentGradient,
       _ => null,
     };
 
     final fg = switch (_variant) {
-      _ButtonVariant.primary   => Colors.white,
+      _ButtonVariant.primary => Colors.white,
       _ButtonVariant.secondary => AppColors.primary,
-      _ButtonVariant.accent    => Colors.white,
-      _ButtonVariant.ghost     => AppColors.primary,
-      _ButtonVariant.dark      => Colors.white,
+      _ButtonVariant.accent => Colors.white,
+      _ButtonVariant.ghost => AppColors.primary,
+      _ButtonVariant.dark => Colors.white,
     };
-    
+
     final border = _variant == _ButtonVariant.secondary
         ? BorderSide(color: AppColors.primary, width: 1.5)
         : BorderSide.none;
@@ -109,7 +109,9 @@ class AppButton extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: gradient,
           borderRadius: borderRadius,
-          boxShadow: _variant == _ButtonVariant.primary || _variant == _ButtonVariant.accent
+          boxShadow:
+              _variant == _ButtonVariant.primary ||
+                  _variant == _ButtonVariant.accent
               ? [
                   BoxShadow(
                     color: (gradient?.colors.last ?? bg).withValues(alpha: 0.3),
@@ -131,19 +133,19 @@ class AppButton extends StatelessWidget {
           ),
           child: isLoading
               ? SizedBox(
-                  width: 20, height: 20,
-                  child: CircularProgressIndicator(
-                    color: fg, strokeWidth: 2.5,
-                  ),
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(color: fg, strokeWidth: 2.5),
                 )
               : Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (icon != null) ...[icon!, const SizedBox(width: 8)],
-                    Text(label, style: AppTextStyles.buttonMd.copyWith(
-                      color: fg,
-                    )),
+                    Text(
+                      label,
+                      style: AppTextStyles.buttonMd.copyWith(color: fg),
+                    ),
                   ],
                 ),
         ),
@@ -153,4 +155,3 @@ class AppButton extends StatelessWidget {
 }
 
 enum _ButtonVariant { primary, secondary, accent, ghost, dark }
-

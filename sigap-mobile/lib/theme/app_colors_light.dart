@@ -5,8 +5,8 @@ class AppColorsLight {
   AppColorsLight._();
 
   // ── Brand Primary (Stripe Indigo) ──────────────────────────────────────
-  static const Color primary      = Color(0xFF533AFD);
-  static const Color primaryDeep  = Color(0xFF4434D4);
+  static const Color primary = Color(0xFF533AFD);
+  static const Color primaryDeep = Color(0xFF4434D4);
   static const Color primaryPress = Color(0xFF2E2B8C);
   static const Color primaryLight = Color(0xFF665EFD);
   static const Color primaryBgSub = Color(0xFFB9B9F9);
@@ -15,57 +15,57 @@ class AppColorsLight {
   static const Color brandDark900 = Color(0xFF1C1E54);
 
   // ── Ink / Text ──────────────────────────────────────────────────────────
-  static const Color ink          = Color(0xFF0D253D);
+  static const Color ink = Color(0xFF0D253D);
   static const Color inkSecondary = Color(0xFF273951);
-  static const Color inkMute      = Color(0xFF64748D);
-  static const Color inkMute2     = Color(0xFF61718A);
+  static const Color inkMute = Color(0xFF64748D);
+  static const Color inkMute2 = Color(0xFF61718A);
 
-  static const Color slate        = inkSecondary;
-  static const Color charcoal     = inkMute;
+  static const Color slate = inkSecondary;
+  static const Color charcoal = inkMute;
 
   // ── Accent ─────────────────────────────────────────────────────────────
-  static const Color accent       = Color(0xFFF47920);
-  static const Color accentLight  = Color(0xFFFF9A45);
-  static const Color accentDark   = Color(0xFFD4640F);
+  static const Color accent = Color(0xFFF47920);
+  static const Color accentLight = Color(0xFFFF9A45);
+  static const Color accentDark = Color(0xFFD4640F);
 
   // ── Gradient Stops ────────────────────────────────────────────────────
-  static const Color ruby         = Color(0xFFEA2261);
-  static const Color magenta      = Color(0xFFF96BEE);
-  static const Color lemon        = Color(0xFF9B6829);
+  static const Color ruby = Color(0xFFEA2261);
+  static const Color magenta = Color(0xFFF96BEE);
+  static const Color lemon = Color(0xFF9B6829);
 
   // ── Canvas / Surface ───────────────────────────────────────────────────
-  static const Color canvas       = Color(0xFFFFFFFF);
-  static const Color canvasSoft   = Color(0xFFF6F9FC);
-  static const Color canvasCream  = Color(0xFFF5E9D4);
+  static const Color canvas = Color(0xFFFFFFFF);
+  static const Color canvasSoft = Color(0xFFF6F9FC);
+  static const Color canvasCream = Color(0xFFF5E9D4);
 
-  static const Color background   = canvasSoft;
-  static const Color surface      = canvas;
-  static const Color surfaceAlt   = Color(0xFFF0F4FF);
+  static const Color background = canvasSoft;
+  static const Color surface = canvas;
+  static const Color surfaceAlt = Color(0xFFF0F4FF);
 
   // ── Text on Surface ────────────────────────────────────────────────────
-  static const Color textPrimary   = ink;
+  static const Color textPrimary = ink;
   static const Color textSecondary = inkMute;
-  static const Color textHint      = Color(0xFFA5ACB8);
+  static const Color textHint = Color(0xFFA5ACB8);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
-  static const Color textOnAccent  = Color(0xFFFFFFFF);
+  static const Color textOnAccent = Color(0xFFFFFFFF);
 
   // ── Status / Semantic ──────────────────────────────────────────────────
-  static const Color success     = Color(0xFF22C55E);
-  static const Color successBg   = Color(0xFFDCFCE7);
-  static const Color warning     = Color(0xFFEAB308);
-  static const Color warningBg   = Color(0xFFFEF9C3);
-  static const Color error       = Color(0xFFEF4444);
-  static const Color errorBg     = Color(0xFFFEE2E2);
-  static const Color info        = Color(0xFF0EA5E9);
-  static const Color infoBg      = Color(0xFFE0F2FE);
+  static const Color success = Color(0xFF22C55E);
+  static const Color successBg = Color(0xFFDCFCE7);
+  static const Color warning = Color(0xFFEAB308);
+  static const Color warningBg = Color(0xFFFEF9C3);
+  static const Color error = Color(0xFFEF4444);
+  static const Color errorBg = Color(0xFFFEE2E2);
+  static const Color info = Color(0xFF0EA5E9);
+  static const Color infoBg = Color(0xFFE0F2FE);
 
   // ── Border / Hairline ──────────────────────────────────────────────────
-  static const Color hairline      = Color(0xFFE3E8EE);
+  static const Color hairline = Color(0xFFE3E8EE);
   static const Color hairlineInput = Color(0xFFA8C3DE);
-  static const Color shadowBlue    = Color(0xFF003770);
+  static const Color shadowBlue = Color(0xFF003770);
 
-  static const Color border        = hairline;
-  static const Color divider       = Color(0xFFF1F4F8);
+  static const Color border = hairline;
+  static const Color divider = Color(0xFFF1F4F8);
 
   // ── Shadows (Stripe Premium) ────────────────────────────────────────────
   static List<BoxShadow> cardShadow = [
@@ -133,10 +133,7 @@ class AppColorsLight {
   );
 
   static const LinearGradient glassGradient = LinearGradient(
-    colors: [
-      Colors.white12,
-      Colors.white24,
-    ],
+    colors: [Colors.white12, Colors.white24],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

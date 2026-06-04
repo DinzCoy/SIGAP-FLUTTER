@@ -8,6 +8,7 @@ class ActionCard extends StatefulWidget {
   final String label;
   final String subtitle;
   final VoidCallback onTap;
+
   /// Jika true, ikon menggunakan warna aksen oranye SIGAP
   final bool useAccent;
 
@@ -33,7 +34,10 @@ class _ActionCardState extends State<ActionCard> {
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) { setState(() => _pressed = false); widget.onTap(); },
+      onTapUp: (_) {
+        setState(() => _pressed = false);
+        widget.onTap();
+      },
       onTapCancel: () => setState(() => _pressed = false),
       child: AnimatedScale(
         scale: _pressed ? 0.98 : 1.0,
@@ -42,17 +46,22 @@ class _ActionCardState extends State<ActionCard> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
             color: AppColors.canvas, // {colors.canvas}
-            borderRadius: BorderRadius.circular(AppColors.radiusLg), // {rounded.lg} = 12px
+            borderRadius: BorderRadius.circular(
+              AppColors.radiusLg,
+            ), // {rounded.lg} = 12px
             boxShadow: AppColors.cardShadow, // Level 1
             border: Border.all(color: AppColors.hairline), // {colors.hairline}
           ),
           child: Row(
             children: [
               Container(
-                width: 44, height: 44,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(AppColors.radiusMd), // {rounded.md} = 8px
+                  borderRadius: BorderRadius.circular(
+                    AppColors.radiusMd,
+                  ), // {rounded.md} = 8px
                 ),
                 child: Icon(widget.icon, color: color, size: 22),
               ),
@@ -62,17 +71,17 @@ class _ActionCardState extends State<ActionCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.label, 
+                      widget.label,
                       style: AppTextStyles.titleSmall.copyWith(
                         color: AppColors.ink,
-                      )
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      widget.subtitle, 
+                      widget.subtitle,
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.inkMute, // {colors.ink-mute}
-                      )
+                      ),
                     ),
                   ],
                 ),
@@ -80,7 +89,7 @@ class _ActionCardState extends State<ActionCard> {
               Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.inkMute, // {colors.ink-mute}
-                size: 18
+                size: 18,
               ),
             ],
           ),
@@ -89,4 +98,3 @@ class _ActionCardState extends State<ActionCard> {
     );
   }
 }
-

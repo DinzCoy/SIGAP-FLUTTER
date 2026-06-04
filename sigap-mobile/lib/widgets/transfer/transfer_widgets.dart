@@ -66,7 +66,9 @@ class TransferAssetCard extends StatelessWidget {
               children: [
                 Text(
                   'Aset yang dimutasi:',
-                  style: AppTextStyles.labelMedium.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -77,7 +79,9 @@ class TransferAssetCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     asset!.kode,
-                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textHint,
+                    ),
                   ),
                 ],
               ],

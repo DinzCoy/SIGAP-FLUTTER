@@ -36,8 +36,12 @@ class GlassCard extends StatelessWidget {
 
     // Base background transparan premium adaptif
     final defaultBg = isDark
-        ? Colors.white.withValues(alpha: 0.04) // Di layar gelap, sedikit highlight putih transparan
-        : Colors.white.withValues(alpha: 0.45); // Di layar terang, buram putih lembut
+        ? Colors.white.withValues(
+            alpha: 0.04,
+          ) // Di layar gelap, sedikit highlight putih transparan
+        : Colors.white.withValues(
+            alpha: 0.45,
+          ); // Di layar terang, buram putih lembut
 
     // Garis tepian pembias cahaya adaptif
     final defaultBorder = isDark
@@ -50,7 +54,8 @@ class GlassCard extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        boxShadow: shadow ?? (isDark ? AppColors.glassShadow : AppColors.cardShadow),
+        boxShadow:
+            shadow ?? (isDark ? AppColors.glassShadow : AppColors.cardShadow),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),

@@ -30,13 +30,20 @@ class LoginPage extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppColors.radiusXl),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24), // Efek blur kaca
+                  filter: ImageFilter.blur(
+                    sigmaX: 24,
+                    sigmaY: 24,
+                  ), // Efek blur kaca
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.55), // Enhanced frosty glass transparency
+                      color: Colors.white.withValues(
+                        alpha: 0.55,
+                      ), // Enhanced frosty glass transparency
                       borderRadius: BorderRadius.circular(AppColors.radiusXl),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.6), // Glossy border
+                        color: Colors.white.withValues(
+                          alpha: 0.6,
+                        ), // Glossy border
                         width: 1.5,
                       ),
                     ),
@@ -66,10 +73,7 @@ class LoginPage extends StatelessWidget {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: leftSection,
-                    ),
+                    SizedBox(width: double.infinity, child: leftSection),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 32, 20, 32),
                       child: rightContent,

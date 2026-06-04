@@ -36,7 +36,10 @@ class ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text(name, style: AppTextStyles.headlineSmall.copyWith(color: Colors.white)),
+          Text(
+            name,
+            style: AppTextStyles.headlineSmall.copyWith(color: Colors.white),
+          ),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -44,7 +47,10 @@ class ProfileHeader extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(role, style: AppTextStyles.labelLarge.copyWith(color: Colors.white)),
+            child: Text(
+              role,
+              style: AppTextStyles.labelLarge.copyWith(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -79,7 +85,11 @@ class ProfileInfoCard extends StatelessWidget {
             const SizedBox(height: 20),
             _InfoRow(icon: Icons.email_outlined, label: 'Email', value: email),
             const Divider(height: 30),
-            _InfoRow(icon: Icons.phone_outlined, label: 'Nomor Telepon', value: phone),
+            _InfoRow(
+              icon: Icons.phone_outlined,
+              label: 'Nomor Telepon',
+              value: phone,
+            ),
             const Divider(height: 30),
             _InfoRow(icon: Icons.badge_outlined, label: 'NIP / ID', value: nip),
           ],
@@ -94,7 +104,11 @@ class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoRow({required this.icon, required this.label, required this.value});
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +127,17 @@ class _InfoRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: AppTextStyles.labelMedium.copyWith(color: AppColors.textSecondary)),
+              Text(
+                label,
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: 4),
-              Text(value.isEmpty ? '-' : value, style: AppTextStyles.titleMedium),
+              Text(
+                value.isEmpty ? '-' : value,
+                style: AppTextStyles.titleMedium,
+              ),
             ],
           ),
         ),
@@ -146,7 +168,11 @@ class ProfileActionCard extends StatelessWidget {
                   color: AppColors.surface,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(items[i].icon, color: AppColors.textPrimary, size: 20),
+                child: Icon(
+                  items[i].icon,
+                  color: AppColors.textPrimary,
+                  size: 20,
+                ),
               ),
               title: Text(items[i].title, style: AppTextStyles.titleSmall),
               trailing: Icon(Icons.chevron_right, color: AppColors.textHint),
@@ -164,5 +190,9 @@ class ProfileActionItem {
   final String title;
   final VoidCallback onTap;
 
-  const ProfileActionItem({required this.icon, required this.title, required this.onTap});
+  const ProfileActionItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
 }

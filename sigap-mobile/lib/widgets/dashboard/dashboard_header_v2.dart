@@ -13,6 +13,7 @@ import '../common/premium_background.dart';
 class DashboardHeaderV2 extends StatelessWidget {
   final String name;
   final String role;
+  final String? photoUrl;
   final VoidCallback? onNotification;
   final VoidCallback? onLogout;
 
@@ -20,6 +21,7 @@ class DashboardHeaderV2 extends StatelessWidget {
     super.key,
     required this.name,
     required this.role,
+    this.photoUrl,
     this.onNotification,
     this.onLogout,
   });
@@ -54,7 +56,11 @@ class DashboardHeaderV2 extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.bolt_rounded, color: Colors.white, size: 16),
+            child: const Icon(
+              Icons.bolt_rounded,
+              color: Colors.white,
+              size: 16,
+            ),
           ),
           const SizedBox(width: 8),
           Text(
@@ -67,16 +73,10 @@ class DashboardHeaderV2 extends StatelessWidget {
           ),
         ],
       ),
-      actions: [
-        _buildActionGroup(),
-        const SizedBox(width: 16),
-      ],
+      actions: [_buildActionGroup(), const SizedBox(width: 16)],
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
-        background: _HeaderBackground(
-          name: name,
-          greeting: _getGreeting(),
-        ),
+        background: _HeaderBackground(name: name, greeting: _getGreeting(), photoUrl: photoUrl),
       ),
     );
   }
@@ -87,13 +87,19 @@ class DashboardHeaderV2 extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 1),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.1),
+          width: 1,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (onNotification != null)
-            _SmallIconButton(icon: Icons.notifications_none_rounded, onPressed: onNotification!),
+            _SmallIconButton(
+              icon: Icons.notifications_none_rounded,
+              onPressed: onNotification!,
+            ),
           if (onLogout != null)
             _SmallIconButton(icon: Icons.logout_rounded, onPressed: onLogout!),
         ],
@@ -122,7 +128,8 @@ class _SmallIconButton extends StatelessWidget {
 class _HeaderBackground extends StatelessWidget {
   final String name;
   final String greeting;
-  const _HeaderBackground({required this.name, required this.greeting});
+  final String? photoUrl;
+  const _HeaderBackground({required this.name, required this.greeting, this.photoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -147,15 +154,27 @@ class _HeaderBackground extends StatelessWidget {
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        width: 1.5,
+                      ),
                     ),
                     child: CircleAvatar(
                       radius: 28,
                       backgroundColor: Colors.white.withValues(alpha: 0.2),
-                      child: Text(
-                        name.isNotEmpty ? name[0].toUpperCase() : '?',
-                        style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
+                      backgroundImage: (photoUrl != null && photoUrl!.isNotEmpty) 
+                          ? NetworkImage(photoUrl!) 
+                          : null,
+                      child: (photoUrl == null || photoUrl!.isEmpty) 
+                          ? Text(
+                              name.isNotEmpty ? name[0].toUpperCase() : '?',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ) 
+                          : null,
                     ),
                   ),
                   Positioned(
@@ -163,8 +182,15 @@ class _HeaderBackground extends StatelessWidget {
                     bottom: 0,
                     child: Container(
                       padding: const EdgeInsets.all(3),
-                      decoration: const BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
-                      child: const Icon(Icons.check, color: Colors.white, size: 10),
+                      decoration: const BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 10,
+                      ),
                     ),
                   ),
                 ],
@@ -195,7 +221,10 @@ class _HeaderBackground extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       formattedDate,
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 11),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 11,
+                      ),
                     ),
                   ],
                 ),
@@ -244,7 +273,12 @@ class DashboardTransitionZone extends StatelessWidget {
         children: [
           // Search Bar
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, quickActions.isEmpty ? 20 : 0),
+            padding: EdgeInsets.fromLTRB(
+              20,
+              0,
+              20,
+              quickActions.isEmpty ? 20 : 0,
+            ),
             child: GestureDetector(
               onTap: onSearchTap,
               child: Container(
@@ -263,12 +297,18 @@ class DashboardTransitionZone extends StatelessWidget {
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
-                    Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
+                    Icon(
+                      Icons.search_rounded,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'Cari aset, tiket, atau bantuan...',
-                        style: AppTextStyles.bodySmall.copyWith(color: AppColors.inkMute),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.inkMute,
+                        ),
                       ),
                     ),
                     Container(
@@ -278,7 +318,11 @@ class DashboardTransitionZone extends StatelessWidget {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Icon(Icons.tune_rounded, color: AppColors.primary, size: 16),
+                      child: Icon(
+                        Icons.tune_rounded,
+                        color: AppColors.primary,
+                        size: 16,
+                      ),
                     ),
                   ],
                 ),
@@ -291,7 +335,10 @@ class DashboardTransitionZone extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 12),
               child: Row(
                 children: quickActions
-                    .map((action) => Expanded(child: _QuickActionChip(action: action)))
+                    .map(
+                      (action) =>
+                          Expanded(child: _QuickActionChip(action: action)),
+                    )
                     .toList(),
               ),
             ),
@@ -305,7 +352,11 @@ class QuickAction {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const QuickAction({required this.icon, required this.label, required this.onTap});
+  const QuickAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 }
 
 class _QuickActionChip extends StatelessWidget {
@@ -339,7 +390,11 @@ class _QuickActionChip extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 action.label,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.ink),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.ink,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],

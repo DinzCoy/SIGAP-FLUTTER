@@ -34,9 +34,7 @@ class DashboardHeader extends StatelessWidget {
         statusBarIconBrightness: Brightness.light,
       ),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(30),
-        ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
       ),
       actions: [
         if (onNotification != null)
@@ -45,10 +43,7 @@ class DashboardHeader extends StatelessWidget {
             onPressed: onNotification!,
           ),
         if (onLogout != null)
-          _NavIconButton(
-            icon: Icons.logout_rounded,
-            onPressed: onLogout!,
-          ),
+          _NavIconButton(icon: Icons.logout_rounded, onPressed: onLogout!),
         const SizedBox(width: AppColors.spaceSm),
       ],
       flexibleSpace: ClipRRect(
@@ -95,15 +90,11 @@ class _HeaderBackground extends StatelessWidget {
       child: Stack(
         children: [
           // Atmospheric mesh backdrop
-          Positioned.fill(
-            child: CustomPaint(
-              painter: HeaderMeshPainter(),
-            ),
-          ),
+          Positioned.fill(child: CustomPaint(painter: HeaderMeshPainter())),
 
           // Content
           Positioned(
-            left: AppColors.spaceLg,   // 16px
+            left: AppColors.spaceLg, // 16px
             right: AppColors.spaceLg,
             bottom: AppColors.spaceXl, // 24px
             child: Column(
@@ -114,15 +105,10 @@ class _HeaderBackground extends StatelessWidget {
                 _RoleBadge(role: role),
 
                 const SizedBox(height: AppColors.spaceMd), // 12px
-
                 // Greeting
-                Text(
-                  'Selamat Datang,',
-                  style: AppTextStyles.greeting,
-                ),
+                Text('Selamat Datang,', style: AppTextStyles.greeting),
 
                 const SizedBox(height: AppColors.spaceXs), // 4px
-
                 // Name — display-md tier
                 Text(
                   name,
@@ -149,8 +135,8 @@ class _RoleBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppColors.spaceMd,  // 12px
-        vertical: AppColors.spaceXs,   // 4px
+        horizontal: AppColors.spaceMd, // 12px
+        vertical: AppColors.spaceXs, // 4px
       ),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.15),

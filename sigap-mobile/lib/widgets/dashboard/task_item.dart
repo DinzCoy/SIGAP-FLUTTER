@@ -60,8 +60,10 @@ class TaskItem extends StatelessWidget {
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        subtitle, 
-                        style: AppTextStyles.caption.copyWith(color: AppColors.slate),
+                        subtitle,
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.slate,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -79,17 +81,16 @@ class TaskItem extends StatelessWidget {
               StatusBadge.small(priority),
               const SizedBox(height: 6),
               Text(
-                timestamp, 
+                timestamp,
                 style: AppTextStyles.caption.copyWith(
                   fontSize: 10,
                   color: AppColors.slate,
-                )
+                ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 }
-

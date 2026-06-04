@@ -90,7 +90,8 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  bool get _hasResults => _filteredAssets.isNotEmpty || _filteredTickets.isNotEmpty;
+  bool get _hasResults =>
+      _filteredAssets.isNotEmpty || _filteredTickets.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +136,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      );
+      return Center(child: CircularProgressIndicator(color: AppColors.primary));
     }
 
     if (_searchController.text.trim().isEmpty) {
@@ -152,7 +151,8 @@ class _SearchPageState extends State<SearchPage> {
       return _buildEmptyPrompt(
         icon: Icons.search_off_rounded,
         message: 'Tidak ditemukan',
-        sub: 'Tidak ada aset atau tiket yang cocok dengan\n"${_searchController.text}"',
+        sub:
+            'Tidak ada aset atau tiket yang cocok dengan\n"${_searchController.text}"',
       );
     }
 
@@ -160,13 +160,21 @@ class _SearchPageState extends State<SearchPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       children: [
         if (_filteredAssets.isNotEmpty) ...[
-          _buildSectionHeader('Aset', Icons.inventory_2_outlined, _filteredAssets.length),
+          _buildSectionHeader(
+            'Aset',
+            Icons.inventory_2_outlined,
+            _filteredAssets.length,
+          ),
           const SizedBox(height: 8),
           ..._filteredAssets.map(_buildAssetItem),
           const SizedBox(height: 20),
         ],
         if (_filteredTickets.isNotEmpty) ...[
-          _buildSectionHeader('Tiket', Icons.confirmation_number_outlined, _filteredTickets.length),
+          _buildSectionHeader(
+            'Tiket',
+            Icons.confirmation_number_outlined,
+            _filteredTickets.length,
+          ),
           const SizedBox(height: 8),
           ..._filteredTickets.map(_buildTicketItem),
         ],
@@ -175,7 +183,11 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildEmptyPrompt({required IconData icon, required String message, required String sub}) {
+  Widget _buildEmptyPrompt({
+    required IconData icon,
+    required String message,
+    required String sub,
+  }) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -188,10 +200,17 @@ class _SearchPageState extends State<SearchPage> {
                 color: AppColors.primary.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, size: 48, color: AppColors.primary.withValues(alpha: 0.6)),
+              child: Icon(
+                icon,
+                size: 48,
+                color: AppColors.primary.withValues(alpha: 0.6),
+              ),
             ),
             const SizedBox(height: 20),
-            Text(message, style: AppTextStyles.titleMedium.copyWith(color: AppColors.ink)),
+            Text(
+              message,
+              style: AppTextStyles.titleMedium.copyWith(color: AppColors.ink),
+            ),
             const SizedBox(height: 8),
             Text(
               sub,
@@ -209,7 +228,13 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         Icon(icon, size: 16, color: AppColors.primary),
         const SizedBox(width: 6),
-        Text(title, style: AppTextStyles.titleSmall.copyWith(color: AppColors.ink, fontWeight: FontWeight.w700)),
+        Text(
+          title,
+          style: AppTextStyles.titleSmall.copyWith(
+            color: AppColors.ink,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         const SizedBox(width: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -219,7 +244,11 @@ class _SearchPageState extends State<SearchPage> {
           ),
           child: Text(
             '$count',
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary),
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
           ),
         ),
       ],
@@ -243,11 +272,19 @@ class _SearchPageState extends State<SearchPage> {
             color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(Icons.computer_rounded, color: AppColors.primary, size: 22),
+          child: Icon(
+            Icons.computer_rounded,
+            color: AppColors.primary,
+            size: 22,
+          ),
         ),
         title: Text(
           asset.nama.isNotEmpty ? asset.nama : 'Unknown Device',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.ink),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: AppColors.ink,
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -255,7 +292,10 @@ class _SearchPageState extends State<SearchPage> {
           asset.kode.isNotEmpty ? asset.kode : 'Kode tidak tersedia',
           style: TextStyle(fontSize: 12, color: AppColors.inkMute),
         ),
-        trailing: _buildStatusChip(asset.loanStatusLabel, asset.loanStatusColor),
+        trailing: _buildStatusChip(
+          asset.loanStatusLabel,
+          asset.loanStatusColor,
+        ),
       ),
     );
   }
@@ -280,11 +320,19 @@ class _SearchPageState extends State<SearchPage> {
             color: Colors.orange.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: const Icon(Icons.confirmation_number_outlined, color: Colors.orange, size: 22),
+          child: const Icon(
+            Icons.confirmation_number_outlined,
+            color: Colors.orange,
+            size: 22,
+          ),
         ),
         title: Text(
           ticket.judul,
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.ink),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: AppColors.ink,
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -307,7 +355,11 @@ class _SearchPageState extends State<SearchPage> {
       ),
       child: Text(
         label,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: color),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
       ),
     );
   }

@@ -13,9 +13,7 @@ class LoanRequestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pengajuan Peminjaman'),
-      ),
+      appBar: AppBar(title: const Text('Pengajuan Peminjaman')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: LoanRequestForm(asset: asset),

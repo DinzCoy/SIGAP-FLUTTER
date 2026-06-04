@@ -8,21 +8,13 @@ class TicketJenisGrid extends StatelessWidget {
   final ValueChanged<String> onSelected;
 
   static const List<String> jenisLayanan = [
-    'Kerusakan Hardware',
-    'Masalah Software',
-    'Gangguan Jaringan/Internet',
-    'Permintaan Instalasi',
-    'Pengaturan Akun/Password',
-    'Lainnya',
+    'Service',
+    'Troubleshooting',
   ];
 
   static const Map<String, IconData> jenisIcon = {
-    'Kerusakan Hardware'        : Icons.build_rounded,
-    'Masalah Software'          : Icons.computer_rounded,
-    'Gangguan Jaringan/Internet': Icons.wifi_off_rounded,
-    'Permintaan Instalasi'      : Icons.install_desktop_rounded,
-    'Pengaturan Akun/Password'  : Icons.lock_reset_rounded,
-    'Lainnya'                   : Icons.help_outline_rounded,
+    'Service': Icons.build_rounded,
+    'Troubleshooting': Icons.computer_rounded,
   };
 
   const TicketJenisGrid({
@@ -40,7 +32,7 @@ class TicketJenisGrid extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        childAspectRatio: 2.5,
+        childAspectRatio: 2.0, // Make it a bit taller since there are only 2 items
       ),
       itemCount: jenisLayanan.length,
       itemBuilder: (context, index) {
@@ -69,13 +61,29 @@ class TicketJenisGrid extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    jenis,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: isSelected ? Colors.white : AppColors.textPrimary,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        jenis,
+                        style: AppTextStyles.labelLarge.copyWith(
+                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        jenis == 'Service' ? 'Fisik / Hardware' : 'Software / Jaringan',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: isSelected ? Colors.white70 : AppColors.textSecondary,
+                          fontSize: 10,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
               ],

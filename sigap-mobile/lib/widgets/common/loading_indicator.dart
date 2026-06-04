@@ -8,7 +8,7 @@ class LoadingIndicator extends StatelessWidget {
 
   const LoadingIndicator({super.key, this.fullScreen = false, this.message});
   const LoadingIndicator.fullScreen({super.key, this.message})
-      : fullScreen = true;
+    : fullScreen = true;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,10 @@ class LoadingIndicator extends StatelessWidget {
         CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2.5),
         if (message != null) ...[
           const SizedBox(height: 14),
-          Text(message!, style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          Text(
+            message!,
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          ),
         ],
       ],
     );

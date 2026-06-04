@@ -69,57 +69,80 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               const SizedBox(height: 20),
               Row(
                 children: [
-                  const Icon(Icons.emoji_events_rounded, color: Colors.amber, size: 28),
+                  const Icon(
+                    Icons.emoji_events_rounded,
+                    color: Colors.amber,
+                    size: 28,
+                  ),
                   const SizedBox(width: 10),
                   Text(
                     "Kamus Lencana Penghargaan",
-                    style: AppTextStyles.headlineSmall.copyWith(fontWeight: FontWeight.w900),
+                    style: AppTextStyles.headlineSmall.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
               Text(
                 "Setiap lencana diberikan secara otomatis oleh sistem berdasarkan dedikasi dan keahlian nyata dari IT Guardian.",
-                style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
               ),
               const Divider(height: 24),
-              
+
               _buildDictionaryItem(
-                "⚡", "Speedrunner", "#EAB308", 
+                "⚡",
+                "Speedrunner",
+                "#EAB308",
                 "Diberikan kepada teknisi yang menyelesaikan setidaknya 2 perbaikan dalam batas waktu SLA tanggapan dengan persentase di atas 75%.",
               ),
               const SizedBox(height: 16),
               _buildDictionaryItem(
-                "🌐", "Network Guru", "#38BDF8", 
+                "🌐",
+                "Network Guru",
+                "#38BDF8",
                 "Diberikan kepada pahlawan IT yang sukses menyelesaikan minimal 2 kendala koneksi, internet, wifi, router, atau kabel LAN.",
               ),
               const SizedBox(height: 16),
               _buildDictionaryItem(
-                "🖥️", "Hardware Doctor", "#F47920", 
+                "🖥️",
+                "Hardware Doctor",
+                "#F47920",
                 "Spesialisasi andalan dalam merawat dan mereparasi fisik perangkat keras komputer, printer, scanner, dan aset BMN lainnya.",
               ),
               const SizedBox(height: 16),
               _buildDictionaryItem(
-                "🌟", "Rising Star", "#A855F7", 
+                "🌟",
+                "Rising Star",
+                "#A855F7",
                 "Bintang tangguh yang sedang melesat aktif menyelesaikan tiket kerusakan pertamanya bulan ini.",
               ),
               const SizedBox(height: 16),
               _buildDictionaryItem(
-                "🛡️", "System Shield", "#22C55E", 
+                "🛡️",
+                "System Shield",
+                "#22C55E",
                 "Penghargaan loyalitas tinggi setelah sukses mengamankan stabilitas pelayanan IT minimal 5 laporan terselesaikan.",
               ),
               const SizedBox(height: 30),
-              
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text("Mengerti", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  child: const Text(
+                    "Mengerti",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
                 ),
               ),
             ],
@@ -129,8 +152,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     );
   }
 
-  Widget _buildDictionaryItem(String emoji, String title, String hexColor, String desc) {
+  Widget _buildDictionaryItem(
+    String emoji,
+    String title,
+    String hexColor,
+    String desc,
+  ) {
     final color = Color(int.parse(hexColor.replaceFirst('#', '0xFF')));
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -152,12 +182,19 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             children: [
               Text(
                 title,
-                style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.bold, color: color),
+                style: AppTextStyles.titleSmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? color : AppColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 3),
               Text(
                 desc,
-                style: AppTextStyles.bodySmall.copyWith(fontSize: 11.5, height: 1.35, color: AppColors.textSecondary),
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontSize: 11.5,
+                  height: 1.35,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
               ),
             ],
           ),
@@ -169,7 +206,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: PremiumBackground(
@@ -180,12 +217,16 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             SliverAppBar(
               pinned: true,
               expandedHeight: 110,
-              backgroundColor: isDark ? AppColors.canvasSoft.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.85),
+              backgroundColor: isDark
+                  ? AppColors.canvasSoft.withValues(alpha: 0.8)
+                  : Colors.white.withValues(alpha: 0.85),
               elevation: 0,
               scrolledUnderElevation: 1,
               title: Text(
                 "IT Guardian Leaderboard",
-                style: AppTextStyles.headlineSmall.copyWith(fontWeight: FontWeight.w900),
+                style: AppTextStyles.headlineSmall.copyWith(
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               centerTitle: false,
               actions: [
@@ -197,7 +238,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       color: AppColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 20),
+                    child: Icon(
+                      Icons.info_outline_rounded,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
                   ),
                   onPressed: _showBadgesDictionary,
                 ),
@@ -210,7 +255,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     padding: const EdgeInsets.only(left: 16, bottom: 8),
                     child: Text(
                       "Merayakan dedikasi & keahlian IT Guardian secara harmonis",
-                      style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 ),
@@ -219,9 +266,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
             if (_isLoading)
               const SliverFillRemaining(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: Center(child: CircularProgressIndicator()),
               )
             else if (_leaderboard.isEmpty)
               SliverFillRemaining(
@@ -229,9 +274,16 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.sentiment_dissatisfied_rounded, size: 64, color: Colors.grey),
+                      const Icon(
+                        Icons.sentiment_dissatisfied_rounded,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(height: 16),
-                      Text("Belum ada data prestasi teknisi.", style: AppTextStyles.titleMedium),
+                      Text(
+                        "Belum ada data prestasi teknisi.",
+                        style: AppTextStyles.titleMedium,
+                      ),
                     ],
                   ),
                 ),
@@ -239,7 +291,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             else
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -250,15 +305,20 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       // --- DAFTAR HEROES LAIN (Rank 4+) ---
                       Text(
                         "Daftar IT Guardian Lainnya",
-                        style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w900),
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                       const SizedBox(height: 12),
-                      
+
                       ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _leaderboard.length > 3 ? _leaderboard.length - 3 : 0,
-                        separatorBuilder: (context, index) => const SizedBox(height: 12),
+                        itemCount: _leaderboard.length > 3
+                            ? _leaderboard.length - 3
+                            : 0,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           // Indeks di leaderboard dimulai dari 3 (Peringkat 4)
                           final item = _leaderboard[index + 3];
@@ -297,7 +357,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               SizedBox(width: 8),
               Text(
                 "Pemenang Bulan Ini",
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 0.5),
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
+                ),
               ),
             ],
           ),
@@ -308,10 +372,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             children: [
               // PERINGKAT 2 (Kiri)
               if (top2 != null) Expanded(child: _buildPodiumPod(top2, 2)),
-              
+
               // PERINGKAT 1 (Tengah)
               if (top1 != null) Expanded(child: _buildPodiumPod(top1, 1)),
-              
+
               // PERINGKAT 3 (Kanan)
               if (top3 != null) Expanded(child: _buildPodiumPod(top3, 3)),
             ],
@@ -328,9 +392,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     final int level = item['level'] ?? 1;
 
     // Aksen warna ring glowing
-    final Color glowColor = rank == 1 
+    final Color glowColor = rank == 1
         ? const Color(0xFFF59E0B) // Emas
-        : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)); // Perak & Perunggu
+        : (rank == 2
+              ? const Color(0xFF94A3B8)
+              : const Color(0xFFD97706)); // Perak & Perunggu
 
     final String rankCrown = rank == 1 ? "👑" : (rank == 2 ? "🥈" : "🥉");
 
@@ -352,29 +418,33 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     color: glowColor.withValues(alpha: 0.4),
                     blurRadius: 16,
                     spreadRadius: 2,
-                  )
+                  ),
                 ],
               ),
               child: CircleAvatar(
                 backgroundColor: glowColor,
                 child: Padding(
                   padding: const EdgeInsets.all(2.5),
-                  child: item['photo_url'] != null && item['photo_url'].toString().isNotEmpty
+                  child:
+                      item['photo_url'] != null &&
+                          item['photo_url'].toString().isNotEmpty
                       ? ClipOval(
                           child: CachedNetworkImage(
                             imageUrl: item['photo_url'],
                             width: avatarSize,
                             height: avatarSize,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(color: Colors.white10),
-                            errorWidget: (context, url, error) => _buildInitialsAvatar(name, avatarSize),
+                            placeholder: (context, url) =>
+                                Container(color: Colors.white10),
+                            errorWidget: (context, url, error) =>
+                                _buildInitialsAvatar(name, avatarSize),
                           ),
                         )
                       : _buildInitialsAvatar(name, avatarSize),
                 ),
               ),
             ),
-            
+
             // Crown/Rank Badge
             Positioned(
               top: rank == 1 ? -16 : -10,
@@ -396,14 +466,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 ),
                 child: Text(
                   "Lv. $level",
-                  style: const TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w900),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 12),
-        
+
         // Nama & XP
         Text(
           name.trim().split(' ').first,
@@ -419,40 +493,59 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         Text(
           "$xp XP",
           style: AppTextStyles.microCap.copyWith(
-            color: glowColor, 
+            color: glowColor,
             fontWeight: FontWeight.w900,
             fontSize: rank == 1 ? 11 : 10,
           ),
         ),
-        
+
         // Dynamic badges list for Top 3 (Show simple badge tags)
-        if (item['earned_badges'] != null && (item['earned_badges'] as List).isNotEmpty)
+        if (item['earned_badges'] != null &&
+            (item['earned_badges'] as List).isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 6),
             child: Wrap(
               spacing: 3,
               runSpacing: 3,
               alignment: WrapAlignment.center,
-              children: (item['earned_badges'] as List).take(2).map<Widget>((b) {
-                final emoji = b['icon'] == 'zap' ? '⚡' : (b['icon'] == 'globe' ? '🌐' : (b['icon'] == 'monitor' ? '🖥' : (b['icon'] == 'star' ? '🌟' : '🛡️')));
+              children: (item['earned_badges'] as List).take(2).map<Widget>((
+                b,
+              ) {
+                final emoji = b['icon'] == 'zap'
+                    ? '⚡'
+                    : (b['icon'] == 'globe'
+                          ? '🌐'
+                          : (b['icon'] == 'monitor'
+                                ? '🖥'
+                                : (b['icon'] == 'star' ? '🌟' : '🛡️')));
                 return Tooltip(
                   message: b['description'],
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1.5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 1.5,
+                    ),
                     decoration: BoxDecoration(
-                      color: Color(int.parse(b['color'].toString().replaceFirst('#', '0x1A'))),
+                      color: Color(
+                        int.parse(
+                          b['color'].toString().replaceFirst('#', '0x1A'),
+                        ),
+                      ),
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Color(int.parse(b['color'].toString().replaceFirst('#', '0x4D')))),
+                      border: Border.all(
+                        color: Color(
+                          int.parse(
+                            b['color'].toString().replaceFirst('#', '0x4D'),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Text(
-                      emoji,
-                      style: const TextStyle(fontSize: 10),
-                    ),
+                    child: Text(emoji, style: const TextStyle(fontSize: 10)),
                   ),
                 );
               }).toList(),
             ),
-          )
+          ),
       ],
     );
   }
@@ -463,7 +556,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       backgroundColor: AppColors.canvas,
       child: Text(
         strtoupper(substr(name, 0, 1)),
-        style: TextStyle(fontWeight: FontWeight.w900, fontSize: size * 0.4, color: AppColors.primary),
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+          fontSize: size * 0.4,
+          color: AppColors.primary,
+        ),
       ),
     );
   }
@@ -489,7 +586,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             alignment: Alignment.center,
             child: Text(
               "#${item['rank']}",
-              style: AppTextStyles.labelMedium.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.bold),
+              style: AppTextStyles.labelMedium.copyWith(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -498,13 +598,21 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           CircleAvatar(
             radius: 18,
             backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-            backgroundImage: item['photo_url'] != null && item['photo_url'].toString().isNotEmpty
+            backgroundImage:
+                item['photo_url'] != null &&
+                    item['photo_url'].toString().isNotEmpty
                 ? CachedNetworkImageProvider(item['photo_url'])
                 : null,
-            child: item['photo_url'] == null || item['photo_url'].toString().isEmpty
+            child:
+                item['photo_url'] == null ||
+                    item['photo_url'].toString().isEmpty
                 ? Text(
                     strtoupper(substr(name, 0, 1)),
-                    style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.primary, fontSize: 13),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.primary,
+                      fontSize: 13,
+                    ),
                   )
                 : null,
           ),
@@ -517,12 +625,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               children: [
                 Text(
                   name,
-                  style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
+                  style: AppTextStyles.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
-                
+
                 // Lencana Spesialisasi Positif
                 if (badges.isNotEmpty)
                   Padding(
@@ -531,25 +642,50 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       spacing: 4,
                       runSpacing: 4,
                       children: badges.map<Widget>((b) {
-                        final color = Color(int.parse(b['color'].toString().replaceFirst('#', '0xFF')));
-                        final emoji = b['icon'] == 'zap' ? '⚡' : (b['icon'] == 'globe' ? '🌐' : (b['icon'] == 'monitor' ? '🖥' : (b['icon'] == 'star' ? '🌟' : '🛡️')));
+                        final color = Color(
+                          int.parse(
+                            b['color'].toString().replaceFirst('#', '0xFF'),
+                          ),
+                        );
+                        final emoji = b['icon'] == 'zap'
+                            ? '⚡'
+                            : (b['icon'] == 'globe'
+                                  ? '🌐'
+                                  : (b['icon'] == 'monitor'
+                                        ? '🖥'
+                                        : (b['icon'] == 'star'
+                                              ? '🌟'
+                                              : '🛡️')));
                         return Tooltip(
                           message: b['description'],
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 1.5,
+                            ),
                             decoration: BoxDecoration(
                               color: color.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: color.withValues(alpha: 0.3), width: 0.8),
+                              border: Border.all(
+                                color: color.withValues(alpha: 0.3),
+                                width: 0.8,
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(emoji, style: const TextStyle(fontSize: 9.5)),
+                                Text(
+                                  emoji,
+                                  style: const TextStyle(fontSize: 9.5),
+                                ),
                                 const SizedBox(width: 3),
                                 Text(
                                   b['name'],
-                                  style: TextStyle(color: color, fontSize: 8.5, fontWeight: FontWeight.w900),
+                                  style: TextStyle(
+                                    color: color,
+                                    fontSize: 8.5,
+                                    fontWeight: FontWeight.w900,
+                                  ),
                                 ),
                               ],
                             ),
@@ -561,7 +697,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 else
                   Text(
                     "Lv. $level - $levelName",
-                    style: AppTextStyles.microCap.copyWith(color: AppColors.textSecondary),
+                    style: AppTextStyles.microCap.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
               ],
             ),
@@ -575,7 +713,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             children: [
               Text(
                 "$xp XP",
-                style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, fontSize: 12),
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
               const SizedBox(height: 4),
               // Tiny progress bar

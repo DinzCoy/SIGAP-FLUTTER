@@ -81,13 +81,17 @@ class RepairTimelineSection extends StatelessWidget {
           child: items.isEmpty
               ? Row(
                   children: [
-                    Icon(Icons.history_rounded,
-                        size: 20, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.history_rounded,
+                      size: 20,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       'Belum ada riwayat perbaikan',
-                      style: AppTextStyles.bodyMedium
-                          .copyWith(color: AppColors.textSecondary),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 )
@@ -108,7 +112,6 @@ class RepairTimelineSection extends StatelessWidget {
     );
   }
 }
-
 
 /// Section untuk visualisasi denah/lokasi kantor sederhana.
 class OfficeMapSection extends StatelessWidget {
@@ -132,11 +135,17 @@ class OfficeMapSection extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.map_outlined, size: 40, color: AppColors.textSecondary),
+                Icon(
+                  Icons.map_outlined,
+                  size: 40,
+                  color: AppColors.textSecondary,
+                ),
                 const SizedBox(height: 8),
                 Text(
                   'Denah Kantor SIGAP',
-                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 const Row(

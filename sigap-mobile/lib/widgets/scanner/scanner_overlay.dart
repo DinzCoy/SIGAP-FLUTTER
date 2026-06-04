@@ -38,7 +38,10 @@ class ScannerOverlay extends StatelessWidget {
             child: Text(
               'Arahkan kamera ke QR Code atau Barcode yang tertempel pada perangkat aset.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium.copyWith(color: Colors.white, height: 1.5),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.white,
+                height: 1.5,
+              ),
             ),
           ),
         ],

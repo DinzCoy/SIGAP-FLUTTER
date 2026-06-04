@@ -23,7 +23,9 @@ class _ReturnAssetDialogState extends State<ReturnAssetDialog> {
         children: [
           Text(
             'Pilih kondisi aset saat dikembalikan:',
-            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 12),
           Container(
@@ -37,10 +39,12 @@ class _ReturnAssetDialogState extends State<ReturnAssetDialog> {
               value: _kondisi,
               underline: const SizedBox(),
               items: ['Baik', 'Rusak Ringan', 'Rusak Berat']
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e, style: AppTextStyles.bodyMedium),
-                      ))
+                  .map(
+                    (e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e, style: AppTextStyles.bodyMedium),
+                    ),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => _kondisi = v!),
             ),
@@ -52,7 +56,9 @@ class _ReturnAssetDialogState extends State<ReturnAssetDialog> {
           onPressed: () => Navigator.pop(context, null),
           child: Text(
             'Batal',
-            style: AppTextStyles.labelLarge.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.labelLarge.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
         ),
         ElevatedButton(
@@ -60,7 +66,9 @@ class _ReturnAssetDialogState extends State<ReturnAssetDialog> {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           child: Text('Proses Pengembalian', style: AppTextStyles.labelLarge),
         ),

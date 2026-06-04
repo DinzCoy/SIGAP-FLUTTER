@@ -12,10 +12,12 @@ import '../widgets/common/logout_dialog.dart';
 import '../widgets/common/premium_background.dart';
 
 import 'profile_page.dart';
+import 'search_page.dart';
 import 'asset_scanner_page.dart';
 import 'admin_loans_page.dart';
 import 'notifications_page.dart';
 import 'all_tickets_page.dart';
+import 'asset_catalog_page.dart';
 import 'leaderboard_page.dart';
 import '../widgets/common/fade_in.dart';
 
@@ -30,10 +32,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   int _selectedIndex = 0;
   bool _isLoading = true;
   String _adminName = 'Admin';
+  String _photoUrl = '';
 
-  int _activeTickets  = 0;
+  int _activeTickets = 0;
   int _pendingTickets = 0;
-  int _pendingLoans   = 0;
+  int _pendingLoans = 0;
   List<Map<String, dynamic>> _recentTickets = [];
 
   @override
@@ -45,7 +48,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Future<void> _loadName() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() => _adminName = prefs.getString('user_name') ?? 'Admin');
+    setState(() {
+      _adminName = prefs.getString('user_name') ?? 'Admin';
+      _photoUrl = prefs.getString('user_photo_url') ?? '';
+    });
   }
 
   Future<void> _fetchData() async {
@@ -53,36 +59,35 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final data = await DashboardService.fetchAdminDashboard();
     if (data != null && mounted) {
       final stats = data['stats'] as Map<String, dynamic>? ?? {};
-      final list  = (data['recent_tickets'] as List?) ?? [];
+      final list = (data['recent_tickets'] as List?) ?? [];
       setState(() {
-        _activeTickets  = stats['active_tickets']  ?? 0;
+        _activeTickets = stats['active_tickets'] ?? 0;
         _pendingTickets = stats['pending_tickets'] ?? 0;
-        _pendingLoans   = stats['pending_loans']   ?? 0;
-        _recentTickets  = list.cast<Map<String, dynamic>>();
+        _pendingLoans = stats['pending_loans'] ?? 0;
+        _recentTickets = list.cast<Map<String, dynamic>>();
       });
     }
     if (mounted) setState(() => _isLoading = false);
   }
 
   void _onNavTap(int i) {
+    if (i == 0) _loadName();
     setState(() => _selectedIndex = i);
   }
 
   Widget _buildBody() {
-    // Tab 1 = Laporan Tiket (embedded)
-    if (_selectedIndex == 1) {
-      return const AllTicketsPage();
-    }
-    // Tab 2 = Pinjaman (embedded)
-    if (_selectedIndex == 2) {
-      return const AdminLoansPage(embeddedMode: true);
-    }
-    // Tab 3 = Profil (embedded)
-    if (_selectedIndex == 3) {
-      return const ProfilePage();
-    }
+    return IndexedStack(
+      index: _selectedIndex,
+      children: [
+        _buildHomeContent(),
+        const AllTicketsPage(embeddedMode: true),
+        const AdminLoansPage(embeddedMode: true),
+        const ProfilePage(),
+      ],
+    );
+  }
 
-    // Tab 0 = Beranda
+  Widget _buildHomeContent() {
     return RefreshIndicator(
       onRefresh: _fetchData,
       color: AppColors.primary,
@@ -91,6 +96,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         slivers: [
           DashboardHeaderV2(
             name: _adminName,
+            photoUrl: _photoUrl,
             role: 'Administrator SIGAP',
             onNotification: () => Navigator.push(
               context,
@@ -104,8 +110,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               children: [
                 DashboardTransitionZone(
                   onSearchTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Fitur pencarian admin segera hadir')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SearchPage()),
                     );
                   },
                   quickActions: [
@@ -114,7 +121,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       label: 'Scan Aset',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const AssetScannerPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const AssetScannerPage(),
+                        ),
                       ),
                     ),
                     QuickAction(
@@ -128,11 +137,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       onTap: () => setState(() => _selectedIndex = 1),
                     ),
                     QuickAction(
+                      icon: Icons.menu_book_outlined,
+                      label: 'Katalog Aset',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AssetCatalogPage(),
+                        ),
+                      ),
+                    ),
+                    QuickAction(
                       icon: Icons.leaderboard_outlined,
                       label: 'Top Teknisi',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const LeaderboardPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const LeaderboardPage(),
+                        ),
                       ),
                     ),
                   ],
@@ -147,27 +168,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         delay: const Duration(milliseconds: 200),
                         child: _isLoading
                             ? const StatPanelSkeleton()
-                            : StatPanel(items: [
-                                StatItem(
-                                  value: '$_activeTickets',
-                                  label: 'Tiket Aktif',
-                                  icon: Icons.confirmation_number_outlined,
-                                  iconColor: AppColors.primary,
-                                ),
-                                StatItem(
-                                  value: '$_pendingTickets',
-                                  label: 'Tiket Baru',
-                                  icon: Icons.inbox_outlined,
-                                  iconColor: AppColors.accent,
-                                ),
-                                StatItem(
-                                  value: '$_pendingLoans',
-                                  label: 'Pinjaman',
-                                  icon: Icons.swap_horiz_rounded,
-                                  iconColor: AppColors.success,
-                                  onTap: () => setState(() => _selectedIndex = 2),
-                                ),
-                              ]),
+                            : StatPanel(
+                                items: [
+                                  StatItem(
+                                    value: '$_activeTickets',
+                                    label: 'Tiket Aktif',
+                                    icon: Icons.confirmation_number_outlined,
+                                    iconColor: AppColors.primary,
+                                  ),
+                                  StatItem(
+                                    value: '$_pendingTickets',
+                                    label: 'Tiket Baru',
+                                    icon: Icons.inbox_outlined,
+                                    iconColor: AppColors.accent,
+                                  ),
+                                  StatItem(
+                                    value: '$_pendingLoans',
+                                    label: 'Pinjaman',
+                                    icon: Icons.swap_horiz_rounded,
+                                    iconColor: AppColors.success,
+                                    onTap: () =>
+                                        setState(() => _selectedIndex = 2),
+                                  ),
+                                ],
+                              ),
                       ),
                       const SizedBox(height: 24),
                       FadeIn(
@@ -200,7 +224,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       body: PremiumBackground(child: _buildBody()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const AssetScannerPage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AssetScannerPage()),
+          );
         },
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,

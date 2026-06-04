@@ -27,8 +27,11 @@ class TicketHeaderBanner extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.support_agent_rounded,
-                color: Colors.white, size: 32),
+            child: const Icon(
+              Icons.support_agent_rounded,
+              color: Colors.white,
+              size: 32,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -37,12 +40,16 @@ class TicketHeaderBanner extends StatelessWidget {
               children: [
                 Text(
                   'Buat Tiket Layanan IT',
-                  style: AppTextStyles.titleMedium.copyWith(color: Colors.white),
+                  style: AppTextStyles.titleMedium.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Isi form berikut, tim IT akan merespons secepatnya.',
-                  style: AppTextStyles.bodySmall.copyWith(color: Colors.white70),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: Colors.white70,
+                  ),
                 ),
               ],
             ),

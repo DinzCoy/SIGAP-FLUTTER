@@ -14,9 +14,9 @@ class LoanService {
     required String tanggalKembali,
   }) async {
     final response = await ApiClient.post('/loans', {
-      'asset_id':    assetId,
+      'asset_id': assetId,
       'loan_reason': alasan,
-      'due_date':    tanggalKembali,
+      'due_date': tanggalKembali,
     });
     return ApiClient.processResponse(response);
   }
@@ -47,25 +47,25 @@ class LoanService {
     final query = StringBuffer('?page=$page&limit=$limit');
     if (status != null && status.isNotEmpty) query.write('&status=$status');
 
-    final response = await ApiClient.get('/loans$query');
+    final response = await ApiClient.get('/admin/loans$query');
     final data = ApiClient.processResponse(response);
 
     // Backend returns: { data: { data: [...], last_page: N, total: N } }
     if (data['data'] is Map && data['data'].containsKey('data')) {
       final inner = data['data'] as Map<String, dynamic>;
-      final list  = (inner['data'] as List?) ?? [];
+      final list = (inner['data'] as List?) ?? [];
       return {
-        'data':      list.map((e) => LoanModel.fromJson(e)).toList(),
-        'last_page': inner['last_page'] ?? 1,
-        'total':     inner['total'] ?? list.length,
+        'data': list.map((e) => LoanModel.fromJson(e)).toList(),
+        'last_page': int.tryParse(inner['last_page']?.toString() ?? '') ?? 1,
+        'total': int.tryParse(inner['total']?.toString() ?? '') ?? list.length,
       };
     }
 
     final list = (data['data'] as List?) ?? [];
     return {
-      'data':      list.map((e) => LoanModel.fromJson(e)).toList(),
+      'data': list.map((e) => LoanModel.fromJson(e)).toList(),
       'last_page': 1,
-      'total':     list.length,
+      'total': list.length,
     };
   }
 
@@ -73,11 +73,11 @@ class LoanService {
   /// Admin: setujui (status=disetujui) atau tolak (status=ditolak) pengajuan
   static Future<void> approveLoan({
     required int loanId,
-    required String status,   // 'disetujui' | 'ditolak'
+    required String status, // 'disetujui' | 'ditolak'
     String? catatan,
   }) async {
-    final response = await ApiClient.post('/loans/$loanId/approve', {
-      'status':        status,
+    final response = await ApiClient.post('/admin/loans/$loanId/approve', {
+      'status': status,
       'catatan_admin': catatan ?? '',
     });
     ApiClient.processResponse(response);

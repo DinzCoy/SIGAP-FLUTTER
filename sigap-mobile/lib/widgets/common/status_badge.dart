@@ -21,14 +21,14 @@ class StatusBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: px, vertical: py),
       decoration: BoxDecoration(
-        color: bg, 
+        color: bg,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: fg.withValues(alpha: 0.1)),
       ),
       child: Text(
         label.toUpperCase(),
         style: AppTextStyles.labelSmall.copyWith(
-          color: fg, 
+          color: fg,
           fontSize: fs,
           letterSpacing: 0.5,
           fontWeight: FontWeight.w700,
@@ -37,24 +37,27 @@ class StatusBadge extends StatelessWidget {
     );
   }
 
-
   static (Color fg, Color bg) _resolveColor(String label) {
     final l = label.toLowerCase();
     // Prioritas
-    if (l == 'tinggi')          return (AppColors.error,   AppColors.errorBg);
-    if (l == 'sedang')          return (AppColors.warning,  AppColors.warningBg);
-    if (l == 'rendah')          return (AppColors.success,  AppColors.successBg);
+    if (l == 'tinggi') return (AppColors.error, AppColors.errorBg);
+    if (l == 'sedang') return (AppColors.warning, AppColors.warningBg);
+    if (l == 'rendah') return (AppColors.success, AppColors.successBg);
     // Status tiket / pinjaman
-    if (l.contains('selesai'))      return (AppColors.success,  AppColors.successBg);
-    if (l.contains('progress'))     return (AppColors.primary,  AppColors.infoBg);
-    if (l.contains('menunggu'))     return (AppColors.warning,  AppColors.warningBg);
-    if (l.contains('ditolak'))      return (AppColors.error,    AppColors.errorBg);
-    if (l.contains('disetujui'))    return (AppColors.success,  AppColors.successBg);
-    if (l.contains('dipinjam'))     return (AppColors.accent,   Color(0xFFFFF0E0));
-    if (l.contains('dikembalikan')) return (AppColors.info,     AppColors.infoBg);
-    if (l == 'pending')             return (AppColors.warning,  AppColors.warningBg);
-    if (l == 'dikerjakan')          return (AppColors.primary,  AppColors.infoBg);
-    if (l == 'batal' || l.contains('dibatal')) return (AppColors.error, AppColors.errorBg);
+    if (l.contains('selesai')) return (AppColors.success, AppColors.successBg);
+    if (l.contains('progress')) return (AppColors.primary, AppColors.infoBg);
+    if (l.contains('menunggu')) return (AppColors.warning, AppColors.warningBg);
+    if (l.contains('ditolak')) return (AppColors.error, AppColors.errorBg);
+    if (l.contains('disetujui')) {
+      return (AppColors.success, AppColors.successBg);
+    }
+    if (l.contains('dipinjam')) return (AppColors.accent, Color(0xFFFFF0E0));
+    if (l.contains('dikembalikan')) return (AppColors.info, AppColors.infoBg);
+    if (l == 'pending') return (AppColors.warning, AppColors.warningBg);
+    if (l == 'dikerjakan') return (AppColors.primary, AppColors.infoBg);
+    if (l == 'batal' || l.contains('dibatal')) {
+      return (AppColors.error, AppColors.errorBg);
+    }
     // Default
     return (AppColors.textSecondary, AppColors.background);
   }

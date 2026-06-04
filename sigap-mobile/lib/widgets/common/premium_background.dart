@@ -17,10 +17,7 @@ class MeshGradientPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Base canvas - using a very subtle gradient for the base
     final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    canvas.drawRect(
-      rect,
-      Paint()..color = AppColors.canvasSoft,
-    );
+    canvas.drawRect(rect, Paint()..color = AppColors.canvasSoft);
 
     // ── Upper mesh atmosphere (signature Stripe vibe) ──────────────
 
@@ -123,10 +120,7 @@ class MeshGradientPainter extends CustomPainter {
 class PremiumBackground extends StatelessWidget {
   final Widget child;
 
-  const PremiumBackground({
-    super.key,
-    required this.child,
-  });
+  const PremiumBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -137,9 +131,7 @@ class PremiumBackground extends StatelessWidget {
           children: [
             // Mesh gradient layer — occupies full page, atmospheric backdrop
             Positioned.fill(
-              child: CustomPaint(
-                painter: const MeshGradientPainter(),
-              ),
+              child: CustomPaint(painter: const MeshGradientPainter()),
             ),
 
             // Content layer
@@ -163,10 +155,7 @@ class HeaderMeshPainter extends CustomPainter {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      baseGradient,
-    );
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), baseGradient);
 
     // Cream highlight — upper-left warm spot
     canvas.drawOval(

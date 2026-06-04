@@ -6,23 +6,30 @@ import '../../theme/app_text_styles.dart';
 class LoanCard extends StatelessWidget {
   final LoanModel loan;
   final VoidCallback? onReturn;
+  final VoidCallback? onTap;
 
-  const LoanCard({
-    super.key,
-    required this.loan,
-    this.onReturn,
-  });
+  const LoanCard({super.key, required this.loan, this.onReturn, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final statusInfo = loan.statusInfo;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: AppColors.cardShadow,
-        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+        child: Container(
+          decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -38,12 +45,19 @@ class LoanCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: Color(statusInfo['bgColor']).withValues(alpha: 0.15),
+                        color: Color(
+                          statusInfo['bgColor'],
+                        ).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Color(statusInfo['color']).withValues(alpha: 0.2),
+                          color: Color(
+                            statusInfo['color'],
+                          ).withValues(alpha: 0.2),
                         ),
                       ),
                       child: Text(
@@ -57,16 +71,25 @@ class LoanCard extends StatelessWidget {
                     ),
                     if (loan.jenis == 'permanen')
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.purple.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.purple.withValues(alpha: 0.15)),
+                          border: Border.all(
+                            color: Colors.purple.withValues(alpha: 0.15),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.repeat_rounded, size: 12, color: Colors.purple),
+                            const Icon(
+                              Icons.repeat_rounded,
+                              size: 12,
+                              color: Colors.purple,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               'MUTASI',
@@ -104,12 +127,18 @@ class LoanCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+              color: AppColors.background.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
               children: [
+                if (loan.namaUser != null) ...[
+                  _buildUserRow(loan.namaUser!, loan.userPhoto),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Divider(height: 1, color: AppColors.border),
+                  ),
+                ],
                 _buildMetaRow(
                   Icons.calendar_today_rounded,
                   'Periode',
@@ -139,12 +168,18 @@ class LoanCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.errorBg.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.error.withValues(alpha: 0.1)),
+                  border: Border.all(
+                    color: AppColors.error.withValues(alpha: 0.1),
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.info_outline_rounded, size: 16, color: AppColors.error),
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 16,
+                      color: AppColors.error,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
@@ -160,7 +195,9 @@ class LoanCard extends StatelessWidget {
                           const SizedBox(height: 2),
                           Text(
                             loan.catatanAdmin!,
-                            style: AppTextStyles.bodySmall.copyWith(color: AppColors.error),
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.error,
+                            ),
                           ),
                         ],
                       ),
@@ -199,7 +236,7 @@ class LoanCard extends StatelessWidget {
             const SizedBox(height: 8),
         ],
       ),
-    );
+    )));
   }
 
   Widget _buildMetaRow(IconData icon, String label, String value) {
@@ -223,6 +260,45 @@ class LoanCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 value,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.ink,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUserRow(String userName, String? userPhoto) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CircleAvatar(
+          radius: 14,
+          backgroundColor: AppColors.slate.withValues(alpha: 0.2),
+          backgroundImage: userPhoto != null ? NetworkImage(userPhoto) : null,
+          child: userPhoto == null
+              ? Icon(Icons.person, size: 16, color: AppColors.slate)
+              : null,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'PEMINJAM',
+                style: AppTextStyles.labelSmall.copyWith(
+                  fontSize: 10,
+                  color: AppColors.slate,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              Text(
+                userName,
                 style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.ink,
                   fontWeight: FontWeight.w600,

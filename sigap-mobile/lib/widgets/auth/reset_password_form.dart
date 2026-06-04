@@ -14,13 +14,13 @@ class ResetPasswordForm extends StatefulWidget {
 }
 
 class _ResetPasswordFormState extends State<ResetPasswordForm> {
-  final _emailCtrl   = TextEditingController();
-  final _newCtrl     = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _newCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
 
-  bool _obscureNew     = true;
+  bool _obscureNew = true;
   bool _obscureConfirm = true;
-  bool _isLoading      = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -31,7 +31,9 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   }
 
   Future<void> _submit() async {
-    if (_emailCtrl.text.isEmpty || _newCtrl.text.isEmpty || _confirmCtrl.text.isEmpty) {
+    if (_emailCtrl.text.isEmpty ||
+        _newCtrl.text.isEmpty ||
+        _confirmCtrl.text.isEmpty) {
       _showSnack('Semua kolom harus diisi!', isError: true);
       return;
     }
@@ -49,7 +51,10 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
     setState(() => _isLoading = false);
 
     if (result == true) {
-      _showSnack('Password berhasil direset! Silakan login dengan password baru.', isError: false);
+      _showSnack(
+        'Password berhasil direset! Silakan login dengan password baru.',
+        isError: false,
+      );
       Navigator.pop(context);
     } else {
       _showSnack(result.toString(), isError: true);
@@ -57,12 +62,14 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   }
 
   void _showSnack(String msg, {required bool isError}) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      backgroundColor: isError ? AppColors.error : AppColors.success,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: isError ? AppColors.error : AppColors.success,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
   }
 
   @override
@@ -91,7 +98,9 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
           Text(
             'Silakan isi form di bawah ini untuk mereset kata sandi akun Anda.',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 32),
 
@@ -134,7 +143,8 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                 _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                 color: AppColors.textSecondary,
               ),
-              onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+              onPressed: () =>
+                  setState(() => _obscureConfirm = !_obscureConfirm),
             ),
           ),
           const SizedBox(height: 32),

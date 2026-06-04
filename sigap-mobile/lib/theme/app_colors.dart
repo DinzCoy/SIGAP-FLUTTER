@@ -15,93 +15,127 @@ class AppColors {
 
   // ── Brand Primary (Stripe Indigo) ──────────────────────────────────────
   /// Electric Indigo — CTA utama, satu filled button per band
-  static Color get primary      => _isDark ? AppColorsDark.primary      : AppColorsLight.primary;
-  static Color get primaryDeep  => _isDark ? AppColorsDark.primaryDeep  : AppColorsLight.primaryDeep;
-  static Color get primaryPress => _isDark ? AppColorsDark.primaryPress : AppColorsLight.primaryPress;
-  static Color get primaryLight => _isDark ? AppColorsDark.primaryLight : AppColorsLight.primaryLight;
-  static Color get primaryBgSub => _isDark ? AppColorsDark.primaryBgSub : AppColorsLight.primaryBgSub;
+  static Color get primary =>
+      _isDark ? AppColorsDark.primary : AppColorsLight.primary;
+  static Color get primaryDeep =>
+      _isDark ? AppColorsDark.primaryDeep : AppColorsLight.primaryDeep;
+  static Color get primaryPress =>
+      _isDark ? AppColorsDark.primaryPress : AppColorsLight.primaryPress;
+  static Color get primaryLight =>
+      _isDark ? AppColorsDark.primaryLight : AppColorsLight.primaryLight;
+  static Color get primaryBgSub =>
+      _isDark ? AppColorsDark.primaryBgSub : AppColorsLight.primaryBgSub;
 
   /// Deep Navy — Featured tier, dashboard chrome
-  static Color get brandDark900 => _isDark ? AppColorsDark.brandDark900 : AppColorsLight.brandDark900;
+  static Color get brandDark900 =>
+      _isDark ? AppColorsDark.brandDark900 : AppColorsLight.brandDark900;
 
   // ── Ink / Text ──────────────────────────────────────────────────────────
   /// Deep navy — body text, BUKAN pure black
-  static Color get ink          => _isDark ? AppColorsDark.ink          : AppColorsLight.ink;
-  static Color get inkSecondary => _isDark ? AppColorsDark.inkSecondary : AppColorsLight.inkSecondary;
-  static Color get inkMute      => _isDark ? AppColorsDark.inkMute      : AppColorsLight.inkMute;
-  static Color get inkMute2     => _isDark ? AppColorsDark.inkMute2     : AppColorsLight.inkMute2;
+  static Color get ink => _isDark ? AppColorsDark.ink : AppColorsLight.ink;
+  static Color get inkSecondary =>
+      _isDark ? AppColorsDark.inkSecondary : AppColorsLight.inkSecondary;
+  static Color get inkMute =>
+      _isDark ? AppColorsDark.inkMute : AppColorsLight.inkMute;
+  static Color get inkMute2 =>
+      _isDark ? AppColorsDark.inkMute2 : AppColorsLight.inkMute2;
 
   /// Legacy alias — untuk kompatibilitas widget lama
-  static Color get slate        => inkSecondary;
-  static Color get charcoal     => inkMute;
+  static Color get slate => inkSecondary;
+  static Color get charcoal => inkMute;
 
   // ── Accent (dipertahankan sebagai warisan BPS, hanya aksen) ───────────
-  static Color get accent       => _isDark ? AppColorsDark.accent       : AppColorsLight.accent;
-  static Color get accentLight  => _isDark ? AppColorsDark.accentLight  : AppColorsLight.accentLight;
-  static Color get accentDark   => _isDark ? AppColorsDark.accentDark   : AppColorsLight.accentDark;
+  static Color get accent =>
+      _isDark ? AppColorsDark.accent : AppColorsLight.accent;
+  static Color get accentLight =>
+      _isDark ? AppColorsDark.accentLight : AppColorsLight.accentLight;
+  static Color get accentDark =>
+      _isDark ? AppColorsDark.accentDark : AppColorsLight.accentDark;
 
   // ── Gradient Stops (Signature Mesh) ────────────────────────────────────
   /// Ruby — gradient accent, BUKAN button color
-  static Color get ruby         => _isDark ? AppColorsDark.ruby         : AppColorsLight.ruby;
+  static Color get ruby => _isDark ? AppColorsDark.ruby : AppColorsLight.ruby;
+
   /// Magenta — brighter pink gradient stop
-  static Color get magenta      => _isDark ? AppColorsDark.magenta      : AppColorsLight.magenta;
+  static Color get magenta =>
+      _isDark ? AppColorsDark.magenta : AppColorsLight.magenta;
+
   /// Lemon/Sherbet — warm gradient stop
-  static Color get lemon        => _isDark ? AppColorsDark.lemon        : AppColorsLight.lemon;
+  static Color get lemon =>
+      _isDark ? AppColorsDark.lemon : AppColorsLight.lemon;
 
   // ── Canvas / Surface ───────────────────────────────────────────────────
-  static Color get canvas       => _isDark ? AppColorsDark.canvas       : AppColorsLight.canvas;
-  static Color get canvasSoft   => _isDark ? AppColorsDark.canvasSoft   : AppColorsLight.canvasSoft;
-  static Color get canvasCream  => _isDark ? AppColorsDark.canvasCream  : AppColorsLight.canvasCream;
+  static Color get canvas =>
+      _isDark ? AppColorsDark.canvas : AppColorsLight.canvas;
+  static Color get canvasSoft =>
+      _isDark ? AppColorsDark.canvasSoft : AppColorsLight.canvasSoft;
+  static Color get canvasCream =>
+      _isDark ? AppColorsDark.canvasCream : AppColorsLight.canvasCream;
 
   /// Legacy aliases
-  static Color get background   => canvasSoft;
-  static Color get surface      => canvas;
-  static Color get surfaceAlt   => _isDark ? AppColorsDark.surfaceAlt   : AppColorsLight.surfaceAlt;
+  static Color get background => canvasSoft;
+  static Color get surface => canvas;
+  static Color get surfaceAlt =>
+      _isDark ? AppColorsDark.surfaceAlt : AppColorsLight.surfaceAlt;
 
   // ── Text on Surface ────────────────────────────────────────────────────
-  static Color get textPrimary   => ink;
+  static Color get textPrimary => ink;
   static Color get textSecondary => inkMute;
-  static Color get textHint      => _isDark ? AppColorsDark.textHint      : AppColorsLight.textHint;
-  static Color get textOnPrimary => _isDark ? AppColorsDark.textOnPrimary : AppColorsLight.textOnPrimary;
-  static Color get textOnAccent  => _isDark ? AppColorsDark.textOnAccent  : AppColorsLight.textOnAccent;
+  static Color get textHint =>
+      _isDark ? AppColorsDark.textHint : AppColorsLight.textHint;
+  static Color get textOnPrimary =>
+      _isDark ? AppColorsDark.textOnPrimary : AppColorsLight.textOnPrimary;
+  static Color get textOnAccent =>
+      _isDark ? AppColorsDark.textOnAccent : AppColorsLight.textOnAccent;
 
   // ── Status / Semantic ──────────────────────────────────────────────────
-  static Color get success     => _isDark ? AppColorsDark.success     : AppColorsLight.success;
-  static Color get successBg   => _isDark ? AppColorsDark.successBg   : AppColorsLight.successBg;
-  static Color get warning     => _isDark ? AppColorsDark.warning     : AppColorsLight.warning;
-  static Color get warningBg   => _isDark ? AppColorsDark.warningBg   : AppColorsLight.warningBg;
-  static Color get error       => _isDark ? AppColorsDark.error       : AppColorsLight.error;
-  static Color get errorBg     => _isDark ? AppColorsDark.errorBg     : AppColorsLight.errorBg;
-  static Color get info        => _isDark ? AppColorsDark.info        : AppColorsLight.info;
-  static Color get infoBg      => _isDark ? AppColorsDark.infoBg      : AppColorsLight.infoBg;
+  static Color get success =>
+      _isDark ? AppColorsDark.success : AppColorsLight.success;
+  static Color get successBg =>
+      _isDark ? AppColorsDark.successBg : AppColorsLight.successBg;
+  static Color get warning =>
+      _isDark ? AppColorsDark.warning : AppColorsLight.warning;
+  static Color get warningBg =>
+      _isDark ? AppColorsDark.warningBg : AppColorsLight.warningBg;
+  static Color get error =>
+      _isDark ? AppColorsDark.error : AppColorsLight.error;
+  static Color get errorBg =>
+      _isDark ? AppColorsDark.errorBg : AppColorsLight.errorBg;
+  static Color get info => _isDark ? AppColorsDark.info : AppColorsLight.info;
+  static Color get infoBg =>
+      _isDark ? AppColorsDark.infoBg : AppColorsLight.infoBg;
 
   // ── Border / Hairline ──────────────────────────────────────────────────
-  static Color get hairline      => _isDark ? AppColorsDark.hairline      : AppColorsLight.hairline;
-  static Color get hairlineInput => _isDark ? AppColorsDark.hairlineInput : AppColorsLight.hairlineInput;
-  static Color get shadowBlue    => _isDark ? AppColorsDark.shadowBlue    : AppColorsLight.shadowBlue;
+  static Color get hairline =>
+      _isDark ? AppColorsDark.hairline : AppColorsLight.hairline;
+  static Color get hairlineInput =>
+      _isDark ? AppColorsDark.hairlineInput : AppColorsLight.hairlineInput;
+  static Color get shadowBlue =>
+      _isDark ? AppColorsDark.shadowBlue : AppColorsLight.shadowBlue;
 
   /// Legacy aliases
-  static Color get border        => hairline;
-  static Color get divider       => _isDark ? AppColorsDark.divider       : AppColorsLight.divider;
+  static Color get border => hairline;
+  static Color get divider =>
+      _isDark ? AppColorsDark.divider : AppColorsLight.divider;
 
   // ── Border Radius Scale ({rounded.*}) ──────────────────────────────────
   // Tetap const — nilai radius sama untuk semua tema
-  static const double radiusXs   = 4;
-  static const double radiusSm   = 6;
-  static const double radiusMd   = 8;
-  static const double radiusLg   = 12;
-  static const double radiusXl   = 16;
+  static const double radiusXs = 4;
+  static const double radiusSm = 6;
+  static const double radiusMd = 8;
+  static const double radiusLg = 12;
+  static const double radiusXl = 16;
   static const double radiusPill = 9999;
 
   // ── Spacing Scale ({spacing.*}) ────────────────────────────────────────
   // Tetap const — nilai spacing sama untuk semua tema
-  static const double spaceXxs  = 2;
-  static const double spaceXs   = 4;
-  static const double spaceSm   = 8;
-  static const double spaceMd   = 12;
-  static const double spaceLg   = 16;
-  static const double spaceXl   = 24;
-  static const double spaceXxl  = 32;
+  static const double spaceXxs = 2;
+  static const double spaceXs = 4;
+  static const double spaceSm = 8;
+  static const double spaceMd = 12;
+  static const double spaceLg = 16;
+  static const double spaceXl = 24;
+  static const double spaceXxl = 32;
   static const double spaceHuge = 64;
 
   // ── Shadows (Stripe Premium) — Theme-Aware ──────────────────────────────

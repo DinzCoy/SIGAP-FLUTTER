@@ -10,9 +10,7 @@ class ItServicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Layanan IT'),
-      ),
+      appBar: AppBar(title: const Text('Layanan IT')),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: TicketForm(),

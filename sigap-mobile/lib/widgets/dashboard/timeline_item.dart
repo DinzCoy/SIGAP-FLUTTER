@@ -21,7 +21,7 @@ class TimelineItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = isDone ? AppColors.accent : AppColors.primary;
-    
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,7 +34,9 @@ class TimelineItem extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: color,
-                border: isDone ? Border.all(color: color.withValues(alpha: 0.3), width: 3) : null,
+                border: isDone
+                    ? Border.all(color: color.withValues(alpha: 0.3), width: 3)
+                    : null,
               ),
             ),
             if (!isLast)
@@ -50,7 +52,10 @@ class TimelineItem extends StatelessWidget {
               const SizedBox(height: 2),
               Text(desc, style: AppTextStyles.caption),
               const SizedBox(height: 2),
-              Text(time, style: AppTextStyles.caption.copyWith(color: AppColors.primary)),
+              Text(
+                time,
+                style: AppTextStyles.caption.copyWith(color: AppColors.primary),
+              ),
               const SizedBox(height: 16),
             ],
           ),

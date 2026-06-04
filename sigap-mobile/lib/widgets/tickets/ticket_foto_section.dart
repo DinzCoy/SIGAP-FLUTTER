@@ -43,9 +43,17 @@ class TicketFotoSection extends StatelessWidget {
   Widget _buildPicker() {
     return Row(
       children: [
-        Expanded(child: _photoButton(Icons.camera_alt_rounded, 'Ambil Foto', onCamera)),
+        Expanded(
+          child: _photoButton(Icons.camera_alt_rounded, 'Ambil Foto', onCamera),
+        ),
         Container(width: 1, height: 60, color: AppColors.border),
-        Expanded(child: _photoButton(Icons.photo_library_rounded, 'Dari Galeri', onGallery)),
+        Expanded(
+          child: _photoButton(
+            Icons.photo_library_rounded,
+            'Dari Galeri',
+            onGallery,
+          ),
+        ),
       ],
     );
   }
@@ -91,7 +99,12 @@ class TicketFotoSection extends StatelessWidget {
           children: [
             Icon(icon, color: AppColors.primary, size: 28),
             const SizedBox(height: 6),
-            Text(label, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary)),
+            Text(
+              label,
+              style: AppTextStyles.labelMedium.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
           ],
         ),
       ),

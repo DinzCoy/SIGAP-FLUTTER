@@ -15,9 +15,7 @@ class PermanentTransferPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Pengambilan Permanen'),
-      ),
+      appBar: AppBar(title: const Text('Pengambilan Permanen')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: PermanentTransferForm(asset: asset),

@@ -22,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String role = '';
   String phone = '';
   String nip = '';
+  String photoUrl = '';
   bool isLoading = true;
 
   @override
@@ -38,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
       role = prefs.getString('user_role') ?? 'User';
       phone = prefs.getString('user_phone') ?? '-';
       nip = prefs.getString('user_nip') ?? '-';
+      photoUrl = prefs.getString('user_photo_url') ?? '';
       isLoading = false;
     });
   }
@@ -54,7 +56,11 @@ class _ProfilePageState extends State<ProfilePage> {
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           // ─── HEADER ────────────────────────────────────────────────
-          _ProfileSliverHeader(name: name, role: role),
+          _ProfileSliverHeader(
+            name: name,
+            role: role,
+            photoUrl: photoUrl,
+          ),
 
           // ─── BODY (background putih menyambung dari header) ────────
           SliverToBoxAdapter(
@@ -87,17 +93,23 @@ class _ProfilePageState extends State<ProfilePage> {
                           onEdit: () async {
                             final result = await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const EditProfilePage()),
+                              MaterialPageRoute(
+                                builder: (_) => const EditProfilePage(),
+                              ),
                             );
                             if (result == true) _loadProfileData();
                           },
                           onChangePassword: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const ChangePasswordPage()),
+                            MaterialPageRoute(
+                              builder: (_) => const ChangePasswordPage(),
+                            ),
                           ),
                           onAppSettings: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const SettingsPage()),
+                            MaterialPageRoute(
+                              builder: (_) => const SettingsPage(),
+                            ),
                           ),
                         ),
                       ),
@@ -106,7 +118,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       // Logout Button
                       FadeIn(
                         delay: const Duration(milliseconds: 600),
-                        child: _LogoutButton(onTap: () => LogoutDialog.show(context)),
+                        child: _LogoutButton(
+                          onTap: () => LogoutDialog.show(context),
+                        ),
                       ),
 
                       // Bottom padding (untuk nav bar)
@@ -130,8 +144,13 @@ class _ProfilePageState extends State<ProfilePage> {
 class _ProfileSliverHeader extends StatelessWidget {
   final String name;
   final String role;
+  final String? photoUrl;
 
-  const _ProfileSliverHeader({required this.name, required this.role});
+  const _ProfileSliverHeader({
+    required this.name,
+    required this.role,
+    this.photoUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -156,9 +175,7 @@ class _ProfileSliverHeader extends StatelessWidget {
         background: Stack(
           children: [
             // 1. Mesh gradient background
-            Positioned.fill(
-              child: CustomPaint(painter: HeaderMeshPainter()),
-            ),
+            Positioned.fill(child: CustomPaint(painter: HeaderMeshPainter())),
 
             // 2. Profile info — dipastikan tidak tertindih curve di bawah
             Positioned(
@@ -169,7 +186,6 @@ class _ProfileSliverHeader extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Avatar
                   Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -189,13 +205,18 @@ class _ProfileSliverHeader extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 45,
                       backgroundColor: Colors.white,
-                      child: Text(
-                        name.isNotEmpty ? name[0].toUpperCase() : '?',
-                        style: AppTextStyles.headlineMedium.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      backgroundImage: (photoUrl != null && photoUrl!.isNotEmpty)
+                          ? NetworkImage(photoUrl!)
+                          : null,
+                      child: (photoUrl == null || photoUrl!.isEmpty)
+                          ? Text(
+                              name.isNotEmpty ? name[0].toUpperCase() : '?',
+                              style: AppTextStyles.headlineMedium.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -218,7 +239,10 @@ class _ProfileSliverHeader extends StatelessWidget {
 
                   // Role Badge
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
@@ -300,7 +324,11 @@ class _ProfileInfoSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.person_outline_rounded, color: AppColors.primary, size: 20),
+              Icon(
+                Icons.person_outline_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text('Informasi Personal', style: AppTextStyles.titleMedium),
             ],
@@ -381,7 +409,11 @@ class _InfoTile extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoTile({required this.icon, required this.label, required this.value});
+  const _InfoTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -404,12 +436,16 @@ class _InfoTile extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.labelSmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.titleSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -426,7 +462,11 @@ class _SettingTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const _SettingTile({required this.icon, required this.title, required this.onTap});
+  const _SettingTile({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +481,11 @@ class _SettingTile extends StatelessWidget {
         child: Icon(icon, color: AppColors.primary, size: 20),
       ),
       title: Text(title, style: AppTextStyles.titleSmall),
-      trailing: Icon(Icons.chevron_right_rounded, color: AppColors.textHint, size: 20),
+      trailing: Icon(
+        Icons.chevron_right_rounded,
+        color: AppColors.textHint,
+        size: 20,
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
     );
   }
@@ -461,7 +505,10 @@ class _LogoutButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.ruby.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.ruby.withValues(alpha: 0.1), width: 1),
+          border: Border.all(
+            color: AppColors.ruby.withValues(alpha: 0.1),
+            width: 1,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -511,17 +558,18 @@ class HeaderMeshPainter extends CustomPainter {
     paint.shader = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [
-        AppColors.primary,
-        AppColors.primary.withValues(alpha: 0.85),
-      ],
+      colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.85)],
     ).createShader(rect);
     canvas.drawRect(rect, paint);
 
     // Decorative circles (mesh effect)
     paint.shader = null;
     paint.color = Colors.white.withValues(alpha: 0.04);
-    canvas.drawCircle(Offset(size.width * 0.85, size.height * 0.15), 100, paint);
+    canvas.drawCircle(
+      Offset(size.width * 0.85, size.height * 0.15),
+      100,
+      paint,
+    );
     canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.7), 80, paint);
 
     paint.color = Colors.white.withValues(alpha: 0.03);

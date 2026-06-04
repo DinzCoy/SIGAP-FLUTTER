@@ -128,7 +128,9 @@ class _LoanRequestFormState extends State<LoanRequestForm> {
             Text(
               'Pengajuan peminjaman sedang menunggu persetujuan Admin.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 24),
             AppButton.primary(

@@ -1,13 +1,9 @@
 // lib/services/ticket_service.dart
 // Service untuk Tiket Layanan IT
 
-import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'api_client.dart';
-import '../config/app_config.dart';
 import '../models/ticket_model.dart';
-import 'auth_service.dart';
 
 class TicketService {
   /// Buat tiket layanan IT baru
@@ -15,42 +11,50 @@ class TicketService {
     required String judul,
     required String deskripsi,
     required String jenis,
+    required String priority,
     int? assetId,
     File? foto,
   }) async {
-    // Jika ada foto, gunakan multipart request
+    // Jika ada foto, gunakan multipart request dari ApiClient
     if (foto != null) {
-      final token = await AuthService.getToken();
-      final url = Uri.parse('${AppConfig.baseUrl}/tickets');
-      final request = http.MultipartRequest('POST', url);
-      request.headers.addAll(AppConfig.getHeaders(token));
-      request.fields['title'] = judul;
-      request.fields['description'] = deskripsi;
-      request.fields['type'] = jenis;
-      if (assetId != null) request.fields['asset_id'] = assetId.toString();
-      request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
-      final streamed = await request.send();
-      final response = await http.Response.fromStream(streamed);
-      return jsonDecode(response.body);
+      final Map<String, String> fields = {
+        'title': judul,
+        'description': deskripsi,
+        'category': jenis,
+        'priority': priority,
+      };
+      if (assetId != null) {
+        fields['asset_id'] = assetId.toString();
+      }
+      final response = await ApiClient.postMultipart(
+        '/tickets',
+        fields,
+        {'foto': foto.path},
+      );
+      return ApiClient.processResponse(response);
     }
 
     final response = await ApiClient.post('/tickets', {
       'title': judul,
       'description': deskripsi,
-      'type': jenis,
+      'category': jenis,
+      'priority': priority,
       'asset_id': assetId,
     });
     return ApiClient.processResponse(response);
   }
 
   /// Ambil daftar tiket milik user yang login
-  static Future<Map<String, dynamic>> getMyTickets({int page = 1, int limit = 10}) async {
+  static Future<Map<String, dynamic>> getMyTickets({
+    int page = 1,
+    int limit = 10,
+  }) async {
     final response = await ApiClient.get('/tickets?page=$page&limit=$limit');
     final data = ApiClient.processResponse(response);
-    
+
     if (data['data'] is Map && data['data'].containsKey('data')) {
       final list = data['data']['data'] as List? ?? [];
-      final lastPage = data['data']['last_page'] ?? 1;
+      final lastPage = int.tryParse(data['data']['last_page']?.toString() ?? '') ?? 1;
       return {
         'data': list.map((e) => TicketModel.fromJson(e)).toList(),
         'last_page': lastPage,
@@ -65,14 +69,19 @@ class TicketService {
   }
 
   /// Ambil semua tiket (untuk Admin/Teknisi)
-  static Future<Map<String, dynamic>> getAllTickets({String? status, int page = 1, int limit = 10}) async {
-    final query = '?page=$page&limit=$limit${status != null ? '&status=$status' : ''}';
-    final response = await ApiClient.get('/tickets$query');
+  static Future<Map<String, dynamic>> getAllTickets({
+    String? status,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final query =
+        '?page=$page&limit=$limit${status != null ? '&status=$status' : ''}';
+    final response = await ApiClient.get('/admin/tickets$query');
     final data = ApiClient.processResponse(response);
-    
+
     if (data['data'] is Map && data['data'].containsKey('data')) {
       final list = data['data']['data'] as List? ?? [];
-      final lastPage = data['data']['last_page'] ?? 1;
+      final lastPage = int.tryParse(data['data']['last_page']?.toString() ?? '') ?? 1;
       return {
         'data': list.map((e) => TicketModel.fromJson(e)).toList(),
         'last_page': lastPage,
@@ -91,11 +100,16 @@ class TicketService {
     required int ticketId,
     required String status,
     String? tanggapan,
+    int? technicianId,
   }) async {
-    final response = await ApiClient.post('/tickets/$ticketId/status', {
+    final Map<String, dynamic> body = {
       'status': status,
       'tanggapan': tanggapan,
-    });
+    };
+    if (technicianId != null) {
+      body['technician_id'] = technicianId;
+    }
+    final response = await ApiClient.post('/admin/tickets/$ticketId/status', body);
     return ApiClient.processResponse(response);
   }
 
@@ -105,16 +119,17 @@ class TicketService {
     required int limit,
     String? bulan,
   }) async {
-    final query = '?page=$page&limit=$limit${bulan != null ? '&bulan=$bulan' : ''}';
+    final query =
+        '?page=$page&limit=$limit${bulan != null ? '&bulan=$bulan' : ''}';
     final response = await ApiClient.get('/technician/maintenance$query');
     final data = ApiClient.processResponse(response);
-    
+
     // Kembalikan map 'data' dari response JSON
     final resData = data['data'] as Map<String, dynamic>? ?? {};
     return {
       'data': resData['data'] as List? ?? [],
       'total': resData['total'] ?? 0,
-      'last_page': resData['last_page'] ?? 1,
+      'last_page': int.tryParse(resData['last_page']?.toString() ?? '') ?? 1,
       'is_ketua_tim': resData['is_ketua_tim'] ?? false,
     };
   }

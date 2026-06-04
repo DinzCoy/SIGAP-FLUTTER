@@ -14,9 +14,7 @@ class RegisterAssetPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Daftarkan Aset'),
-      ),
+      appBar: AppBar(title: const Text('Daftarkan Aset')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: RegisterAssetForm(initialCode: initialCode),

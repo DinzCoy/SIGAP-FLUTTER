@@ -57,18 +57,18 @@ class PrimaryBanner extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title, 
+                        title,
                         style: AppTextStyles.titleMedium.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                        )
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        subtitle, 
+                        subtitle,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: Colors.white.withValues(alpha: 0.7),
-                        )
+                        ),
                       ),
                     ],
                   ),
@@ -81,9 +81,9 @@ class PrimaryBanner extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
-                    Icons.arrow_forward_rounded, 
-                    color: Colors.white, 
-                    size: 18
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                    size: 18,
                   ),
                 ),
               ],
@@ -94,6 +94,3 @@ class PrimaryBanner extends StatelessWidget {
     );
   }
 }
-
-
-

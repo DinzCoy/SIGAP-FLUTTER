@@ -60,12 +60,16 @@ class _AssetScannerPageState extends State<AssetScannerPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Terjadi kesalahan: $e'),
-        backgroundColor: AppColors.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Terjadi kesalahan: $e'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
       _resumeScanner();
     }
   }
@@ -86,20 +90,29 @@ class _AssetScannerPageState extends State<AssetScannerPage> {
               Navigator.pop(context);
               _resumeScanner();
             },
-            child: Text('Batal', style: AppTextStyles.labelLarge.copyWith(color: AppColors.textSecondary)),
+            child: Text(
+              'Batal',
+              style: AppTextStyles.labelLarge.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => RegisterAssetPage(initialCode: code)),
+                MaterialPageRoute(
+                  builder: (_) => RegisterAssetPage(initialCode: code),
+                ),
               ).then((_) => _resumeScanner());
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: Text('Daftarkan Aset', style: AppTextStyles.labelLarge),
           ),
@@ -117,7 +130,10 @@ class _AssetScannerPageState extends State<AssetScannerPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.white,
-        title: Text('Scan Aset', style: AppTextStyles.titleLarge.copyWith(color: Colors.white)),
+        title: Text(
+          'Scan Aset',
+          style: AppTextStyles.titleLarge.copyWith(color: Colors.white),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.flash_on_rounded, color: Colors.white),

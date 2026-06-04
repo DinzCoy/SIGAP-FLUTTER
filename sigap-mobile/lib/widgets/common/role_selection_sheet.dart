@@ -22,10 +22,8 @@ class RoleSelectionSheet extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withValues(alpha: 0.5),
-      builder: (context) => RoleSelectionSheet(
-        roles: roles,
-        onRoleSelected: onRoleSelected,
-      ),
+      builder: (context) =>
+          RoleSelectionSheet(roles: roles, onRoleSelected: onRoleSelected),
     );
   }
 
@@ -50,14 +48,16 @@ class RoleSelectionSheet extends StatelessWidget {
           'icon': Icons.supervisor_account_rounded,
           'color': const Color(0xFF8B5CF6),
           'bgColor': const Color(0xFFF5F3FF),
-          'desc': 'Monitoring dashboard tim dan delegasikan tugas pemeliharaan.',
+          'desc':
+              'Monitoring dashboard tim dan delegasikan tugas pemeliharaan.',
         };
       case 3: // Teknisi
         return {
           'icon': Icons.build_circle_rounded,
           'color': const Color(0xFFF59E0B),
           'bgColor': const Color(0xFFFEF3C7),
-          'desc': 'Kerjakan dan selesaikan tiket aduan serta pemeliharaan aset.',
+          'desc':
+              'Kerjakan dan selesaikan tiket aduan serta pemeliharaan aset.',
         };
       case 1: // Pimpinan
         return {
@@ -125,9 +125,7 @@ class RoleSelectionSheet extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Akun Anda terdaftar dengan beberapa hak akses. Pilih salah satu untuk melanjutkan masuk ke dashboard.',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.inkMute,
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.inkMute),
           ),
           const SizedBox(height: 24),
 
@@ -156,16 +154,13 @@ class RoleSelectionSheet extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: AppColors.border,
-                          width: 1.5,
-                        ),
+                        border: Border.all(color: AppColors.border, width: 1.5),
                         boxShadow: [
                           BoxShadow(
                             color: style['color'].withValues(alpha: 0.03),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
-                          )
+                          ),
                         ],
                       ),
                       padding: const EdgeInsets.all(16),

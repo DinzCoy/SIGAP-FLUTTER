@@ -9,9 +9,9 @@ class AssetModel {
   final String nama;
   final String kategori;
   final String kondisi;
-  final String lokasi;
+  String lokasi;
   final String? pemegang;
-  final String? status;       // status_kondisi: Berfungsi, Rusak, dll
+  final String? status; // status_kondisi: Berfungsi, Rusak, dll
   final String? merek;
   final String? model;
   final String? nilaiPerolehan;
@@ -43,46 +43,51 @@ class AssetModel {
 
   factory AssetModel.fromJson(Map<String, dynamic> json) {
     return AssetModel(
-      id:               json['id'] ?? 0,
-      kode:             json['kode'] ?? json['asset_code'] ?? '',
-      nama:             json['nama'] ?? json['name'] ?? '',
-      kategori:         json['kategori'] ?? json['category'] ?? '',
-      kondisi:          json['kondisi'] ?? json['status_kondisi'] ?? json['condition'] ?? '',
-      lokasi:           json['lokasi'] ?? json['room'] ?? json['location'] ?? '',
-      pemegang:         json['pemegang'] ?? json['holder'],
-      status:           json['status_kondisi'] ?? json['status'],
-      merek:            json['merek'] ?? json['merk'] ?? json['brand'],
-      model:            json['model'],
-      nilaiPerolehan:   json['nilai_perolehan']?.toString(),
+      id: json['id'] != null ? int.tryParse(json['id'].toString()) ?? 0 : 0,
+      kode: json['kode'] ?? json['asset_code'] ?? '',
+      nama: json['nama'] ?? json['name'] ?? '',
+      kategori: json['kategori'] ?? json['category'] ?? '',
+      kondisi:
+          json['kondisi'] ?? json['status_kondisi'] ?? json['condition'] ?? '',
+      lokasi: json['lokasi'] ?? json['room'] ?? json['location'] ?? '',
+      pemegang: json['pemegang'] ?? json['holder'],
+      status: json['status_kondisi'] ?? json['status'],
+      merek: json['merek'] ?? json['merk'] ?? json['brand'],
+      model: json['model'],
+      nilaiPerolehan: json['nilai_perolehan']?.toString(),
       tanggalPerolehan: json['tanggal_perolehan'],
-      keterangan:       json['keterangan'] ?? json['notes'],
-      loanStatus:       json['loan_status'] ?? 'available',
-      activeLoan:       json['active_loan'] != null
-                          ? Map<String, dynamic>.from(json['active_loan'])
-                          : null,
+      keterangan: json['keterangan'] ?? json['notes'],
+      loanStatus: json['loan_status'] ?? 'available',
+      activeLoan: json['active_loan'] != null
+          ? Map<String, dynamic>.from(json['active_loan'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'id':               id,
-    'kode':             kode,
-    'nama':             nama,
-    'kategori':         kategori,
-    'kondisi':          kondisi,
-    'lokasi':           lokasi,
-    'pemegang':         pemegang,
-    'status':           status,
-    'merek':            merek,
-    'model':            model,
-    'nilai_perolehan':  nilaiPerolehan,
-    'tanggal_perolehan':tanggalPerolehan,
-    'keterangan':       keterangan,
+    'id': id,
+    'kode': kode,
+    'nama': nama,
+    'kategori': kategori,
+    'kondisi': kondisi,
+    'lokasi': lokasi,
+    'pemegang': pemegang,
+    'status': status,
+    'merek': merek,
+    'model': model,
+    'nilai_perolehan': nilaiPerolehan,
+    'tanggal_perolehan': tanggalPerolehan,
+    'keterangan': keterangan,
   };
 
   /// Apakah aset ini tersedia untuk dipinjam?
-  bool get isAvailable =>
-      loanStatus == 'available' &&
-      (status?.toLowerCase() == 'berfungsi' || kondisi.toLowerCase() == 'berfungsi');
+  /// Kondisi valid dari Laravel: 'Baik' atau 'Berfungsi'
+  bool get isAvailable {
+    if (loanStatus != 'available') return false;
+    final k = kondisi.toLowerCase();
+    final s = status?.toLowerCase() ?? '';
+    return k == 'baik' || k == 'berfungsi' || s == 'baik' || s == 'berfungsi';
+  }
 
   /// Apakah sedang dalam proses pengajuan?
   bool get isPendingLoan => loanStatus == 'pending';
@@ -91,11 +96,11 @@ class AssetModel {
   bool get isActiveLoan => loanStatus == 'active';
 
   Color get statusColor {
-    switch (status?.toLowerCase()) {
+    switch (status?.toLowerCase() ?? kondisi.toLowerCase()) {
       case 'berfungsi':
+      case 'baik':
         return const Color(0xFF22C55E);
       case 'rusak':
-        return const Color(0xFFEF4444);
       case 'tidak berfungsi':
         return const Color(0xFFEF4444);
       default:
@@ -104,9 +109,11 @@ class AssetModel {
   }
 
   String get statusLabel {
-    switch (status?.toLowerCase()) {
+    switch (status?.toLowerCase() ?? kondisi.toLowerCase()) {
       case 'berfungsi':
         return 'Berfungsi';
+      case 'baik':
+        return 'Baik';
       case 'rusak':
         return 'Rusak';
       case 'tidak berfungsi':

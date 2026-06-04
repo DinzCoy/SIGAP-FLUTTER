@@ -17,12 +17,12 @@ class TicketPhotoThumbnail extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showFullScreen(context),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppColors.radiusMd),
+        borderRadius: BorderRadius.circular(AppColors.radiusLg),
         child: Stack(
           children: [
             Image.network(
               photoUrl,
-              height: 160,
+              height: 140,
               width: double.infinity,
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
@@ -44,11 +44,17 @@ class TicketPhotoThumbnail extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.broken_image_outlined, color: AppColors.slate, size: 20),
+                    Icon(
+                      Icons.broken_image_outlined,
+                      color: AppColors.slate,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Gagal memuat foto',
-                      style: AppTextStyles.caption.copyWith(color: AppColors.slate),
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.slate,
+                      ),
                     ),
                   ],
                 ),
@@ -64,7 +70,11 @@ class TicketPhotoThumbnail extends StatelessWidget {
                   color: Colors.black.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: const Icon(Icons.zoom_in_rounded, color: Colors.white, size: 18),
+                child: const Icon(
+                  Icons.zoom_in_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
               ),
             ),
           ],
@@ -121,11 +131,17 @@ class _FullScreenPhotoPage extends StatelessWidget {
             errorBuilder: (context, error, stack) => Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.broken_image_outlined, color: Colors.white54, size: 48),
+                const Icon(
+                  Icons.broken_image_outlined,
+                  color: Colors.white54,
+                  size: 48,
+                ),
                 const SizedBox(height: 12),
                 Text(
                   'Gagal memuat foto',
-                  style: AppTextStyles.bodyMedium.copyWith(color: Colors.white54),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: Colors.white54,
+                  ),
                 ),
               ],
             ),
