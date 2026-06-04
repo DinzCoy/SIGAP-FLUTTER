@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
+
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import 'login_page.dart';
@@ -14,34 +17,50 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
+  late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
+
+  late AnimationController _floatController;
+  late Animation<double> _floatAnimation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+
+    // 1. Animasi Fade In untuk halaman
+    _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
     );
 
-    _controller.forward();
+    // 2. Animasi Float untuk Logo (seperti di auth.blade.php)
+    _floatController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+
+    _floatAnimation = Tween<double>(begin: 0.0, end: -12.0).animate(
+      CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+    );
+
+    _fadeController.forward();
     _checkLoginStatus();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _fadeController.dispose();
+    _floatController.dispose();
     super.dispose();
   }
 
   Future<void> _checkLoginStatus() async {
-    // Memberikan jeda waktu agar animasi splash screen terlihat
-    await Future.delayed(const Duration(seconds: 2));
+    // Memberikan jeda waktu agar animasi splash screen terlihat (3 detik)
+    await Future.delayed(const Duration(seconds: 3));
 
     final token = await AuthService.getToken();
     
@@ -65,8 +84,8 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
         default:
           nextPage = const UserDashboardPage();
       }
-      if (!mounted) return;
       
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -93,57 +112,81 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    // Background menyesuaikan dengan auth.blade.php (warna BPS Navy / Primary)
     return Scaffold(
-      backgroundColor: AppColors.canvasCream,
+      backgroundColor: AppColors.primary,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo Aplikasi (ganti dengan path asset logo Anda jika ada, atau gunakan icon)
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
+              // Logo SIGAP Float & Shimmer
+              AnimatedBuilder(
+                animation: _floatController,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(0, _floatAnimation.value),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: [
+                        // Base SVG Shield Logo
+                        SvgPicture.asset(
+                          'assets/images/logo_sigap.svg',
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.contain,
+                        ),
+                        // Slow Shimmer Sweep Overlay
+                        Shimmer.fromColors(
+                          baseColor: Colors.transparent,
+                          highlightColor: Colors.white.withValues(alpha: 0.45),
+                          period: const Duration(seconds: 4),
+                          child: SvgPicture.asset(
+                            'assets/images/logo_sigap.svg',
+                            width: 140,
+                            height: 140,
+                            fit: BoxFit.contain,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.monitor_heart_rounded,
-                  size: 64,
-                  color: Colors.white,
-                ),
+                  );
+                },
               ),
-              const SizedBox(height: 24),
-              Text(
+              const SizedBox(height: 32),
+              
+              // Nama Aplikasi
+              const Text(
                 'SIGAP',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.ink,
+                  color: Colors.white,
                   letterSpacing: 2,
                 ),
               ),
               const SizedBox(height: 8),
+              
               Text(
-                'Sistem Guardian Aset &Pelayanan IT',
+                'Sistem Guardian Aset & Pelayanan IT',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: AppColors.inkMute,
+                  color: Colors.white.withValues(alpha: 0.8),
                   height: 1.5,
                 ),
               ),
               const SizedBox(height: 48),
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              
+              // Indikator Loading
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 strokeWidth: 3,
               ),
             ],
