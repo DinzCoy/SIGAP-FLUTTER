@@ -212,17 +212,6 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                         ),
 
                         const SizedBox(height: 24),
-
-                        // ── Shortcut Card Pinjaman ──
-                        FadeIn(
-                          delay: const Duration(milliseconds: 350),
-                          child: _LoanShortcutCard(
-                            onTap: () => setState(() => _selectedIndex = 1),
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-
                         // ── Shortcut Card Aset Saya ──
                         FadeIn(
                           delay: const Duration(milliseconds: 375),
@@ -309,86 +298,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
   }
 }
 
-// ─── Shortcut Card Pinjaman di Beranda ───────────────────────────────────────
 
-class _LoanShortcutCard extends StatelessWidget {
-  final VoidCallback onTap;
-  const _LoanShortcutCard({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.primary,
-              AppColors.primary.withValues(alpha: 0.75),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: const Icon(
-                Icons.swap_horiz_rounded,
-                color: Colors.white,
-                size: 28,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Peminjaman Aset',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Lihat riwayat & status peminjaman Anda',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.75),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Colors.white,
-              size: 16,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _MyAssetShortcutCard extends StatelessWidget {
   final VoidCallback onTap;
