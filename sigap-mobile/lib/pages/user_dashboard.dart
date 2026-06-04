@@ -226,7 +226,7 @@ class _UserDashboardPageState extends State<UserDashboardPage> {
                         // ── Shortcut Card Aset Saya ──
                         FadeIn(
                           delay: const Duration(milliseconds: 375),
-                          child:MyAssetShortcutCard(
+                          child: _MyAssetShortcutCard(
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => const MyAssetsPage()),
