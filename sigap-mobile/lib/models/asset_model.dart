@@ -86,7 +86,8 @@ class AssetModel {
     if (loanStatus != 'available') return false;
     final k = kondisi.toLowerCase();
     final s = status?.toLowerCase() ?? '';
-    return k == 'baik' || k == 'berfungsi' || s == 'baik' || s == 'berfungsi';
+    return k == 'baik' || k == 'berfungsi' || k == 'rusak ringan' ||
+           s == 'baik' || s == 'berfungsi' || s == 'rusak ringan';
   }
 
   /// Apakah sedang dalam proses pengajuan?

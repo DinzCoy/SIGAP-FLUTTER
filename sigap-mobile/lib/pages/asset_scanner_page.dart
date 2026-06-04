@@ -9,6 +9,8 @@ import '../theme/app_text_styles.dart';
 import '../widgets/scanner/scanner_overlay.dart';
 import '../widgets/scanner/asset_detail_sheet.dart';
 import 'register_asset_page.dart';
+import 'loan_request_page.dart';
+import 'permanent_transfer_page.dart';
 
 class AssetScannerPage extends StatefulWidget {
   const AssetScannerPage({super.key});
@@ -49,12 +51,24 @@ class _AssetScannerPageState extends State<AssetScannerPage> {
       if (!mounted) return;
 
       if (asset != null) {
-        await AssetDetailSheet.show(
-          context,
-          asset: asset,
-          onScanAnother: _resumeScanner,
-        );
-        _resumeScanner();
+        if (code.contains('mode=loan')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => LoanRequestPage(asset: asset)),
+          ).then((_) => _resumeScanner());
+        } else if (code.contains('mode=transfer')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => PermanentTransferPage(asset: asset)),
+          ).then((_) => _resumeScanner());
+        } else {
+          await AssetDetailSheet.show(
+            context,
+            asset: asset,
+            onScanAnother: _resumeScanner,
+          );
+          _resumeScanner();
+        }
       } else {
         _showUnregisteredDialog(code);
       }
