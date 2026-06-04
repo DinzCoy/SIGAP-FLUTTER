@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:intl/date_symbol_data_local.dart';
 import 'pages/login_page.dart';
+import 'pages/splash_page.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_manager.dart';
@@ -55,7 +56,7 @@ class SigapApp extends StatelessWidget {
           theme: AppTheme.light,
           darkTheme: AppTheme.dark, // Theme Gelap Adaptif
           themeMode: ThemeManager.instance.themeMode,
-          home: const LoginPage(),
+          home: const SplashPage(),
         );
       },
     );
