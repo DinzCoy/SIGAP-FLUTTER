@@ -107,7 +107,16 @@ class ApiClient {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return jsonDecode(response.body);
     } else {
-      throw Exception("Gagal terhubung ke server: ${response.statusCode}");
+      String errorMessage = "Gagal terhubung ke server: ${response.statusCode}";
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded['message'] != null) {
+          errorMessage = decoded['message'];
+        }
+      } catch (e) {
+        // Abaikan jika tidak bisa parsing JSON
+      }
+      throw Exception(errorMessage);
     }
   }
 }

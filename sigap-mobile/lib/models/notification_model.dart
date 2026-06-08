@@ -5,7 +5,7 @@ class NotificationModel {
   final String id;
   final String title;
   final String body;
-  final String type; // 'ticket' | 'loan' | 'asset' | 'system'
+  final String type;
   final bool isRead;
   final int? referenceId;
   final String? userPhoto; // Foto profil pengirim/peminjam (dari 'foto_peminjam')
