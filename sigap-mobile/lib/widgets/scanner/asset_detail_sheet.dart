@@ -382,9 +382,11 @@ class _AssetDetailSheetState extends State<AssetDetailSheet> {
                   color: widget.asset.loanStatusColor,
                 ),
                 _Badge(
-                  label: widget.asset.kategori.toUpperCase(),
-                  color: widget.asset.kategori.toUpperCase() == 'ASET BMN'
-                      ? const Color(0xFFD97706) // amber/gold untuk BMN
+                  label: (widget.asset.kode.trim().isNotEmpty && widget.asset.kode.trim() != '-') 
+                      ? 'BMN TERDAFTAR' 
+                      : 'BELUM ADA BMN',
+                  color: (widget.asset.kode.trim().isNotEmpty && widget.asset.kode.trim() != '-') 
+                      ? AppColors.success 
                       : AppColors.slate,
                 ),
               ],
