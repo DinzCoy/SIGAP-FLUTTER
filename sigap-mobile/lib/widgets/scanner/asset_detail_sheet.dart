@@ -764,37 +764,22 @@ class _ActionButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 52,
-      child: isFilled
-          ? ElevatedButton.icon(
-              onPressed: onTap,
-              icon: Icon(icon, color: Colors.white, size: 20),
-              label: Text(
-                label,
-                style: AppTextStyles.labelLarge.copyWith(color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: color,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
-              ),
-            )
-          : OutlinedButton.icon(
-              onPressed: onTap,
-              icon: Icon(icon, color: color, size: 20),
-              label: Text(
-                label,
-                style: AppTextStyles.labelLarge.copyWith(color: color),
-              ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: color,
-                side: BorderSide(color: color.withValues(alpha: 0.5), width: 1.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-            ),
+      child: ElevatedButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon, color: color, size: 20),
+        label: Text(
+          label,
+          style: AppTextStyles.labelLarge.copyWith(color: color),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color.withValues(alpha: 0.12), // Latar belakang pastel muda
+          shadowColor: Colors.transparent, // Hilangkan shadow agar terlihat flat soft
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          elevation: 0,
+        ),
+      ),
     );
   }
 }
