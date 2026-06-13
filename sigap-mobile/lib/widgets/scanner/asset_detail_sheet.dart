@@ -5,6 +5,7 @@ import '../../pages/loan_request_page.dart';
 import '../../pages/permanent_transfer_page.dart';
 import '../../pages/it_service_page.dart';
 import '../../services/asset_service.dart';
+import '../common/app_snackbar.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 
@@ -71,8 +72,6 @@ class _AssetDetailSheetState extends State<AssetDetailSheet> {
       barrierDismissible: !isSaving,
       builder: (dialogCtx) {
         final dialogNavigator = Navigator.of(dialogCtx);
-        final messenger = ScaffoldMessenger.of(dialogCtx);
-
         return StatefulBuilder(
           builder: (context, setDialogState) {
             if (rooms.isEmpty && isLoadingRooms) {
@@ -92,9 +91,8 @@ class _AssetDetailSheetState extends State<AssetDetailSheet> {
                 setDialogState(() {
                   isLoadingRooms = false;
                 });
-                messenger.showSnackBar(
-                  SnackBar(content: Text('Gagal mengambil daftar ruangan: $e')),
-                );
+                if (!context.mounted) return;
+                AppSnackbar.showError(context, title: 'Error', message: 'Gagal mengambil daftar ruangan: $e');
               });
             }
 
@@ -242,21 +240,18 @@ class _AssetDetailSheetState extends State<AssetDetailSheet> {
                                       });
 
                                       dialogNavigator.pop();
-                                      messenger.showSnackBar(
-                                        SnackBar(
-                                          content: Text('Ruangan berhasil diupdate menjadi "$updatedRoom"'),
-                                          backgroundColor: AppColors.success,
-                                          behavior: SnackBarBehavior.floating,
-                                        ),
+                                      if (!context.mounted) return;
+                                      AppSnackbar.showSuccess(
+                                        context,
+                                        title: 'Berhasil',
+                                        message: 'Ruangan berhasil diupdate menjadi "$updatedRoom"',
                                       );
                                     } catch (e) {
                                       setDialogState(() => isSaving = false);
-                                      messenger.showSnackBar(
-                                        SnackBar(
-                                          content: Text('Gagal mengupdate ruangan: $e'),
-                                          backgroundColor: AppColors.error,
-                                        ),
-                                      );
+                                      String errMsg = e.toString();
+                                      if (errMsg.startsWith('Exception: ')) errMsg = errMsg.substring(11);
+                                      if (!context.mounted) return;
+                                      AppSnackbar.showError(context, title: 'Gagal', message: 'Gagal mengupdate ruangan: $errMsg');
                                     }
                                   },
                             style: ElevatedButton.styleFrom(
@@ -388,7 +383,9 @@ class _AssetDetailSheetState extends State<AssetDetailSheet> {
                 ),
                 _Badge(
                   label: widget.asset.kategori.toUpperCase(),
-                  color: AppColors.slate,
+                  color: widget.asset.kategori.toUpperCase() == 'ASET BMN'
+                      ? const Color(0xFFD97706) // amber/gold untuk BMN
+                      : AppColors.slate,
                 ),
               ],
             ),
