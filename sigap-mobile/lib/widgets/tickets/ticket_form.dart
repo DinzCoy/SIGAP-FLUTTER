@@ -7,6 +7,8 @@ import '../../theme/app_text_styles.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_snackbar.dart';
 import '../../widgets/common/app_text_field.dart';
+import '../../services/asset_service.dart';
+import '../../models/asset_model.dart';
 import 'ticket_header_banner.dart';
 import 'ticket_jenis_grid.dart';
 import 'ticket_foto_section.dart';
@@ -30,6 +32,28 @@ class _TicketFormState extends State<TicketForm> {
   File? _fotoFile;
   bool _isLoading = false;
 
+  List<AssetModel> _userAssets = [];
+  bool _isLoadingAssets = false;
+  int? _selectedAssetId;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAssets();
+  }
+
+  Future<void> _fetchAssets() async {
+    setState(() => _isLoadingAssets = true);
+    try {
+      final assets = await AssetService.getUserAssets();
+      if (mounted) setState(() => _userAssets = assets);
+    } catch (e) {
+      // ignore
+    } finally {
+      if (mounted) setState(() => _isLoadingAssets = false);
+    }
+  }
+
   @override
   void dispose() {
     _judulCtrl.dispose();
@@ -44,6 +68,10 @@ class _TicketFormState extends State<TicketForm> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_selectedJenis == 'Service' && _selectedAssetId == null) {
+      AppSnackbar.showError(context, title: 'Validasi', message: 'Silakan pilih aset yang akan di-service.');
+      return;
+    }
     setState(() => _isLoading = true);
     try {
       await TicketService.createTicket(
@@ -52,6 +80,7 @@ class _TicketFormState extends State<TicketForm> {
         jenis: _selectedJenis,
         priority: _selectedPriority,
         foto: _fotoFile,
+        assetId: _selectedJenis == 'Service' ? _selectedAssetId : null,
       );
       if (!mounted) return;
       _showSuccessDialog();
@@ -126,9 +155,51 @@ class _TicketFormState extends State<TicketForm> {
           const SizedBox(height: 10),
           TicketJenisGrid(
             selected: _selectedJenis,
-            onSelected: (v) => setState(() => _selectedJenis = v),
+            onSelected: (v) {
+              setState(() {
+                _selectedJenis = v;
+                if (v != 'Service') _selectedAssetId = null;
+              });
+            },
           ),
           const SizedBox(height: 24),
+
+          if (_selectedJenis == 'Service') ...[
+            Text('Pilih Aset *', style: AppTextStyles.titleSmall),
+            const SizedBox(height: 10),
+            if (_isLoadingAssets)
+              const Center(child: CircularProgressIndicator())
+            else if (_userAssets.isEmpty)
+              Container(
+                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: Text('Anda belum memiliki aset.', style: AppTextStyles.bodyMedium.copyWith(color: Colors.orange.shade900)),
+              )
+            else
+              DropdownButtonFormField<int>(
+                value: _selectedAssetId,
+                isExpanded: true,
+                decoration: InputDecoration(
+                  hintText: 'Pilih aset bermasalah...',
+                  prefixIcon: const Icon(Icons.devices_rounded),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                items: _userAssets.map((asset) {
+                  return DropdownMenuItem<int>(
+                    value: asset.id,
+                    child: Text('${asset.deviceName} - ${asset.bmnNumber ?? 'Non-BMN'}', maxLines: 1, overflow: TextOverflow.ellipsis),
+                  );
+                }).toList(),
+                onChanged: (val) => setState(() => _selectedAssetId = val),
+              ),
+            const SizedBox(height: 24),
+          ],
 
           AppTextField(
             label: 'Judul Masalah *',
