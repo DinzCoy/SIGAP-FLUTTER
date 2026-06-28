@@ -193,7 +193,7 @@ class _TicketFormState extends State<TicketForm> {
                 items: _userAssets.map((asset) {
                   return DropdownMenuItem<int>(
                     value: asset.id,
-                    child: Text('${asset.deviceName} - ${asset.bmnNumber ?? 'Non-BMN'}', maxLines: 1, overflow: TextOverflow.ellipsis),
+                    child: Text('${asset.nama} - ${asset.kode.isNotEmpty ? asset.kode : 'Non-BMN'}', maxLines: 1, overflow: TextOverflow.ellipsis),
                   );
                 }).toList(),
                 onChanged: (val) => setState(() => _selectedAssetId = val),
