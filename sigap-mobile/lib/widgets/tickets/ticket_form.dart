@@ -182,7 +182,7 @@ class _TicketFormState extends State<TicketForm> {
               )
             else
               DropdownButtonFormField<int>(
-                value: _selectedAssetId,
+                initialValue: _selectedAssetId,
                 isExpanded: true,
                 decoration: InputDecoration(
                   hintText: 'Pilih aset bermasalah...',
