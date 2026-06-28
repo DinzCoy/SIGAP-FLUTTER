@@ -81,11 +81,11 @@ class LoanModel {
 
   final String? assetOwner;
 
-  bool get isPinjam  => jenis == 'pinjam';
-  bool get isMutasi  => jenis == 'mutasi';
-  bool get isPending => status == 'pending';
-  bool get isAktif   => status == 'active';
-  bool get isJatuhTempo => status == 'jatuh_tempo';
+  bool get isPinjam  => jenis == 'pinjam' || jenis == 'pinjaman';
+  bool get isMutasi  => jenis == 'mutasi' || jenis == 'permanen';
+  bool get isPending => status == 'pending' || status == 'menunggu';
+  bool get isAktif   => status == 'active' || status == 'aktif' || status == 'disetujui';
+  bool get isJatuhTempo => status == 'jatuh_tempo' || status == 'overdue';
 
   // Status sesuai konstanta Laravel AssetLoan
   static const Map<String, Map<String, dynamic>> statusConfig = {

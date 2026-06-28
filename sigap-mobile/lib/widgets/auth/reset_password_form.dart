@@ -3,6 +3,7 @@ import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_snackbar.dart';
 import '../../widgets/common/app_text_field.dart';
 
 /// Form reset password — validasi, submit ke AuthService, tampilkan feedback.
@@ -62,14 +63,11 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   }
 
   void _showSnack(String msg, {required bool isError}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: isError ? AppColors.error : AppColors.success,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    if (isError) {
+      AppSnackbar.showError(context, title: 'Peringatan', message: msg);
+    } else {
+      AppSnackbar.showSuccess(context, title: 'Berhasil', message: msg);
+    }
   }
 
   @override

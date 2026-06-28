@@ -49,9 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (isLoading) return const Center(child: CircularProgressIndicator());
 
     return Scaffold(
-      // Putih: agar celah sub-pixel antara SliverAppBar (ungu) dan
-      // body tidak menampilkan warna primer yang "bocor".
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent, // Let PremiumBackground show through
       body: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -62,72 +60,64 @@ class _ProfilePageState extends State<ProfilePage> {
             photoUrl: photoUrl,
           ),
 
-          // ─── BODY (background putih menyambung dari header) ────────
+          // ─── BODY ────────
           SliverToBoxAdapter(
-            child: Transform.translate(
-              // Geser 1px ke atas untuk menutup celah sub-pixel rendering.
-              // Transform.translate aman karena tidak menggunakan margin.
-              offset: const Offset(0, -1),
-              child: Container(
-                color: AppColors.background,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Info Section
-                      FadeIn(
-                        delay: const Duration(milliseconds: 200),
-                        child: _ProfileInfoSection(
-                          email: email,
-                          phone: phone,
-                          nip: nip,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Settings Section
-                      FadeIn(
-                        delay: const Duration(milliseconds: 400),
-                        child: _ProfileSettingsSection(
-                          onEdit: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const EditProfilePage(),
-                              ),
-                            );
-                            if (result == true) _loadProfileData();
-                          },
-                          onChangePassword: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ChangePasswordPage(),
-                            ),
-                          ),
-                          onAppSettings: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SettingsPage(),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Logout Button
-                      FadeIn(
-                        delay: const Duration(milliseconds: 600),
-                        child: _LogoutButton(
-                          onTap: () => LogoutDialog.show(context),
-                        ),
-                      ),
-
-                      // Bottom padding (untuk nav bar)
-                      const SizedBox(height: 100),
-                    ],
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Info Section
+                  FadeIn(
+                    delay: const Duration(milliseconds: 200),
+                    child: _ProfileInfoSection(
+                      email: email,
+                      phone: phone,
+                      nip: nip,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+
+                  // Settings Section
+                  FadeIn(
+                    delay: const Duration(milliseconds: 400),
+                    child: _ProfileSettingsSection(
+                      onEdit: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const EditProfilePage(),
+                          ),
+                        );
+                        if (result == true) _loadProfileData();
+                      },
+                      onChangePassword: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChangePasswordPage(),
+                        ),
+                      ),
+                      onAppSettings: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SettingsPage(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Logout Button
+                  FadeIn(
+                    delay: const Duration(milliseconds: 600),
+                    child: _LogoutButton(
+                      onTap: () => LogoutDialog.show(context),
+                    ),
+                  ),
+
+                  // Bottom padding (untuk nav bar)
+                  const SizedBox(height: 100),
+                ],
               ),
             ),
           ),
@@ -154,130 +144,122 @@ class _ProfileSliverHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Tinggi curve putih di bawah header
-    const double curveHeight = 32.0;
-
     return SliverAppBar(
       pinned: true,
       expandedHeight: 280,
-      backgroundColor: AppColors.primary,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
       shadowColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
       ),
       leading: const SizedBox.shrink(),
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
         background: Stack(
           children: [
-            // 1. Mesh gradient background
-            Positioned.fill(child: CustomPaint(painter: HeaderMeshPainter())),
-
-            // 2. Profile info — dipastikan tidak tertindih curve di bawah
             Positioned(
-              left: 0,
-              right: 0,
-              // Beri ruang untuk curve di bawah agar tidak overlap
-              bottom: curveHeight + 16,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 45,
-                      backgroundColor: Colors.white,
-                      backgroundImage: (photoUrl != null && photoUrl!.isNotEmpty)
-                          ? NetworkImage(photoUrl!)
-                          : null,
-                      child: (photoUrl == null || photoUrl!.isEmpty)
-                          ? Text(
-                              name.isNotEmpty ? name[0].toUpperCase() : '?',
-                              style: AppTextStyles.headlineMedium.copyWith(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Name
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(
-                      name,
-                      style: AppTextStyles.headlineSmall.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Role Badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.1),
-                        width: 1,
-                      ),
-                    ),
-                    child: Text(
-                      role.toUpperCase(),
-                      style: AppTextStyles.labelSmall.copyWith(
-                        color: Colors.white,
-                        letterSpacing: 1.2,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // 3. "Zero-Leak" White Curve — menempel persis di bawah header
-            //    Dibuat sedikit lebih lebar (left/right -2) untuk anti-aliasing gap
-            Positioned(
-              left: -2,
-              right: -2,
-              bottom: 0,
+              left: 20,
+              right: 20,
+              bottom: 16,
               child: Container(
-                height: curveHeight,
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(32),
-                    topRight: Radius.circular(32),
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    width: 1.5,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 45,
+                        backgroundColor: Colors.white,
+                        backgroundImage: (photoUrl != null && photoUrl!.isNotEmpty)
+                            ? NetworkImage(photoUrl!)
+                            : null,
+                        child: (photoUrl == null || photoUrl!.isEmpty)
+                            ? Text(
+                                name.isNotEmpty ? name[0].toUpperCase() : '?',
+                                style: AppTextStyles.headlineMedium.copyWith(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Name
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        name,
+                        style: AppTextStyles.headlineSmall.copyWith(
+                          color: AppColors.ink,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Role Badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Text(
+                        role.toUpperCase(),
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.primary,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -544,38 +526,3 @@ class _CustomDivider extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HEADER MESH PAINTER
-// ─────────────────────────────────────────────────────────────────────────────
-
-class HeaderMeshPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..style = PaintingStyle.fill;
-
-    // Base gradient
-    final rect = Offset.zero & size;
-    paint.shader = LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.85)],
-    ).createShader(rect);
-    canvas.drawRect(rect, paint);
-
-    // Decorative circles (mesh effect)
-    paint.shader = null;
-    paint.color = Colors.white.withValues(alpha: 0.04);
-    canvas.drawCircle(
-      Offset(size.width * 0.85, size.height * 0.15),
-      100,
-      paint,
-    );
-    canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.7), 80, paint);
-
-    paint.color = Colors.white.withValues(alpha: 0.03);
-    canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.05), 130, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}

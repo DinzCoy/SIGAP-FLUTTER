@@ -7,12 +7,14 @@ class AdminLoanCard extends StatelessWidget {
   final LoanModel loan;
   final Function(LoanModel loan, bool isApprove) onProcess;
   final VoidCallback? onTap;
+  final VoidCallback? onReturn;
 
   const AdminLoanCard({
     super.key,
     required this.loan,
     required this.onProcess,
     this.onTap,
+    this.onReturn,
   });
 
   @override
@@ -195,6 +197,26 @@ class AdminLoanCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ] else if (loan.isAktif && loan.isPinjam && onReturn != null) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: onReturn,
+                icon: const Icon(Icons.assignment_return_rounded, size: 18),
+                label: const Text('Kembalikan Aset'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.surface,
+                  foregroundColor: AppColors.primary,
+                  elevation: 0,
+                  side: BorderSide(color: AppColors.primary, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
             ),
           ],
         ],

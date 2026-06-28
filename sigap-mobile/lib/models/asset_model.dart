@@ -18,10 +18,8 @@ class AssetModel {
   final String? tanggalPerolehan;
   final String? keterangan;
 
-  // ─── Loan Status dari POST /asset/scan ────────────────────────────────────
-  // 'available' | 'pending' | 'active'
   final String loanStatus;
-  final Map<String, dynamic>? activeLoan; // {id, borrower, due_date}
+  final Map<String, dynamic>? activeLoan;
 
   AssetModel({
     required this.id,

@@ -184,7 +184,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                   ),
                                   StatItem(
                                     value: '$_pendingLoans',
-                                    label: 'Pinjaman',
+                                    label: 'Pinjaman Baru',
                                     icon: Icons.swap_horiz_rounded,
                                     iconColor: AppColors.success,
                                     onTap: () =>

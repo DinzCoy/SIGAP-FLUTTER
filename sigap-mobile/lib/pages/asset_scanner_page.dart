@@ -6,6 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../services/asset_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../widgets/common/app_snackbar.dart';
 import '../widgets/scanner/scanner_overlay.dart';
 import '../widgets/scanner/asset_detail_sheet.dart';
 import 'register_asset_page.dart';
@@ -74,16 +75,9 @@ class _AssetScannerPageState extends State<AssetScannerPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Terjadi kesalahan: $e'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
+      String errMsg = e.toString();
+      if (errMsg.startsWith('Exception: ')) errMsg = errMsg.substring(11);
+      AppSnackbar.showError(context, title: 'Error', message: 'Terjadi kesalahan: $errMsg');
       _resumeScanner();
     }
   }

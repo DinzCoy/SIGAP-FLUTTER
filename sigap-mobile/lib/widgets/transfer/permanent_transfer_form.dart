@@ -4,6 +4,7 @@ import '../../services/asset_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_snackbar.dart';
 import '../../widgets/common/app_text_field.dart';
 import 'transfer_widgets.dart';
 
@@ -47,21 +48,22 @@ class _PermanentTransferFormState extends State<PermanentTransferForm> {
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
-      _showSnack('Gagal mengajukan alokasi: $e', isError: true);
+      String errMsg = e.toString();
+      if (errMsg.startsWith('Exception: ')) {
+        errMsg = errMsg.substring(11);
+      }
+      _showSnack('Gagal mengajukan alokasi: $errMsg', isError: true);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   void _showSnack(String msg, {required bool isError}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: isError ? AppColors.error : AppColors.success,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    if (isError) {
+      AppSnackbar.showError(context, title: 'Peringatan', message: msg);
+    } else {
+      AppSnackbar.showSuccess(context, title: 'Berhasil', message: msg);
+    }
   }
 
   void _showSuccessDialog() {

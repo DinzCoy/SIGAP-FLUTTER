@@ -39,14 +39,35 @@ class TicketItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Tentukan warna ikon berdasarkan prioritas
+    Color iconColor = AppColors.primary;
+    if (priority.toLowerCase() == 'tinggi') iconColor = AppColors.error;
+    if (priority.toLowerCase() == 'sedang') iconColor = AppColors.warning;
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Leading Icon
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.assignment_outlined,
+                size: 20,
+                color: iconColor,
+              ),
+            ),
+            const SizedBox(width: 16),
+            
+            // Text Content (Title & Meta)
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,53 +76,36 @@ class TicketItem extends StatelessWidget {
                     title,
                     style: AppTextStyles.titleSmall.copyWith(
                       color: AppColors.ink,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
+                      Icon(Icons.person_rounded, size: 12, color: AppColors.inkSecondary),
+                      const SizedBox(width: 4),
                       Expanded(
-                        flex: 3,
-                        child: Row(
-                          children: [
-                            Icon(Icons.person_rounded, size: 14, color: AppColors.primary),
-                            const SizedBox(width: 4),
-                            Flexible(
-                              child: Text(
-                                reporterName,
-                                style: AppTextStyles.caption.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.inkSecondary,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          reporterName,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.inkSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Expanded(
-                        flex: 2,
-                        child: Row(
-                          children: [
-                            Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.primary),
-                            const SizedBox(width: 4),
-                            Flexible(
-                              child: Text(
-                                date,
-                                style: AppTextStyles.caption.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.inkSecondary,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                      Icon(Icons.calendar_today_rounded, size: 12, color: AppColors.inkSecondary),
+                      const SizedBox(width: 4),
+                      Text(
+                        date,
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.inkSecondary,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -110,10 +114,9 @@ class TicketItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: StatusBadge(priority, small: true),
-            ),
+            
+            // Trailing Badge
+            StatusBadge(priority, small: true),
           ],
         ),
       ),

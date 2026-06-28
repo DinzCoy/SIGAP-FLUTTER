@@ -5,6 +5,7 @@ import '../../services/ticket_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_snackbar.dart';
 import '../../widgets/common/app_text_field.dart';
 import 'ticket_header_banner.dart';
 import 'ticket_jenis_grid.dart';
@@ -56,16 +57,9 @@ class _TicketFormState extends State<TicketForm> {
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengirim tiket: $e'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
+      String errMsg = e.toString();
+      if (errMsg.startsWith('Exception: ')) errMsg = errMsg.substring(11);
+      AppSnackbar.showError(context, title: 'Gagal', message: 'Gagal mengirim tiket: $errMsg');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

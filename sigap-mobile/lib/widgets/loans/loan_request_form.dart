@@ -5,6 +5,7 @@ import '../../services/loan_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_snackbar.dart';
 import '../../widgets/common/app_text_field.dart';
 import 'loan_asset_card.dart';
 import 'loan_date_picker.dart';
@@ -82,20 +83,21 @@ class _LoanRequestFormState extends State<LoanRequestForm> {
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
-      _showSnackBar('Gagal mengajukan pinjaman: $e');
+      String errMsg = e.toString();
+      if (errMsg.startsWith('Exception: ')) {
+        errMsg = errMsg.substring(11);
+      }
+      _showSnackBar(errMsg);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    AppSnackbar.showError(
+      context,
+      title: 'Peringatan',
+      message: message,
     );
   }
 

@@ -8,8 +8,10 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../widgets/common/app_skeletons.dart';
 import '../widgets/common/empty_state.dart';
+import '../widgets/common/app_snackbar.dart';
 import '../widgets/loan/admin_loan_card.dart';
 import '../widgets/loan/loan_process_dialog.dart';
+import '../widgets/loan/return_asset_dialog.dart';
 import '../widgets/common/app_button.dart';
 
 class AdminLoansPage extends StatefulWidget {
@@ -165,21 +167,44 @@ class _AdminLoansPageState extends State<AdminLoansPage>
         }
       } catch (e) {
         if (mounted) {
-          _showSnack('Gagal: $e', isError: true);
+          String errMsg = e.toString();
+          if (errMsg.startsWith('Exception: ')) errMsg = errMsg.substring(11);
+          _showSnack('Gagal: $errMsg', isError: true);
         }
       }
     }
   }
 
   void _showSnack(String message, {required bool isError}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? AppColors.error : AppColors.success,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    if (isError) {
+      AppSnackbar.showError(context, title: 'Gagal', message: message);
+    } else {
+      AppSnackbar.showSuccess(context, title: 'Berhasil', message: message);
+    }
+  }
+
+  Future<void> _returnAsset(int loanId) async {
+    final String? kondisi = await showDialog<String>(
+      context: context,
+      builder: (ctx) => const ReturnAssetDialog(),
     );
+
+    if (kondisi != null) {
+      if (!mounted) return;
+      try {
+        await LoanService.returnAsset(loanId: loanId, kondisiKembali: kondisi);
+        _fetchInitialData();
+        if (mounted) {
+          AppSnackbar.showSuccess(context, title: 'Berhasil', message: 'Aset berhasil dikembalikan');
+        }
+      } catch (e) {
+        if (mounted) {
+          String errMsg = e.toString();
+          if (errMsg.startsWith('Exception: ')) errMsg = errMsg.substring(11);
+          AppSnackbar.showError(context, title: 'Gagal', message: errMsg);
+        }
+      }
+    }
   }
 
   void _showLoanDetails(LoanModel loan) {
@@ -230,9 +255,27 @@ class _AdminLoansPageState extends State<AdminLoansPage>
                   _buildDetailRow('Kapan Dikembalikan', _formatDate(loan.tanggalKembali ?? loan.tanggalDikembalikan)),
                 _buildDetailRow('Status Saat Ini', loan.statusInfo['label']),
                 const SizedBox(height: 24),
-                AppButton.primary(
-                  label: 'Tutup',
-                  onTap: () => Navigator.pop(context),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppButton.secondary(
+                        label: 'Tutup',
+                        onTap: () => Navigator.pop(context),
+                      ),
+                    ),
+                    if (loan.isAktif && loan.isPinjam) ...[
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: AppButton.primary(
+                          label: 'Kembalikan',
+                          onTap: () {
+                            Navigator.pop(context);
+                            _returnAsset(loan.id);
+                          },
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),
@@ -362,6 +405,9 @@ class _AdminLoansPageState extends State<AdminLoansPage>
             loan: _loans[index], 
             onProcess: _processLoan,
             onTap: () => _showLoanDetails(_loans[index]),
+            onReturn: _loans[index].isAktif && _loans[index].isPinjam
+                ? () => _returnAsset(_loans[index].id)
+                : null,
           );
         },
       ),
